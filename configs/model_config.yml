@@ -1,0 +1,98 @@
+# Configurações do Sistema de IA - Auditoria Fiscal ICMS
+# Versão: 15.0
+
+# Configurações do LLM Local (Ollama)
+llm:
+  provider: "ollama"
+  base_url: "http://localhost:11434"
+  models:
+    primary: "llama3.1:8b"
+    fallback: "llama3.1:70b"
+    embedding: "nomic-embed-text"
+  
+  # Parâmetros de inferência
+  inference_params:
+    temperature: 0.1
+    top_p: 0.9
+    max_tokens: 4096
+    repeat_penalty: 1.1
+
+# Configurações de Embeddings
+embeddings:
+  model_name: "BAAI/bge-m3"
+  device: "cpu"  # ou "cuda" se disponível
+  max_length: 512
+  batch_size: 32
+  normalize_embeddings: true
+
+# Configurações do RAG
+rag:
+  # Base de Conhecimento Tri-Híbrida
+  vector_store:
+    provider: "faiss"
+    index_type: "IndexFlatIP"
+    dimension: 1024
+    similarity_threshold: 0.7
+    
+  graph_store:
+    provider: "neo4j"
+    uri: "bolt://localhost:7687"
+    username: "neo4j"
+    password: "auditoria123"
+    
+  relational_store:
+    provider: "sqlite"
+    database_path: "data/processed/knowledge_base.sqlite"
+
+  # Configurações de busca
+  retrieval:
+    top_k_vector: 10
+    top_k_graph: 5
+    chunk_size: 512
+    chunk_overlap: 50
+    
+  # Golden Set para aprimoramento contínuo
+  golden_set:
+    enabled: true
+    priority_weight: 2.0
+    human_feedback_integration: true
+
+# Configurações dos Agentes
+agents:
+  manager:
+    model: "llama3.1:8b"
+    max_iterations: 10
+    decision_threshold: 0.8
+    
+  enrichment:
+    model: "llama3.1:8b"
+    enhancement_strategies: ["semantic", "regulatory", "contextual"]
+    
+  ncm_classifier:
+    model: "llama3.1:8b"
+    confidence_threshold: 0.85
+    hierarchy_levels: ["capitulo", "posicao", "subposicao", "item"]
+    
+  cest_classifier:
+    model: "llama3.1:8b"
+    confidence_threshold: 0.80
+    pattern_matching: true
+    
+  reconciliation:
+    model: "llama3.1:70b"
+    cross_validation: true
+    audit_trail: true
+
+# Configurações de avaliação
+evaluation:
+  metrics: ["accuracy", "precision", "recall", "f1_score"]
+  benchmark_dataset: "data/processed/golden_set.json"
+  ragas_evaluation: true
+  human_feedback_weight: 1.5
+
+# Logging e Auditoria
+logging:
+  level: "INFO"
+  file_path: "logs/auditoria_fiscal.log"
+  audit_decisions: true
+  trace_agent_interactions: true

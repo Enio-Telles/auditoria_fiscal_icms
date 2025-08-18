@@ -1,0 +1,129 @@
+# Configurações de Protocolos e Comunicação - Sistema de Auditoria Fiscal
+# Versão: 15.0
+
+# Configurações da API FastAPI
+api:
+  host: "0.0.0.0"
+  port: 8000
+  debug: true
+  reload: true
+  cors_origins: ["http://localhost:3000", "http://127.0.0.1:3000"]
+  
+  # Configurações de autenticação
+  auth:
+    secret_key: "auditoria_fiscal_secret_key_2025"
+    algorithm: "HS256"
+    access_token_expire_minutes: 60
+    
+  # Rate limiting
+  rate_limit:
+    requests_per_minute: 100
+    burst_limit: 20
+
+# Configurações do Banco de Dados da Aplicação (PostgreSQL)
+database:
+  # Conexão principal
+  postgresql:
+    host: "localhost"
+    port: 5432
+    database: "auditoria_fiscal"
+    username: "postgres"
+    password: "postgres123"
+    echo_sql: false
+    pool_size: 20
+    max_overflow: 30
+    
+  # Schema multiempresa
+  multitenancy:
+    enabled: true
+    tenant_isolation: "schema_based"
+    default_schema: "public"
+
+# Configurações de integração com sistemas externos
+integrations:
+  # Sistema de Análise de Estoques (Futuro)
+  stock_analysis:
+    enabled: false  # Será habilitado na versão 2.0
+    api_endpoint: ""
+    api_key: ""
+    sync_interval_hours: 24
+    supported_formats: ["xml", "json", "csv"]
+    
+  # Receita Federal (Futuro)
+  receita_federal:
+    enabled: false
+    webservice_url: ""
+    certificate_path: ""
+    
+  # SPED (Futuro)
+  sped:
+    enabled: false
+    import_formats: ["efd", "ecd", "ecf"]
+
+# Configurações dos Workflows LangGraph
+workflows:
+  confirmation_flow:
+    max_steps: 15
+    timeout_minutes: 5
+    retry_attempts: 3
+    
+  determination_flow:
+    max_steps: 20
+    timeout_minutes: 10
+    retry_attempts: 3
+    
+  # Configurações específicas de negócio
+  business_rules:
+    require_human_validation:
+      ncm_confidence_below: 0.85
+      cest_confidence_below: 0.80
+      conflicting_classifications: true
+      
+    auto_approve_thresholds:
+      golden_set_match: 0.95
+      high_confidence_all_agents: 0.90
+
+# Configurações de monitoramento e observabilidade
+monitoring:
+  enable_metrics: true
+  metrics_endpoint: "/metrics"
+  health_check_endpoint: "/health"
+  
+  # Alertas
+  alerts:
+    low_confidence_threshold: 0.70
+    processing_time_threshold_seconds: 30
+    error_rate_threshold_percent: 5
+
+# Configurações do Frontend React
+frontend:
+  build_path: "frontend/build"
+  static_files_path: "frontend/public"
+  
+  # Páginas principais
+  pages:
+    - login
+    - cadastros
+    - painel_controle
+    - importacao_dados
+    - dashboard_classificacao
+    - visualizacao_revisao
+    - golden_set_management
+    
+# Configurações de deployment Docker
+docker:
+  compose_version: "3.8"
+  networks:
+    - auditoria_network
+    
+  services:
+    - postgresql
+    - neo4j
+    - ollama
+    - backend_api
+    - frontend_react
+    
+  volumes:
+    - app_data
+    - logs_data
+    - knowledge_base
