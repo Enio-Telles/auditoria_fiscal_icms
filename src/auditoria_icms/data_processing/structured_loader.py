@@ -1,6 +1,7 @@
 """
-Structured Data Loader para Sistema de Auditoria Fiscal ICMS v15.0
+Structured Data Loader para Sistema de Auditoria Fiscal ICMS v16.0
 Responsável pela ingestão, limpeza e normalização de dados estruturados
+Inclui integração com Tabela ABC Farma e processador NESH
 """
 
 import pandas as pd
@@ -9,6 +10,21 @@ import re
 import os
 from typing import Dict, List, Optional, Tuple
 import logging
+from pathlib import Path
+
+# Imports dos novos processadores
+try:
+    from .farmaceutico_processor import FarmaceuticoProcessor
+    from .nesh_processor import NESHProcessor
+except ImportError:
+    # Fallback para execução direta
+    import sys
+    sys.path.append(os.path.dirname(__file__))
+    try:
+        from farmaceutico_processor import FarmaceuticoProcessor
+        from nesh_processor import NESHProcessor
+    except ImportError:
+        logger.warning("Processadores farmacêutico e NESH não disponíveis")
 
 # Configuração de logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -19,6 +35,21 @@ class StructuredDataLoader:
     
     def __init__(self, data_dir: str = None):
         self.data_dir = data_dir or "./data/raw"
+        
+        # Inicializa novos processadores se disponíveis
+        try:
+            self.farmaceutico_processor = FarmaceuticoProcessor()
+            self.nesh_processor = NESHProcessor(data_path=self.data_dir)
+            self.processadores_disponíveis = True
+        except NameError:
+            self.farmaceutico_processor = None
+            self.nesh_processor = None
+            self.processadores_disponíveis = False
+            logger.warning("Processadores farmacêutico e NESH não disponíveis")
+        
+        # Cache para dados carregados
+        self._farma_data = None
+        self._nesh_rules = None
         
     @staticmethod
     def clean_ncm_code(code) -> str:
@@ -118,6 +149,111 @@ class StructuredDataLoader:
             logger.warning("Coluna 'codigo' não encontrada no arquivo NCM")
             return pd.DataFrame(columns=['codigo', 'descricao', 'capitulo', 'posicao', 'subposicao'])
     
+    def load_medicamentos_abc_farma(self) -> Dict:
+        """
+        Carrega dados de medicamentos da Tabela ABC Farma
+        
+        Returns:
+            Dict: Dados de medicamentos processados
+        """
+        if not self.processadores_disponíveis or not self.farmaceutico_processor:
+            logger.warning("Processador farmacêutico não disponível")
+            return {}
+        
+        if self._farma_data is None:
+            logger.info("Carregando dados de medicamentos ABC Farma...")
+            if self.farmaceutico_processor.carregar_dados():
+                self._farma_data = {
+                    'medicamentos': self.farmaceutico_processor.medicamentos,
+                    'ncm_farmaceutico': list(self.farmaceutico_processor.ncm_farmaceutico),
+                    'cest_farmaceutico': list(self.farmaceutico_processor.cest_farmaceutico),
+                    'estatisticas': self.farmaceutico_processor.get_estatisticas()
+                }
+                logger.info(f"Carregados {len(self._farma_data['medicamentos'])} medicamentos")
+            else:
+                self._farma_data = {}
+        
+        return self._farma_data
+    
+    def load_nesh_rules(self) -> Dict:
+        """
+        Carrega regras e notas explicativas do NESH
+        
+        Returns:
+            Dict: Regras e notas do NESH processadas
+        """
+        if not self.processadores_disponíveis or not self.nesh_processor:
+            logger.warning("Processador NESH não disponível")
+            return {}
+        
+        if self._nesh_rules is None:
+            logger.info("Carregando regras NESH...")
+            nesh_data = self.nesh_processor.load_nesh_pdf()
+            if nesh_data:
+                self._nesh_rules = nesh_data
+                logger.info(f"Carregadas {len(nesh_data.get('regras_gerais', {}))} regras gerais")
+            else:
+                self._nesh_rules = {}
+        
+        return self._nesh_rules
+    
+    def buscar_medicamento_por_codigo_barras(self, codigo_barras: str) -> Optional[Dict]:
+        """
+        Busca medicamento por código de barras
+        
+        Args:
+            codigo_barras: Código de barras do medicamento
+            
+        Returns:
+            Dict ou None: Dados do medicamento se encontrado
+        """
+        if self.farmaceutico_processor:
+            return self.farmaceutico_processor.buscar_por_codigo_barras(codigo_barras)
+        return None
+    
+    def buscar_medicamentos_similares(self, descricao: str, limite: int = 5) -> List[Dict]:
+        """
+        Busca medicamentos similares por descrição
+        
+        Args:
+            descricao: Descrição para busca
+            limite: Número máximo de resultados
+            
+        Returns:
+            List[Dict]: Lista de medicamentos similares
+        """
+        if self.farmaceutico_processor:
+            return self.farmaceutico_processor.buscar_similares(descricao, limite)
+        return []
+    
+    def get_regra_ncm(self, numero_regra: str) -> Optional[Dict]:
+        """
+        Busca regra geral de interpretação NCM
+        
+        Args:
+            numero_regra: Número da regra (ex: "1", "2A", "RGC1")
+            
+        Returns:
+            Dict ou None: Dados da regra se encontrada
+        """
+        nesh_data = self.load_nesh_rules()
+        return nesh_data.get('regras_gerais', {}).get(numero_regra)
+    
+    def validar_ncm_com_nesh(self, ncm: str, descricao: str = "") -> Dict:
+        """
+        Valida código NCM usando regras NESH
+        
+        Args:
+            ncm: Código NCM para validar
+            descricao: Descrição do produto (opcional)
+            
+        Returns:
+            Dict: Resultado da validação
+        """
+        if self.nesh_processor:
+            return self.nesh_processor.validate_ncm(ncm, descricao)
+        return {"valido": False, "observacoes": ["Processador NESH não disponível"]}
+    
     def run_simple_test(self):
         """Executa um teste simples do loader."""
         logger.info("=== Teste Simples do StructuredDataLoader ===")
@@ -125,6 +261,18 @@ class StructuredDataLoader:
         # Testa processamento NCM
         ncm_df = self.process_ncm_data()
         logger.info(f"Teste NCM: {len(ncm_df)} registros processados")
+        
+        # Testa novos processadores
+        if self.processadores_disponíveis:
+            # Teste medicamentos
+            farma_data = self.load_medicamentos_abc_farma()
+            if farma_data:
+                logger.info(f"Teste ABC Farma: {len(farma_data.get('medicamentos', {}))} medicamentos")
+            
+            # Teste NESH
+            nesh_data = self.load_nesh_rules()
+            if nesh_data:
+                logger.info(f"Teste NESH: {len(nesh_data.get('regras_gerais', {}))} regras gerais")
         
         # Lista arquivos disponíveis
         if os.path.exists(self.data_dir):
