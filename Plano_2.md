@@ -3,23 +3,7 @@
 Versão: 10.0  
 Data: 14 de Agosto de 2025
 
-### **1\. Sumário Executivo**
 
-Este documento detalha a arquitetura final e o fluxo operacional do sistema de IA para classificação fiscal. A Versão 10.0 consolida a arquitetura **Adaptive RAG** em um fluxo de trabalho de duplo propósito: **Confirmar ou Determinar**. O sistema foi projetado para primeiro enriquecer a descrição do produto, depois tentar validar uma classificação fiscal fornecida e, se a classificação for inválida ou ausente, pivotar automaticamente para um modo de determinação analítica. A arquitetura também inclui um processo de enriquecimento da base de conhecimento para identificar e agregar produtos idênticos com descrições diferentes, aumentando a precisão e a consistência.
-
-### **2\. Estrutura de Dados de Entrada**
-
-O sistema opera com base em uma entrada JSON bem definida.
-
-{  
-  "produto\_id": 12345,  
-  "descricao\_produto": "DIPIRONA SODICA 500 MG C/ 10 COMP",  
-  "codigo\_barra": "7891234567890",  
-  "codigo\_produto": "SKU-XYZ-001",  
-  "ncm": "3004.90.69", // Pode ser nulo ou uma string  
-  "cest": "13.001.00", // Pode ser nulo ou uma string  
-  "contexto\_empresa": "farmácia"  
-}
 
 ### **3\. Arquitetura de Agentes e Fluxo de Trabalho Integrado**
 
