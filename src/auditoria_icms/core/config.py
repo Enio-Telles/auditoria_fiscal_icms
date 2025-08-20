@@ -60,6 +60,36 @@ class AgentConfig:
     enable_reconciliation: bool = True
 
 @dataclass
+class WorkflowConfig:
+    """Configurações dos workflows LangGraph"""
+    confidence_threshold: float = 0.7
+    auto_approval_threshold: float = 0.9
+    enable_parallel_execution: bool = True
+    max_retry_attempts: int = 3
+    timeout_seconds: int = 600
+    version: str = "1.0"
+    
+    # Configurações específicas por tipo de workflow
+    confirmation_config: Dict[str, Any] = None
+    determination_config: Dict[str, Any] = None
+    
+    def __post_init__(self):
+        if self.confirmation_config is None:
+            self.confirmation_config = {
+                "enable_ncm_refinement": True,
+                "enable_cest_determination": True,
+                "require_high_confidence": True
+            }
+        
+        if self.determination_config is None:
+            self.determination_config = {
+                "enable_deep_enrichment": True,
+                "enable_ncm_refinement": True,
+                "max_ncm_candidates": 5,
+                "enable_golden_set_learning": True
+            }
+
+@dataclass
 class ProcessingConfig:
     """Configurações de processamento"""
     batch_size: int = 100
@@ -75,6 +105,7 @@ class Settings:
     llm: LLMConfig
     rag: RAGConfig
     agent: AgentConfig
+    workflow: WorkflowConfig
     processing: ProcessingConfig
     
     # Configurações gerais
@@ -141,6 +172,16 @@ def load_settings_from_env() -> Settings:
         enable_reconciliation=os.getenv("ENABLE_RECONCILIATION", "true").lower() == "true"
     )
     
+    # Workflow
+    workflow_config = WorkflowConfig(
+        confidence_threshold=float(os.getenv("WORKFLOW_CONFIDENCE_THRESHOLD", "0.7")),
+        auto_approval_threshold=float(os.getenv("WORKFLOW_AUTO_APPROVAL_THRESHOLD", "0.9")),
+        enable_parallel_execution=os.getenv("WORKFLOW_ENABLE_PARALLEL", "true").lower() == "true",
+        max_retry_attempts=int(os.getenv("WORKFLOW_MAX_RETRIES", "3")),
+        timeout_seconds=int(os.getenv("WORKFLOW_TIMEOUT", "600")),
+        version=os.getenv("WORKFLOW_VERSION", "1.0")
+    )
+    
     # Processing
     processing_config = ProcessingConfig(
         batch_size=int(os.getenv("BATCH_SIZE", "100")),
@@ -155,6 +196,7 @@ def load_settings_from_env() -> Settings:
         llm=llm_config,
         rag=rag_config,
         agent=agent_config,
+        workflow=workflow_config,
         processing=processing_config,
         debug=os.getenv("DEBUG", "false").lower() == "true",
         environment=os.getenv("ENVIRONMENT", "development"),
@@ -169,6 +211,7 @@ def load_settings_from_dict(config_dict: Dict[str, Any]) -> Settings:
     llm_config = LLMConfig(**config_dict.get("llm", {}))
     rag_config = RAGConfig(**config_dict.get("rag", {}))
     agent_config = AgentConfig(**config_dict.get("agent", {}))
+    workflow_config = WorkflowConfig(**config_dict.get("workflow", {}))
     processing_config = ProcessingConfig(**config_dict.get("processing", {}))
     
     return Settings(
@@ -177,6 +220,7 @@ def load_settings_from_dict(config_dict: Dict[str, Any]) -> Settings:
         llm=llm_config,
         rag=rag_config,
         agent=agent_config,
+        workflow=workflow_config,
         processing=processing_config,
         debug=config_dict.get("debug", False),
         environment=config_dict.get("environment", "development"),
@@ -190,6 +234,7 @@ DEFAULT_SETTINGS = Settings(
     llm=LLMConfig(),
     rag=RAGConfig(),
     agent=AgentConfig(),
+    workflow=WorkflowConfig(),
     processing=ProcessingConfig(),
     debug=True,
     environment="development",
@@ -212,6 +257,11 @@ def get_database_url() -> str:
     """Retorna URL do banco de dados"""
     settings = get_settings()
     return settings.database.get_url()
+
+def get_workflow_config() -> 'WorkflowConfig':
+    """Retorna configuração específica dos workflows"""
+    settings = get_settings()
+    return settings.workflow
 
 def get_company_database_config(empresa_id: int) -> Dict[str, Any]:
     """
@@ -301,3 +351,41 @@ ENVIRONMENT_CONFIGS = {
 def get_environment_config(environment: str) -> Dict[str, Any]:
     """Retorna configuração específica do ambiente"""
     return ENVIRONMENT_CONFIGS.get(environment, {})
+
+
+def load_config(config_path: Optional[str] = None) -> Settings:
+    """
+    Carrega configuração da aplicação.
+    
+    Args:
+        config_path: Caminho para arquivo de configuração (opcional)
+        
+    Returns:
+        Settings: Configuração carregada
+    """
+    # Por enquanto, retorna configuração padrão
+    # Em versões futuras, pode carregar de arquivo ou variáveis de ambiente
+    return get_settings()
+
+
+def get_database_url() -> str:
+    """Retorna URL de conexão do banco de dados."""
+    settings = get_settings()
+    return settings.database.get_url()
+
+
+def setup_logging(level: str = "INFO"):
+    """Configura logging da aplicação."""
+    import logging
+    
+    logging.basicConfig(
+        level=getattr(logging, level.upper()),
+        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+        handlers=[
+            logging.StreamHandler(),
+            logging.FileHandler('logs/app.log', mode='a')
+        ]
+    )
+    
+    # Criar diretório de logs se não existir
+    os.makedirs('logs', exist_ok=True)

@@ -459,3 +459,30 @@ class ProdutoEmpresa(Base):
 
 # Atualiza o relacionamento na classe Empresa
 Empresa.produtos = relationship("ProdutoEmpresa", back_populates="empresa")
+
+
+# =============================================================================
+# ALIASES PARA COMPATIBILIDADE COM API
+# =============================================================================
+
+# Aliases para manter compatibilidade com endpoints da API
+User = Usuario
+Company = Empresa
+Mercadoria = ProdutoEmpresa
+
+
+# =============================================================================
+# EXPORTAÇÕES
+# =============================================================================
+
+__all__ = [
+    'Base',
+    'Usuario', 'User',
+    'Empresa', 'Company', 
+    'UsuarioEmpresaAcesso',
+    'ProdutoEmpresa', 'Mercadoria',
+    'ClassificacaoHistorico',
+    'GoldenSetItem',
+    'AgentExecution',
+    'DataImportJob'
+]

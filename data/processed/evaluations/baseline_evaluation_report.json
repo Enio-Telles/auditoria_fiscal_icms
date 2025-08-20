@@ -1,0 +1,305 @@
+{
+  "timestamp": "2025-08-18T19:02:55.013939",
+  "dataset_size": 5,
+  "aggregated_metrics": {
+    "context_precision": {
+      "mean": 0.8666666666666668,
+      "std": 0.26666666666666666,
+      "min": 0.3333333333333333,
+      "max": 1.0,
+      "median": 1.0
+    },
+    "context_recall": {
+      "mean": 0.9,
+      "std": 0.2,
+      "min": 0.5,
+      "max": 1.0,
+      "median": 1.0
+    },
+    "faithfulness": {
+      "mean": 0.35779220779220783,
+      "std": 0.2580823712940195,
+      "min": 0.0,
+      "max": 0.75,
+      "median": 0.35714285714285715
+    },
+    "answer_relevancy": {
+      "mean": 0.4961904761904762,
+      "std": 0.25831127840899243,
+      "min": 0.0,
+      "max": 0.7142857142857143,
+      "median": 0.6
+    },
+    "semantic_similarity": {
+      "mean": 1.0,
+      "std": 0.0,
+      "min": 1.0,
+      "max": 1.0,
+      "median": 1.0
+    },
+    "retrieval_precision": {
+      "mean": 0.0,
+      "std": 0.0,
+      "min": 0.0,
+      "max": 0.0,
+      "median": 0.0
+    },
+    "retrieval_recall": {
+      "mean": 0.0,
+      "std": 0.0,
+      "min": 0.0,
+      "max": 0.0,
+      "median": 0.0
+    }
+  },
+  "category_metrics": {
+    "medicamentos": {
+      "context_precision": {
+        "mean": 1.0,
+        "count": 1
+      },
+      "context_recall": {
+        "mean": 1.0,
+        "count": 1
+      },
+      "faithfulness": {
+        "mean": 0.75,
+        "count": 1
+      },
+      "answer_relevancy": {
+        "mean": 0.6666666666666666,
+        "count": 1
+      },
+      "semantic_similarity": {
+        "mean": 1.0,
+        "count": 1
+      },
+      "retrieval_precision": [],
+      "retrieval_recall": []
+    },
+    "telecomunicacoes": {
+      "context_precision": {
+        "mean": 1.0,
+        "count": 1
+      },
+      "context_recall": {
+        "mean": 1.0,
+        "count": 1
+      },
+      "faithfulness": {
+        "mean": 0.18181818181818182,
+        "count": 1
+      },
+      "answer_relevancy": {
+        "mean": 0.7142857142857143,
+        "count": 1
+      },
+      "semantic_similarity": {
+        "mean": 1.0,
+        "count": 1
+      },
+      "retrieval_precision": [],
+      "retrieval_recall": []
+    },
+    "bebidas": {
+      "context_precision": {
+        "mean": 0.3333333333333333,
+        "count": 1
+      },
+      "context_recall": {
+        "mean": 0.5,
+        "count": 1
+      },
+      "faithfulness": {
+        "mean": 0.0,
+        "count": 1
+      },
+      "answer_relevancy": {
+        "mean": 0.0,
+        "count": 1
+      },
+      "semantic_similarity": {
+        "mean": 1.0,
+        "count": 1
+      },
+      "retrieval_precision": [],
+      "retrieval_recall": []
+    },
+    "importacao": {
+      "context_precision": {
+        "mean": 1.0,
+        "count": 1
+      },
+      "context_recall": {
+        "mean": 1.0,
+        "count": 1
+      },
+      "faithfulness": {
+        "mean": 0.35714285714285715,
+        "count": 1
+      },
+      "answer_relevancy": {
+        "mean": 0.6,
+        "count": 1
+      },
+      "semantic_similarity": {
+        "mean": 1.0,
+        "count": 1
+      },
+      "retrieval_precision": [],
+      "retrieval_recall": []
+    },
+    "classificacao": {
+      "context_precision": {
+        "mean": 1.0,
+        "count": 1
+      },
+      "context_recall": {
+        "mean": 1.0,
+        "count": 1
+      },
+      "faithfulness": {
+        "mean": 0.5,
+        "count": 1
+      },
+      "answer_relevancy": {
+        "mean": 0.5,
+        "count": 1
+      },
+      "semantic_similarity": {
+        "mean": 1.0,
+        "count": 1
+      },
+      "retrieval_precision": [],
+      "retrieval_recall": []
+    }
+  },
+  "detailed_results": [
+    {
+      "question": "Qual é o NCM para medicamentos genéricos?",
+      "expected_answer": "O NCM para medicamentos genéricos é 30049069 - Outros medicamentos constituídos por produtos misturados ou não misturados",
+      "generated_answer": "O NCM para medicamentos genéricos é 30049069 - Outros medicamentos constituídos por produtos misturados ou não misturados",
+      "retrieved_contexts": [
+        "NCM 30049069: Outros medicamentos constituídos por produtos misturados ou não misturados",
+        "CEST 17.004.00: Medicamentos genéricos",
+        "Produtos farmacêuticos seguem regulamentação específica"
+      ],
+      "expected_contexts": [
+        "NCM 30049069: Outros medicamentos constituídos por produtos misturados ou não misturados",
+        "CEST 17.004.00: Medicamentos genéricos"
+      ],
+      "metrics": {
+        "context_precision": 1.0,
+        "context_recall": 1.0,
+        "faithfulness": 0.75,
+        "answer_relevancy": 0.6666666666666666,
+        "semantic_similarity": 1.0
+      },
+      "category": "medicamentos",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Quais produtos estão sujeitos à substituição tributária para telefones celulares?",
+      "expected_answer": "Telefones celulares com NCM 85171211 e 85171212 estão sujeitos à substituição tributária conforme CEST 21.001.00",
+      "generated_answer": "Telefones celulares com NCM 85171211 e 85171212 estão sujeitos à substituição tributária conforme CEST 21.001.00",
+      "retrieved_contexts": [
+        "NCM 85171211: Telefones móveis e de outras redes sem fio",
+        "NCM 85171212: Telefones inteligentes",
+        "CEST 21.001.00: Aparelhos telefônicos"
+      ],
+      "expected_contexts": [
+        "NCM 85171211: Telefones móveis e de outras redes sem fio",
+        "NCM 85171212: Telefones inteligentes",
+        "CEST 21.001.00: Aparelhos telefônicos"
+      ],
+      "metrics": {
+        "context_precision": 1.0,
+        "context_recall": 1.0,
+        "faithfulness": 0.18181818181818182,
+        "answer_relevancy": 0.7142857142857143,
+        "semantic_similarity": 1.0
+      },
+      "category": "telecomunicacoes",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Como classificar uma bebida açucarada para fins de ICMS?",
+      "expected_answer": "Bebidas açucaradas devem ser classificadas no NCM 22021000 - Águas, incluindo as águas minerais e as águas gaseificadas, adicionadas de açúcar",
+      "generated_answer": "Bebidas açucaradas devem ser classificadas no NCM 22021000 - Águas, incluindo as águas minerais e as águas gaseificadas, adicionadas de açúcar",
+      "retrieved_contexts": [
+        "Classificação fiscal segue regras específicas",
+        "Consulte tabelas NCM e CEST atualizadas",
+        "Verificar legislação aplicável"
+      ],
+      "expected_contexts": [
+        "NCM 22021000: Águas, incluindo as águas minerais e as águas gaseificadas, adicionadas de açúcar",
+        "Produtos com açúcar adicionado seguem classificação específica"
+      ],
+      "metrics": {
+        "context_precision": 0.3333333333333333,
+        "context_recall": 0.5,
+        "faithfulness": 0.0,
+        "answer_relevancy": 0.0,
+        "semantic_similarity": 1.0
+      },
+      "category": "bebidas",
+      "difficulty": "medium"
+    },
+    {
+      "question": "Quais são as regras NESH aplicáveis a produtos importados?",
+      "expected_answer": "As regras NESH estabelecem critérios específicos para classificação de produtos importados, incluindo análise de origem, composição e finalidade",
+      "generated_answer": "As regras NESH estabelecem critérios específicos para classificação de produtos importados, incluindo análise de origem, composição e finalidade",
+      "retrieved_contexts": [
+        "Notas Explicativas do Sistema Harmonizado (NESH)",
+        "Regras para produtos importados",
+        "Critérios de classificação internacional"
+      ],
+      "expected_contexts": [
+        "Notas Explicativas do Sistema Harmonizado (NESH)",
+        "Regras para produtos importados",
+        "Critérios de classificação NESH"
+      ],
+      "metrics": {
+        "context_precision": 1.0,
+        "context_recall": 1.0,
+        "faithfulness": 0.35714285714285715,
+        "answer_relevancy": 0.6,
+        "semantic_similarity": 1.0
+      },
+      "category": "importacao",
+      "difficulty": "hard"
+    },
+    {
+      "question": "Como identificar se um produto requer classificação CEST específica?",
+      "expected_answer": "Um produto requer CEST específica se estiver listado na tabela de produtos sujeitos à substituição tributária ou antecipação tributária",
+      "generated_answer": "Um produto requer CEST específica se estiver listado na tabela de produtos sujeitos à substituição tributária ou antecipação tributária",
+      "retrieved_contexts": [
+        "Tabela CEST de produtos sujeitos à substituição tributária",
+        "Critérios para aplicação de CEST",
+        "Produtos com regime especial de tributação"
+      ],
+      "expected_contexts": [
+        "Tabela CEST de produtos sujeitos à substituição tributária",
+        "Critérios para aplicação de CEST",
+        "Produtos com regime especial de tributação"
+      ],
+      "metrics": {
+        "context_precision": 1.0,
+        "context_recall": 1.0,
+        "faithfulness": 0.5,
+        "answer_relevancy": 0.5,
+        "semantic_similarity": 1.0
+      },
+      "category": "classificacao",
+      "difficulty": "hard"
+    }
+  ],
+  "summary": {
+    "average_context_precision": 0.8666666666666668,
+    "average_context_recall": 0.9,
+    "average_faithfulness": 0.35779220779220783,
+    "average_answer_relevancy": 0.4961904761904762,
+    "average_semantic_similarity": 1.0,
+    "overall_score": 0.7241298701298702
+  }
+}

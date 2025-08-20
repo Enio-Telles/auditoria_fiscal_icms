@@ -1,5 +1,5 @@
-# Requirements para Sistema de Auditoria Fiscal ICMS v15.0
-# Base de dependências para execução 100% local
+# Requirements para Sistema de Auditoria Fiscal ICMS v22.0 - Fase 6
+# Base de dependências para execução 100% local com PostgreSQL + Agentes Reais
 
 # Framework Web e API
 fastapi==0.104.1
@@ -71,6 +71,25 @@ flake8==6.1.0
 gunicorn==21.2.0
 redis==5.0.1
 
+# Fase 6 - Novas dependências
+# Processamento de dados avançado
+regex==2023.10.3
+fuzzywuzzy==0.18.0
+python-Levenshtein==0.23.0
+
+# Análise e estatísticas
+scipy==1.11.4
+matplotlib==3.8.2
+seaborn==0.13.0
+
+# Monitoramento e métricas
+psutil==5.9.6
+memory-profiler==0.61.0
+
+# Validação de dados
+jsonschema==4.20.0
+cerberus==1.3.4
+
 # Frontend Build (Node.js será necessário separadamente)
 # Para o React frontend, será necessário:
 # - Node.js 18+
@@ -78,6 +97,10 @@ redis==5.0.1
 
 # Integração futura com sistemas de estoque
 # (Dependências serão adicionadas na v2.0)
-# xmltodict==0.13.0  # Para processamento XML de sistemas ERP
-# openpyxl==3.1.2    # Já incluído acima
-# python-magic==0.4.27  # Para detecção de tipos de arquivo
+xmltodict==0.13.0    # Para processamento XML de sistemas ERP
+python-magic==0.4.27 # Para detecção de tipos de arquivo
+chardet==5.2.0       # Para detecção de encoding
+
+# Documentação e relatórios
+reportlab==4.0.7     # Para geração de PDFs
+jinja2==3.1.2        # Para templates de relatórios

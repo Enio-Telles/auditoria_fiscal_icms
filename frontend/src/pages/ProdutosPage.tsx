@@ -1,0 +1,402 @@
+import React, { useState, useEffect } from 'react';
+import {
+  Container,
+  Box,
+  Typography,
+  Button,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TablePagination,
+  IconButton,
+  Tooltip,
+  Chip,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
+  Alert,
+  CircularProgress,
+  InputAdornment,
+  Menu,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Select,
+} from '@mui/material';
+import {
+  Add,
+  Upload,
+  Search,
+  FilterList,
+  Edit,
+  Delete,
+  Download,
+  Visibility,
+  CheckCircle,
+  Error,
+  Warning,
+} from '@mui/icons-material';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { produtoService } from '../services/produtoService';
+import { Produto, ProdutoFilter, ClassificacaoStatus } from '../types';
+import { useSnackbar } from 'notistack';
+
+const ProdutosPage: React.FC = () => {
+  const queryClient = useQueryClient();
+  const { enqueueSnackbar } = useSnackbar();
+  
+  // Estados
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filter, setFilter] = useState<ProdutoFilter>({});
+  const [selectedProduto, setSelectedProduto] = useState<Produto | null>(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
+  const [filterMenuAnchor, setFilterMenuAnchor] = useState<null | HTMLElement>(null);
+
+  // Queries
+  const { data: produtos, isLoading, error } = useQuery({
+    queryKey: ['produtos', page, rowsPerPage, searchTerm, filter],
+    queryFn: () => produtoService.getAll({
+      ...filter,
+      search: searchTerm,
+      limit: rowsPerPage,
+      offset: page * rowsPerPage,
+    }),
+  });
+
+  // Mutations
+  const deleteMutation = useMutation({
+    mutationFn: produtoService.delete,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['produtos'] });
+      enqueueSnackbar('Produto excluído com sucesso', { variant: 'success' });
+    },
+    onError: () => {
+      enqueueSnackbar('Erro ao excluir produto', { variant: 'error' });
+    },
+  });
+
+  const uploadMutation = useMutation({
+    mutationFn: produtoService.uploadFile,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['produtos'] });
+      setUploadDialogOpen(false);
+      enqueueSnackbar('Arquivo importado com sucesso', { variant: 'success' });
+    },
+    onError: () => {
+      enqueueSnackbar('Erro ao importar arquivo', { variant: 'error' });
+    },
+  });
+
+  const reclassifyMutation = useMutation({
+    mutationFn: produtoService.reclassify,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['produtos'] });
+      enqueueSnackbar('Produto reclassificado com sucesso', { variant: 'success' });
+    },
+    onError: () => {
+      enqueueSnackbar('Erro ao reclassificar produto', { variant: 'error' });
+    },
+  });
+
+  // Handlers
+  const handleDelete = (id: string) => {
+    if (window.confirm('Tem certeza que deseja excluir este produto?')) {
+      deleteMutation.mutate(id);
+    }
+  };
+
+  const handleReclassify = (id: string) => {
+    reclassifyMutation.mutate(id);
+  };
+
+  const handleUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      uploadMutation.mutate(file);
+    }
+  };
+
+  const getStatusChip = (status: ClassificacaoStatus) => {
+    const statusConfig = {
+      [ClassificacaoStatus.PENDENTE]: { color: 'warning', icon: <Warning /> },
+      [ClassificacaoStatus.CLASSIFICADO]: { color: 'success', icon: <CheckCircle /> },
+      [ClassificacaoStatus.ERRO]: { color: 'error', icon: <Error /> },
+    };
+
+    const config = statusConfig[status] || statusConfig[ClassificacaoStatus.PENDENTE];
+
+    return (
+      <Chip
+        label={status.replace('_', ' ')}
+        color={config.color as any}
+        size="small"
+        icon={config.icon}
+      />
+    );
+  };
+
+  const exportToExcel = async () => {
+    try {
+      const blob = await produtoService.exportToExcel(filter);
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `produtos_${new Date().toISOString().split('T')[0]}.xlsx`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+      enqueueSnackbar('Exportação realizada com sucesso', { variant: 'success' });
+    } catch (error) {
+      enqueueSnackbar('Erro ao exportar dados', { variant: 'error' });
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" minHeight="400px">
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (error) {
+    return (
+      <Container maxWidth="lg" sx={{ mt: 4 }}>
+        <Alert severity="error">
+          Erro ao carregar produtos. Tente novamente mais tarde.
+        </Alert>
+      </Container>
+    );
+  }
+
+  return (
+    <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+      {/* Header */}
+      <Box sx={{ mb: 4 }}>
+        <Typography variant="h4" gutterBottom>
+          Produtos
+        </Typography>
+        <Typography variant="body1" color="text.secondary">
+          Gerencie produtos e suas classificações NCM/CEST
+        </Typography>
+      </Box>
+
+      {/* Controles */}
+      <Paper sx={{ p: 2, mb: 3 }}>
+        <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', flexWrap: 'wrap' }}>
+          <TextField
+            placeholder="Pesquisar produtos..."
+            variant="outlined"
+            size="small"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Search />
+                </InputAdornment>
+              ),
+            }}
+            sx={{ minWidth: 300 }}
+          />
+
+          <Button
+            variant="outlined"
+            startIcon={<FilterList />}
+            onClick={(e) => setFilterMenuAnchor(e.currentTarget)}
+          >
+            Filtros
+          </Button>
+
+          <Button
+            variant="contained"
+            startIcon={<Upload />}
+            onClick={() => setUploadDialogOpen(true)}
+          >
+            Importar
+          </Button>
+
+          <Button
+            variant="outlined"
+            startIcon={<Download />}
+            onClick={exportToExcel}
+          >
+            Exportar
+          </Button>
+
+          <Button
+            variant="contained"
+            startIcon={<Add />}
+            onClick={() => {
+              setSelectedProduto(null);
+              setDialogOpen(true);
+            }}
+          >
+            Novo Produto
+          </Button>
+        </Box>
+      </Paper>
+
+      {/* Tabela */}
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Código</TableCell>
+              <TableCell>Descrição</TableCell>
+              <TableCell>NCM</TableCell>
+              <TableCell>CEST</TableCell>
+              <TableCell>Status</TableCell>
+              <TableCell>Confiança</TableCell>
+              <TableCell>Empresa</TableCell>
+              <TableCell align="center">Ações</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {produtos?.items?.map((produto) => (
+              <TableRow key={produto.id} hover>
+                <TableCell>{produto.codigo}</TableCell>
+                <TableCell>{produto.descricao}</TableCell>
+                <TableCell>
+                  {produto.ncm_classificado ? (
+                    <Chip label={produto.ncm_classificado} size="small" />
+                  ) : (
+                    '-'
+                  )}
+                </TableCell>
+                <TableCell>
+                  {produto.cest_classificado ? (
+                    <Chip label={produto.cest_classificado} size="small" />
+                  ) : (
+                    '-'
+                  )}
+                </TableCell>
+                <TableCell>
+                  {getStatusChip(produto.status_classificacao)}
+                </TableCell>
+                <TableCell>
+                  {produto.confianca_classificacao ? 
+                    `${Math.round(produto.confianca_classificacao * 100)}%` : 
+                    '-'
+                  }
+                </TableCell>
+                <TableCell>{produto.empresa.nome}</TableCell>
+                <TableCell align="center">
+                  <Tooltip title="Visualizar">
+                    <IconButton
+                      size="small"
+                      onClick={() => {
+                        setSelectedProduto(produto);
+                        setDialogOpen(true);
+                      }}
+                    >
+                      <Visibility />
+                    </IconButton>
+                  </Tooltip>
+                  
+                  <Tooltip title="Reclassificar">
+                    <IconButton
+                      size="small"
+                      onClick={() => handleReclassify(produto.id)}
+                      disabled={reclassifyMutation.isPending}
+                    >
+                      <Edit />
+                    </IconButton>
+                  </Tooltip>
+                  
+                  <Tooltip title="Excluir">
+                    <IconButton
+                      size="small"
+                      color="error"
+                      onClick={() => handleDelete(produto.id)}
+                      disabled={deleteMutation.isPending}
+                    >
+                      <Delete />
+                    </IconButton>
+                  </Tooltip>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+        
+        <TablePagination
+          component="div"
+          count={produtos?.total || 0}
+          page={page}
+          onPageChange={(_, newPage) => setPage(newPage)}
+          rowsPerPage={rowsPerPage}
+          onRowsPerPageChange={(e) => {
+            setRowsPerPage(parseInt(e.target.value, 10));
+            setPage(0);
+          }}
+          labelRowsPerPage="Itens por página:"
+          labelDisplayedRows={({ from, to, count }) =>
+            `${from}-${to} de ${count !== -1 ? count : `mais de ${to}`}`
+          }
+        />
+      </TableContainer>
+
+      {/* Menu de Filtros */}
+      <Menu
+        anchorEl={filterMenuAnchor}
+        open={Boolean(filterMenuAnchor)}
+        onClose={() => setFilterMenuAnchor(null)}
+      >
+        <MenuItem onClick={() => setFilter({ ...filter, status: ClassificacaoStatus.PENDENTE })}>
+          Apenas Pendentes
+        </MenuItem>
+        <MenuItem onClick={() => setFilter({ ...filter, status: ClassificacaoStatus.CLASSIFICADO })}>
+          Apenas Classificados
+        </MenuItem>
+        <MenuItem onClick={() => setFilter({ ...filter, status: ClassificacaoStatus.ERRO })}>
+          Apenas com Erro
+        </MenuItem>
+        <MenuItem onClick={() => setFilter({})}>
+          Limpar Filtros
+        </MenuItem>
+      </Menu>
+
+      {/* Dialog de Upload */}
+      <Dialog open={uploadDialogOpen} onClose={() => setUploadDialogOpen(false)}>
+        <DialogTitle>Importar Produtos</DialogTitle>
+        <DialogContent>
+          <Box sx={{ mt: 2 }}>
+            <input
+              accept=".xlsx,.xls,.csv"
+              style={{ display: 'none' }}
+              id="upload-file"
+              type="file"
+              onChange={handleUpload}
+            />
+            <label htmlFor="upload-file">
+              <Button variant="contained" component="span" fullWidth>
+                Selecionar Arquivo
+              </Button>
+            </label>
+            <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
+              Formatos aceitos: Excel (.xlsx, .xls) e CSV
+            </Typography>
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setUploadDialogOpen(false)}>
+            Cancelar
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </Container>
+  );
+};
+
+export default ProdutosPage;

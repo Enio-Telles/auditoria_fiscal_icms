@@ -1,53 +1,117 @@
 """
-Workflow Base para Sistema de Auditoria Fiscal
-Define a estrutura base para workflows LangGraph no sistema.
+Workflow Base para Sistema de Auditoria Fiscal v16.0
+Define estrutura base para workflows LangGraph no sistema de classificação NCM/CEST
 """
 
 from abc import ABC, abstractmethod
-from typing import Dict, Any, List, Optional, TypedDict
+from typing import Dict, Any, List, Optional, TypedDict, Literal
 from dataclasses import dataclass
 from datetime import datetime
 import uuid
+import logging
 
-from langgraph.graph import StateGraph, END
-from langchain.schema import BaseMessage
+try:
+    from langgraph.graph import StateGraph, END, START
+    from langchain.schema import BaseMessage
+    LANGGRAPH_AVAILABLE = True
+except ImportError:
+    # Fallback se LangGraph não estiver disponível
+    LANGGRAPH_AVAILABLE = False
+    StateGraph = None
+    END = "END"
+    START = "START"
+    BaseMessage = object
 
+logger = logging.getLogger(__name__)
 
 class WorkflowState(TypedDict):
-    """Estado compartilhado entre nós do workflow."""
+    """Estado compartilhado entre nós do workflow de classificação fiscal."""
+    
+    # Identificadores
     session_id: str
+    job_id: str
+    mercadoria_id: int
     produto_id: str
     empresa_id: int
+    
+    # Dados do produto
     descricao_original: str
     descricao_enriquecida: Optional[str]
-    ncm_atual: Optional[str]
-    cest_atual: Optional[str]
-    gtin: Optional[str]
+    codigo_barra: Optional[str]
+    codigo_produto: Optional[str]
+    
+    # Classificações existentes
+    ncm_informado: Optional[str]
+    cest_informado: Optional[str]
+    
+    # Atividades da empresa (contexto fiscal)
+    empresa_atividades: List[str]
     
     # Resultados dos agentes
     enrichment_result: Optional[Dict[str, Any]]
     ncm_result: Optional[Dict[str, Any]]
     cest_result: Optional[Dict[str, Any]]
     reconciliation_result: Optional[Dict[str, Any]]
+    aggregation_result: Optional[Dict[str, Any]]
     
     # Estado do workflow
+    workflow_type: Literal["confirmation", "determination"]
     current_step: str
-    errors: List[str]
-    requires_human_review: bool
-    confidence_score: float
+    completed_steps: List[str]
+    next_step: Optional[str]
     
-    # Metadados
+    # Controle de qualidade
+    confidence_ncm: float
+    confidence_cest: float
+    requires_human_review: bool
+    auto_approve: bool
+    
+    # Trilha de auditoria
+    audit_trail: List[Dict[str, Any]]
+    rag_contexts: List[Dict[str, Any]]
+    errors: List[str]
+    warnings: List[str]
+    
+    # Metadados de execução
     started_at: datetime
+    updated_at: datetime
     processing_time_ms: int
-
+    retry_count: int
+    
+    # Resultado final
+    final_ncm: Optional[str]
+    final_cest: Optional[str]
+    final_status: str
+    justificativa_ncm: Optional[str]
+    justificativa_cest: Optional[str]
 
 @dataclass
 class WorkflowConfig:
-    """Configuração para workflows."""
-    max_steps: int = 15
-    timeout_minutes: int = 5
+    """Configuração para workflows de classificação fiscal."""
+    
+    # Limites de execução
+    max_steps: int = 20
+    timeout_minutes: int = 10
     retry_attempts: int = 3
-    enable_parallel_processing: bool = False
+    
+    # Limiares de confiança
+    confidence_threshold: float = 0.7
+    auto_approve_threshold: float = 0.9
+    
+    # Paralelização
+    enable_parallel_processing: bool = True
+    max_concurrent_agents: int = 3
+    
+    # Agentes habilitados
+    enable_enrichment: bool = True
+    enable_ncm_classification: bool = True
+    enable_cest_classification: bool = True
+    enable_reconciliation: bool = True
+    enable_aggregation: bool = True
+    
+    # RAG e contexto
+    max_rag_contexts: int = 10
+    context_window_size: int = 2000
     require_human_validation_threshold: float = 0.8
 
 
