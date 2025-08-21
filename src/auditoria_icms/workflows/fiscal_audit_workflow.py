@@ -18,11 +18,11 @@ except ImportError:
     LANGGRAPH_AVAILABLE = False
     logging.warning("LangGraph não disponível. Usando implementação alternativa.")
 
-from .manager_agent_v2 import ManagerAgent
-from .enrichment_agent import EnrichmentAgent
-from .ncm_agent import NCMAgent
-from .cest_agent import CESTAgent
-from .reconciliation_agent import ReconciliationAgent
+from ..agents.manager_agent_v2 import ManagerAgent
+from ..agents.enrichment_agent import EnrichmentAgent
+from ..agents.ncm_agent import NCMAgent
+from ..agents.cest_agent import CESTAgent
+from ..agents.reconciliation_agent import ReconciliationAgent
 from ..database.models import ProdutoEmpresa
 
 logger = logging.getLogger(__name__)

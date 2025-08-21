@@ -12,6 +12,10 @@ sqlalchemy==2.0.23
 psycopg2-binary==2.9.9
 alembic==1.13.1
 
+# Conectores de Banco para Importação
+pyodbc==5.0.1               # SQL Server
+mysql-connector-python==8.2.0  # MySQL
+
 # Agentes e LLM
 langchain==0.1.0
 langchain-community==0.0.10

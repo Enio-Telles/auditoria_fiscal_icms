@@ -27,13 +27,17 @@ import {
   Phone,
   Email,
   LocationOn,
+  CloudUpload,
+  Visibility,
 } from '@mui/icons-material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
 import { useEmpresas, useCreateEmpresa, useUpdateEmpresa, useDeleteEmpresa } from '../hooks/useEmpresas';
 import { Empresa, EmpresaForm } from '../types';
 
 const EmpresasPage: React.FC = () => {
+  const navigate = useNavigate();
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
   const [openDialog, setOpenDialog] = useState(false);
@@ -127,12 +131,29 @@ const EmpresasPage: React.FC = () => {
     {
       field: 'actions',
       headerName: 'Ações',
-      width: 120,
+      width: 200,
       renderCell: (params) => (
         <Box>
           <IconButton
             size="small"
+            onClick={() => navigate(`/empresas/${params.row.id}/produtos`)}
+            color="primary"
+            title="Ver Produtos"
+          >
+            <Visibility />
+          </IconButton>
+          <IconButton
+            size="small"
+            onClick={() => navigate(`/empresas/${params.row.id}/importar`)}
+            color="secondary"
+            title="Importar Dados"
+          >
+            <CloudUpload />
+          </IconButton>
+          <IconButton
+            size="small"
             onClick={() => handleOpenDialog(params.row)}
+            title="Editar"
           >
             <Edit />
           </IconButton>
@@ -140,6 +161,7 @@ const EmpresasPage: React.FC = () => {
             size="small"
             onClick={() => handleDelete(params.row.id)}
             color="error"
+            title="Excluir"
           >
             <Delete />
           </IconButton>

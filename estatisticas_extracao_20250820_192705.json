@@ -1,0 +1,12 @@
+{
+  "total_registros": 500,
+  "registros_com_descricao": 500,
+  "registros_com_ncm": 496,
+  "registros_com_cest": 263,
+  "data_extracao": "2025-08-20T19:27:05.671204",
+  "configuracao": {
+    "banco": "db_04565289005297",
+    "tabela": "produto",
+    "limite": 500
+  }
+}
