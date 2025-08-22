@@ -1,0 +1,341 @@
+########################################################################
+# Configuração do Sistema de IA para Classificação NCM/CEST
+# Versão: 2.0 - IA Real com LLMs
+########################################################################
+
+# Configurações dos Provedores LLM
+llm:
+  # OpenAI Configuration
+  openai:
+    enabled: true
+    api_key: ${OPENAI_API_KEY}  # Set via environment variable
+    model: "gpt-3.5-turbo"
+    fallback_model: "gpt-4"
+    temperature: 0.1
+    max_tokens: 1500
+    timeout: 30
+    retry_attempts: 3
+    cost_optimization: true
+    
+  # Anthropic Claude Configuration  
+  anthropic:
+    enabled: false
+    api_key: ${ANTHROPIC_API_KEY}
+    model: "claude-3-sonnet-20240229"
+    temperature: 0.1
+    max_tokens: 1500
+    timeout: 30
+    
+  # Ollama Local Configuration
+  ollama:
+    enabled: true
+    base_url: "http://localhost:11434"
+    model: "llama3.1:8b"
+    fallback_model: "llama3.1:70b"
+    temperature: 0.1
+    max_tokens: 1500
+    timeout: 60
+    
+  # Hugging Face Configuration
+  huggingface:
+    enabled: false
+    model: "microsoft/DialoGPT-medium"
+    device: "cpu"  # or "cuda"
+    temperature: 0.7
+    max_length: 512
+
+# Estratégias de Classificação
+classification:
+  # Estratégia padrão
+  default_strategy: "hybrid"
+  
+  # Limiares de confiança
+  confidence_threshold: 0.80
+  high_confidence_threshold: 0.90
+  low_confidence_threshold: 0.60
+  
+  # Modelos para ensemble
+  ensemble_models: ["openai", "ollama"]
+  
+  # Estratégia de fallback
+  fallback_strategy: "rag"
+  
+  # Configurações específicas por estratégia
+  strategies:
+    direct:
+      preferred_model: "openai"
+      complexity: "low"
+      
+    rag:
+      preferred_model: "ollama"
+      context_limit: 5
+      similarity_threshold: 0.7
+      
+    hierarchical:
+      models_by_level:
+        capitulo: "ollama"
+        posicao: "openai"
+        item: "openai"
+        
+    ensemble:
+      voting_strategy: "weighted"  # simple, weighted, ranked
+      min_models: 2
+      
+    hybrid:
+      rag_threshold: 0.85
+      ensemble_fallback: true
+
+# Configurações de Performance
+performance:
+  # Cache de resultados
+  caching:
+    enabled: true
+    ttl_hours: 24
+    max_size: 10000
+    compression: true
+    
+  # Otimização de custos
+  cost_optimization:
+    enabled: true
+    max_daily_cost: 50.0  # USD
+    prefer_local_models: true
+    batch_requests: true
+    
+  # Rate limiting
+  rate_limiting:
+    requests_per_minute: 60
+    requests_per_hour: 1000
+    
+  # Timeouts
+  timeouts:
+    default: 30
+    complex_queries: 60
+    batch_processing: 300
+
+# Base de Conhecimento
+knowledge_base:
+  # Paths
+  data_path: "data/raw"
+  cache_path: "data/cache"
+  
+  # Embeddings para busca semântica
+  embeddings:
+    model: "BAAI/bge-m3"
+    dimension: 1024
+    device: "cpu"
+    batch_size: 32
+    
+  # Índices de busca
+  search_indices:
+    keyword_min_length: 3
+    similarity_threshold: 0.7
+    max_results: 10
+    
+  # Atualizações automáticas
+  auto_update:
+    enabled: true
+    check_interval_hours: 24
+    sources:
+      - "receita_federal"
+      - "confaz"
+
+# Auditoria e Logging
+audit:
+  # Database de auditoria
+  database_path: "data/cache/audit_trail.sqlite"
+  
+  # Níveis de log
+  log_level: "INFO"  # DEBUG, INFO, WARNING, ERROR
+  
+  # Retenção de dados
+  retention_days: 365
+  
+  # Campos auditados
+  track_fields:
+    - "modelo_usado"
+    - "tempo_processamento"
+    - "custo_estimado"
+    - "confianca"
+    - "estrategia"
+    - "user_id"
+    - "ip_address"
+    
+  # Alertas automáticos
+  alerts:
+    low_confidence_threshold: 0.60
+    high_cost_threshold: 10.0
+    error_rate_threshold: 0.05
+
+# Validação e Qualidade
+validation:
+  # Validações automáticas
+  auto_validate: true
+  
+  # Regras de negócio
+  business_rules:
+    ncm_length: 8
+    cest_length: 7
+    required_fields: ["descricao_produto"]
+    
+  # Cross-validation
+  cross_validation:
+    enabled: true
+    ncm_cest_compatibility: true
+    hierarchy_consistency: true
+    
+  # Flags de alerta
+  alert_flags:
+    - "ncm_not_found"
+    - "cest_incompatible"
+    - "low_confidence"
+    - "model_error"
+    - "timeout"
+
+# Integração com APIs
+api_integration:
+  # Rate limiting para APIs externas
+  external_apis:
+    receita_federal:
+      rate_limit: 100
+      timeout: 10
+      retry_attempts: 3
+      
+  # Webhooks para notificações
+  webhooks:
+    enabled: false
+    endpoints: []
+    
+  # Formato de resposta padrão
+  response_format: "json"
+  include_metadata: true
+  include_audit_trail: false  # Por segurança
+
+# Configurações de Desenvolvimento
+development:
+  # Modo debug
+  debug_mode: false
+  
+  # Logs detalhados
+  verbose_logging: false
+  
+  # Simulação de modelos
+  mock_llm_responses: false
+  
+  # Métricas de desenvolvimento
+  collect_metrics: true
+  metrics_interval: 3600  # seconds
+  
+  # Testes automatizados
+  automated_tests:
+    enabled: true
+    test_data_path: "data/test"
+    coverage_threshold: 0.90
+
+# Configurações de Produção
+production:
+  # Modo seguro
+  safe_mode: true
+  
+  # Monitoramento
+  monitoring:
+    enabled: true
+    metrics_endpoint: "/metrics"
+    health_check_endpoint: "/health"
+    
+  # Backup automático
+  backup:
+    enabled: true
+    interval_hours: 6
+    retention_days: 30
+    
+  # Escalabilidade
+  scaling:
+    max_concurrent_requests: 100
+    queue_size: 1000
+    worker_processes: 4
+
+# Configurações Regionais
+regional:
+  # Estado padrão
+  default_state: "RO"
+  
+  # Suporte multi-estado
+  multi_state_support: true
+  
+  # Configurações específicas por estado
+  state_configs:
+    RO:
+      cest_required: true
+      st_applicable: true
+      
+    SP:
+      cest_required: true
+      st_applicable: true
+      
+    RJ:
+      cest_required: true
+      st_applicable: true
+
+# Configurações de Segurança
+security:
+  # Autenticação
+  authentication:
+    required: true
+    method: "jwt"  # jwt, api_key, oauth
+    
+  # Autorização
+  authorization:
+    role_based: true
+    permissions:
+      classify: ["user", "admin"]
+      audit: ["admin"]
+      config: ["admin"]
+      
+  # Rate limiting de segurança
+  security_rate_limits:
+    max_requests_per_user: 1000
+    suspicious_activity_threshold: 100
+    
+  # Logs de segurança
+  security_logging:
+    enabled: true
+    log_failed_attempts: true
+    alert_on_abuse: true
+
+# Configurações de Notificação
+notifications:
+  # Email
+  email:
+    enabled: false
+    smtp_server: ""
+    smtp_port: 587
+    username: ""
+    password: ""
+    
+  # Slack
+  slack:
+    enabled: false
+    webhook_url: ""
+    
+  # Alertas críticos
+  critical_alerts:
+    - "system_down"
+    - "high_error_rate"
+    - "cost_limit_exceeded"
+
+# Configurações Experimentais
+experimental:
+  # Novos modelos
+  new_models:
+    enabled: false
+    models: []
+    
+  # Features em beta
+  beta_features:
+    - "advanced_rag"
+    - "multi_modal_input"
+    
+  # A/B Testing
+  ab_testing:
+    enabled: false
+    experiments: []

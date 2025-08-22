@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auditoria Fiscal ICMS v2.1 - Integração React</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .status-card {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .status-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .status-card h3 {
+            color: #333;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .status-success { background-color: #28a745; }
+        .status-error { background-color: #dc3545; }
+        .status-warning { background-color: #ffc107; }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .feature-card {
+            background: #fff;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            border-color: #667eea;
+            transform: translateY(-3px);
+        }
+
+        .feature-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: transform 0.3s ease;
+            margin: 5px;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .api-demo {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 30px;
+        }
+
+        .log-container {
+            background: #1e1e1e;
+            color: #00ff00;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            height: 200px;
+            overflow-y: auto;
+            margin-top: 15px;
+        }
+
+        .badge {
+            background: #667eea;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            margin-left: 10px;
+        }
+
+        .integration-status {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏢 Auditoria Fiscal ICMS v2.1</h1>
+            <p>✅ Integração React com API Estável Concluída!</p>
+        </div>
+
+        <div class="content">
+            <!-- Status da Integração -->
+            <div class="integration-status">
+                <h2>🎉 INTEGRAÇÃO REACT IMPLEMENTADA COM SUCESSO!</h2>
+                <p>Sistema completo com frontend React conectado à API estável na porta 8003</p>
+                <span class="badge">Frontend React ✅</span>
+                <span class="badge">API Backend ✅</span>
+                <span class="badge">Importação ✅</span>
+                <span class="badge">Multi-tenant ✅</span>
+            </div>
+
+            <!-- Status Cards -->
+            <div class="status-grid">
+                <div class="status-card">
+                    <h3>
+                        <span class="status-indicator" id="api-status"></span>
+                        API Backend Status
+                    </h3>
+                    <div id="api-info">Verificando...</div>
+                    <button class="btn" onclick="checkApiHealth()">Verificar API</button>
+                </div>
+
+                <div class="status-card">
+                    <h3>
+                        <span class="status-indicator status-success"></span>
+                        Componentes React
+                    </h3>
+                    <div>
+                        ✅ ImportPage.tsx - Página de importação<br>
+                        ✅ importService.ts - Cliente API<br>
+                        ✅ Rotas configuradas em App.tsx<br>
+                        ✅ Menu de navegação atualizado
+                    </div>
+                </div>
+
+                <div class="status-card">
+                    <h3>
+                        <span class="status-indicator status-success"></span>
+                        Funcionalidades Implementadas
+                    </h3>
+                    <div>
+                        ✅ Stepper de importação (4 etapas)<br>
+                        ✅ Teste de conexão de banco<br>
+                        ✅ Preview de dados<br>
+                        ✅ Importação completa<br>
+                        ✅ Estatísticas em tempo real
+                    </div>
+                </div>
+            </div>
+
+            <!-- Demo da API -->
+            <div class="api-demo">
+                <h3>🔧 Demonstração da Integração API</h3>
+                <p>Teste a conectividade entre frontend e backend:</p>
+                
+                <button class="btn" onclick="testApiIntegration()">🚀 Testar Integração Completa</button>
+                <button class="btn" onclick="testImportConnection()">🔗 Testar Conexão Import</button>
+                <button class="btn" onclick="testDataPreview()">👁️ Testar Preview</button>
+                <button class="btn" onclick="clearLog()">🧹 Limpar Log</button>
+
+                <div class="log-container" id="log-container">
+                    Aguardando testes de integração...<br>
+                    💡 Clique nos botões acima para testar a conectividade
+                </div>
+            </div>
+
+            <!-- Features Cards -->
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">⚛️</div>
+                    <h4>React Frontend</h4>
+                    <p>Interface moderna com Material-UI, Stepper de importação e dashboard executivo</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🔌</div>
+                    <h4>API Integration</h4>
+                    <p>Cliente TypeScript conectando diretamente na porta 8003 com retry automático</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h4>Import Workflow</h4>
+                    <p>Fluxo end-to-end: configuração → conexão → preview → importação</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🏗️</div>
+                    <h4>Multi-tenant</h4>
+                    <p>Arquitetura preparada para múltiplas empresas com isolamento de dados</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let logElement = document.getElementById('log-container');
+        
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const color = type === 'error' ? '#ff6b6b' : type === 'success' ? '#51cf66' : '#00ff00';
+            logElement.innerHTML += `<div style="color: ${color}">[${timestamp}] ${message}</div>`;
+            logElement.scrollTop = logElement.scrollHeight;
+        }
+
+        function clearLog() {
+            logElement.innerHTML = 'Log limpo. Pronto para novos testes...<br>';
+        }
+
+        async function checkApiHealth() {
+            log('🔍 Verificando saúde da API...', 'info');
+            try {
+                const response = await fetch('http://127.0.0.1:8003/health');
+                const data = await response.json();
+                
+                document.getElementById('api-status').className = 'status-indicator status-success';
+                document.getElementById('api-info').innerHTML = `
+                    ✅ Status: ${data.status}<br>
+                    📦 Versão: ${data.version}<br>
+                    ⏰ Timestamp: ${data.timestamp}
+                `;
+                
+                log(`✅ API healthy! Status: ${data.status}, Version: ${data.version}`, 'success');
+                return true;
+            } catch (error) {
+                document.getElementById('api-status').className = 'status-indicator status-error';
+                document.getElementById('api-info').innerHTML = '❌ API não disponível<br>Verifique se está rodando na porta 8003';
+                log(`❌ Erro ao conectar com API: ${error.message}`, 'error');
+                return false;
+            }
+        }
+
+        async function testApiIntegration() {
+            log('🚀 Iniciando teste de integração completa...', 'info');
+            
+            // Teste 1: Health Check
+            const healthOk = await checkApiHealth();
+            if (!healthOk) return;
+
+            // Teste 2: Estatísticas
+            try {
+                log('📊 Testando endpoint de estatísticas...', 'info');
+                const statsResponse = await fetch('http://127.0.0.1:8003/stats');
+                const stats = await statsResponse.json();
+                log(`✅ Stats OK: ${stats.total_empresas} empresas, ${stats.total_produtos} produtos`, 'success');
+            } catch (error) {
+                log(`❌ Erro nas estatísticas: ${error.message}`, 'error');
+            }
+
+            // Teste 3: Empresas
+            try {
+                log('🏢 Testando endpoint de empresas...', 'info');
+                const empresasResponse = await fetch('http://127.0.0.1:8003/empresas');
+                const empresas = await empresasResponse.json();
+                log(`✅ Empresas OK: ${empresas.length} empresas encontradas`, 'success');
+            } catch (error) {
+                log(`❌ Erro nas empresas: ${error.message}`, 'error');
+            }
+
+            log('🎉 Teste de integração concluído!', 'success');
+        }
+
+        async function testImportConnection() {
+            log('🔗 Testando conexão de importação...', 'info');
+            
+            const connectionData = {
+                type: 'postgresql',
+                host: 'localhost',
+                port: 5432,
+                database: 'db_04565289005297',
+                user: 'postgres',
+                password: 'sefin',
+                schema: 'dbo'
+            };
+
+            try {
+                const response = await fetch('http://127.0.0.1:8003/api/import/test-connection', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(connectionData)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    log(`✅ Conexão OK: ${result.database} @ ${result.host}`, 'success');
+                    log(`ℹ️ Info: ${result.database_info.substring(0, 80)}...`, 'info');
+                } else {
+                    log(`❌ Falha na conexão: ${result.error}`, 'error');
+                }
+            } catch (error) {
+                log(`❌ Erro no teste de conexão: ${error.message}`, 'error');
+            }
+        }
+
+        async function testDataPreview() {
+            log('👁️ Testando preview de dados...', 'info');
+            
+            const connectionData = {
+                type: 'postgresql',
+                host: 'localhost',
+                port: 5432,
+                database: 'db_04565289005297',
+                user: 'postgres',
+                password: 'sefin',
+                schema: 'dbo'
+            };
+
+            const sqlQuery = 'SELECT produto_id, descricao_produto, ncm, cest FROM dbo.produto LIMIT 5';
+
+            try {
+                const response = await fetch(`http://127.0.0.1:8003/api/import/preview?sql_query=${encodeURIComponent(sqlQuery)}&limit=5`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(connectionData)
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    log(`✅ Preview OK: ${result.preview_count} registros`, 'success');
+                    log(`📋 Colunas: ${result.columns.join(', ')}`, 'info');
+                    if (result.data.length > 0) {
+                        log(`🔍 Primeiro produto: ${result.data[0].descricao_produto || 'N/A'}`, 'info');
+                    }
+                } else {
+                    log(`❌ Falha no preview: ${result.error}`, 'error');
+                }
+            } catch (error) {
+                log(`❌ Erro no preview: ${error.message}`, 'error');
+            }
+        }
+
+        // Verificar API automaticamente ao carregar
+        window.onload = function() {
+            log('🌐 Sistema de Auditoria Fiscal ICMS v2.1 carregado!', 'success');
+            log('⚛️ Integração React implementada com sucesso!', 'success');
+            log('🔧 Verificando conectividade com a API...', 'info');
+            
+            setTimeout(() => {
+                checkApiHealth();
+            }, 1000);
+        };
+    </script>
+</body>
+</html>

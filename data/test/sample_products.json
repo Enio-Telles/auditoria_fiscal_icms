@@ -1,0 +1,28 @@
+{
+  "test_products": [
+    {
+      "id": "TEST001",
+      "descricao": "Smartphone Samsung Galaxy A54 5G 128GB",
+      "categoria": "Eletrônicos",
+      "marca": "Samsung",
+      "ncm_esperado": "85171211",
+      "cest_esperado": "2100100"
+    },
+    {
+      "id": "TEST002",
+      "descricao": "Notebook Dell Inspiron 15 Intel Core i5",
+      "categoria": "Informática",
+      "marca": "Dell",
+      "ncm_esperado": "84713000",
+      "cest_esperado": "2100700"
+    },
+    {
+      "id": "TEST003",
+      "descricao": "Cerveja Skol Pilsen 350ml",
+      "categoria": "Bebidas",
+      "marca": "Skol",
+      "ncm_esperado": "22030000",
+      "cest_esperado": "1700300"
+    }
+  ]
+}

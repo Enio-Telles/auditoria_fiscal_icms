@@ -13,6 +13,7 @@ import Dashboard from './pages/Dashboard';
 import EmpresasPage from './pages/EmpresasPage';
 import ProdutosPage from './pages/ProdutosPage';
 import RelatoriosPage from './pages/RelatoriosPage';
+import ImportPage from './pages/ImportPage';
 import LoginPage from './pages/LoginPage';
 import { useAuth } from './hooks/useAuth';
 
@@ -143,6 +144,17 @@ const App: React.FC = () => {
                   <ProtectedRoute>
                     <AppLayout>
                       <RelatoriosPage />
+                    </AppLayout>
+                  </ProtectedRoute>
+                }
+              />
+              
+              <Route
+                path="/import"
+                element={
+                  <ProtectedRoute>
+                    <AppLayout>
+                      <ImportPage />
                     </AppLayout>
                   </ProtectedRoute>
                 }

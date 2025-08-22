@@ -17,6 +17,7 @@ import {
   Dashboard,
   Inventory,
   Assessment,
+  CloudUpload,
 } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
@@ -45,6 +46,7 @@ const AppHeader: React.FC = () => {
     { label: 'Dashboard', path: '/', icon: <Dashboard /> },
     { label: 'Empresas', path: '/empresas', icon: <Business /> },
     { label: 'Produtos', path: '/produtos', icon: <Inventory /> },
+    { label: 'Importação', path: '/import', icon: <CloudUpload /> },
     { label: 'Relatórios', path: '/relatorios', icon: <Assessment /> },
   ];
 
