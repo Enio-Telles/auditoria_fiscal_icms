@@ -1,18 +1,28 @@
-# 🏢 Sistema de Auditoria Fiscal ICMS v4.0 
-## **Sistema Multi-Agentes com IA Real**
+# 🏢 Sistema de Auditoria Fiscal ICMS v4.1 
+## **Sistema Multi-Agentes com IA Real - PRODUÇÃO**
 
-> **🤖 AGENTES REAIS IMPLEMENTADOS!** Mock desativado - Sistema operacional com NCMAgent e CESTAgent  
-> **📅 AGOSTO 2025:** Versão final com backend microserviços e IA local
+> **🎯 SISTEMA TOTALMENTE FUNCIONAL!** Dashboard com dados reais + Scripts corrigidos + Conectividade 100%  
+> **📅 AGOSTO 2025:** Versão estável em produção com todas as correções aplicadas  
+> **✅ ÚLTIMA ATUALIZAÇÃO:** 24/08/2025 - Correções de conectividade e dashboard implementadas
 
 [![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)](https://www.python.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-Latest-green.svg)](https://fastapi.tiangolo.com/)
 [![React](https://img.shields.io/badge/React-18+-blue.svg)](https://reactjs.org/)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-13+-blue.svg)](https://www.postgresql.org/)
-[![Status](https://img.shields.io/badge/Status-AGENTES_REAIS_ATIVOS-brightgreen.svg)](/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15+-blue.svg)](https://www.postgresql.org/)
+[![Status](https://img.shields.io/badge/Status-PRODUÇÃO_ESTÁVEL-brightgreen.svg)](/)
+[![Last Commit](https://img.shields.io/badge/Commit-463a6fa-blue.svg)](/)
 
 ---
 
-## 🎉 **SISTEMA 100% COMPLETO COM AGENTES REAIS**
+## 🚀 **SISTEMA EM PRODUÇÃO - TODAS AS CORREÇÕES APLICADAS**
+
+### ✅ **CORREÇÕES CRÍTICAS IMPLEMENTADAS (24/08/2025)**
+- **🎯 Dashboard Real:** Dados dinâmicos do PostgreSQL em vez de simulações
+- **🔗 Conectividade:** "Erro ao testar conexão" totalmente resolvido
+- **📝 Scripts PowerShell:** Caracteres Unicode removidos, sintaxe corrigida
+- **🔧 Endpoints:** `/empresas` corrigido, CORS configurado
+- **📊 API Estável:** Health check + 20,223 produtos carregados
+- **🏗️ Organização:** 193 arquivos reorganizados e versionados
 
 ### ✅ **AGENTES DE IA REAIS IMPLEMENTADOS**
 - **🤖 NCMAgent:** Classificação automática baseada em estrutura de dados real
@@ -77,39 +87,95 @@
 
 ---
 
-## 🚀 **INÍCIO RÁPIDO**
+## 🚀 **INÍCIO RÁPIDO - SISTEMA PRONTO PARA USO**
 
 ### **🔧 Pré-requisitos**
-1. **Windows 11** (testado e configurado)
+1. **Windows 10/11** (testado e configurado)
 2. **Docker Desktop** (para PostgreSQL/Redis)
 3. **Anaconda Python** (ambiente conda)
-4. **Ollama** (IA local - opcional)
+4. **Ollama** (IA local - pré-configurado)
 
-### **⚡ Instalação Rápida**
+### **⚡ Instalação Automática (1 comando)**
 ```powershell
-# 1. Clonar repositório
+# Clonar repositório
 git clone [url-do-repo]
 cd auditoria_fiscal_icms
 
-# 2. Configurar ambiente conda
-.\setup_conda_environment.bat
+# MÉTODO 1: Sistema completo (RECOMENDADO)
+.\iniciar_sistema_completo.ps1
 
-# 3. Ativar ambiente
-conda activate auditoria-fiscal
+# MÉTODO 2: Sistema limpo (sem emojis)
+.\iniciar_sistema_completo_limpo.ps1
 
-# 4. Iniciar infraestrutura (PostgreSQL + Redis)
-docker-compose up auditoria_postgres auditoria_redis -d
-
-# 5. Iniciar sistema completo com agentes reais
-.\ativar_agentes_reais.ps1
+# MÉTODO 3: Apenas reiniciar se já configurado
+.\reiniciar_sistema_limpo.ps1
 ```
 
-### **🌐 URLs do Sistema**
-- **🏠 API Gateway:** http://localhost:8000
-- **📖 Documentação:** http://localhost:8000/docs  
-- **⚛️ Frontend React:** http://localhost:3001
-- **🤖 AI Service:** http://localhost:8006
+### **🌐 URLs do Sistema (Após Instalação)**
+- **🏠 Frontend Principal:** http://localhost:3000 ou http://localhost:3001
+- **🔧 Backend API:** http://localhost:8000
+- **📖 Documentação API:** http://localhost:8000/docs  
+- **💊 Health Check:** http://localhost:8000/health
+- **📊 Dashboard Stats:** http://localhost:8000/api/dashboard/stats
 - **🧠 Ollama (IA):** http://localhost:11434
+
+### **👤 Credenciais de Acesso**
+- **Usuário:** `admin`
+- **Senha:** `admin123`
+
+### **🔍 Verificação Rápida**
+```powershell
+# Verificar se tudo está funcionando
+Invoke-RestMethod -Uri "http://localhost:8000/health"
+# Deve retornar: {"status": "healthy", "version": "2.1.1"}
+
+# Verificar dados reais do dashboard
+Invoke-RestMethod -Uri "http://localhost:8000/api/dashboard/stats"
+# Deve retornar estatísticas reais do PostgreSQL
+```
+
+---
+
+## 🔧 **CORREÇÕES CRÍTICAS IMPLEMENTADAS**
+
+### ✅ **24/08/2025 - Correções de Produção**
+
+#### **🎯 Dashboard com Dados Reais**
+- **Problema:** Dashboard exibindo dados simulados/estáticos
+- **Solução:** Implementado endpoint `/api/dashboard/stats` consumindo PostgreSQL
+- **Resultado:** Dashboard dinâmico com 20,223 produtos reais
+
+#### **🔗 Correção "Erro ao testar conexão"**
+- **Problema:** Import/Cadastro retornando erro de conexão
+- **Solução:** Endpoint corrigido `/api/tenants` → `/empresas` + CORS configurado
+- **Resultado:** Importação e cadastro 100% funcionais
+
+#### **📝 Scripts PowerShell Funcionais**  
+- **Problema:** Erros de sintaxe com caracteres Unicode (emojis)
+- **Solução:** Criados scripts limpos sem caracteres especiais
+- **Resultado:** `reiniciar_sistema_limpo.ps1` executando perfeitamente
+
+#### **🏗️ Organização Completa**
+- **Arquivos Processados:** 193 arquivos reorganizados
+- **Depreciados:** Movidos para `/deprecated/`
+- **Documentação:** Centralizada em `/documentos/`
+- **Commit:** `463a6fa` com todas as correções
+
+### 🎯 **Status Atual dos Serviços**
+
+| Serviço | Status | Porta | Observações |
+|---------|--------|-------|-------------|
+| PostgreSQL | ✅ Online | 5432 | 20,223 produtos |
+| Backend API | ✅ Online | 8000 | Health check OK |
+| Frontend React | ✅ Online | 3000/3001 | Dashboard real |
+| Ollama AI | ✅ Online | 11434 | 9 modelos ativos |
+| Agentes NCM/CEST | ✅ Ativos | - | Mock=false |
+
+### 🚨 **Problemas Conhecidos Resolvidos**
+- ❌ ~~"Erro ao testar conexão"~~ → ✅ **RESOLVIDO**
+- ❌ ~~Dashboard simulado~~ → ✅ **DADOS REAIS**
+- ❌ ~~Scripts com erro Unicode~~ → ✅ **SINTAXE CORRIGIDA**
+- ❌ ~~Endpoints incorretos~~ → ✅ **MAPEAMENTO CORRETO**
 
 ---
 
