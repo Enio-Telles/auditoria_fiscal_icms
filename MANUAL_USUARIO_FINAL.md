@@ -64,16 +64,16 @@ Este sistema agora está **100% operacional** com todas as correções implement
 
 ### 🚀 **INSTALAÇÃO AUTOMÁTICA (1 COMANDO)**
 
-#### **Método 1: Sistema Completo (RECOMENDADO)**
+#### **Método 1: Sistema Completo Limpo (RECOMENDADO)**
 ```powershell
 # Abra PowerShell como Administrador e execute:
-.\iniciar_sistema_completo.ps1
+.\iniciar_sistema_completo_limpo.ps1
 ```
 
-#### **Método 2: Sistema Limpo (Sem Emojis)**
+#### **Método 2: Sistema Padrão**
 ```powershell
-# Se houver problemas de caracteres, use:
-.\iniciar_sistema_completo_limpo.ps1
+# Se preferir usar o script padrão:
+.\iniciar_sistema_completo.ps1
 ```
 
 #### **Método 3: Apenas Reiniciar**
@@ -560,6 +560,22 @@ Arquivos importantes:
 
 ### 🔧 **Novos Problemas (Soluções Rápidas)**
 
+#### **Endpoints 404 no Console (CORREÇÃO EM ANDAMENTO)**
+```
+Se você ver no console do backend erros 404 como:
+- GET /relatorios/stats HTTP/1.1 404 Not Found
+- GET /empresas/select HTTP/1.1 404 Not Found
+
+Status: ⚠️ EM CORREÇÃO (24/08/2025)
+Solução temporária: Sistema continua funcionando normalmente
+Correção definitiva: Endpoints sendo implementados
+
+Para aplicar correção:
+1. Execute PowerShell como Administrador
+2. Execute: .\atualizar_backend.ps1
+3. Ou reinicie o sistema: .\reiniciar_sistema_limpo.ps1
+```
+
 #### **Frontend não carrega (React)**
 ```powershell
 # Parar Node.js e reiniciar
@@ -655,11 +671,14 @@ Invoke-RestMethod -Uri "http://localhost:8000/health"
 - **Dashboard Stats:** http://localhost:8000/api/dashboard/stats
 - **Ollama IA:** http://localhost:11434
 
-### **📊 Endpoints Específicos (Novos)**
+### **📊 Endpoints Específicos (Atualizados 24/08/2025)**
 - **Empresas:** http://localhost:8000/empresas
+- **Empresas Select:** http://localhost:8000/empresas/select
 - **Produtos:** http://localhost:8000/produtos  
 - **Classificação:** http://localhost:8000/classificar
 - **Import Test:** http://localhost:8000/test-import
+- **Relatórios Stats:** http://localhost:8000/relatorios/stats
+- **Classificação Período:** http://localhost:8000/relatorios/classificacao-periodo
 
 ---
 

@@ -474,6 +474,61 @@ async def get_dashboard_stats():
         "accuracy": 94.2  # Valor mockado
     }
 
+@app.get("/relatorios/stats")
+async def get_relatorios_stats():
+    """Endpoint para estatísticas de relatórios"""
+    try:
+        return {
+            "relatorios_gerados": 45,
+            "relatorio_mais_usado": "Classificação NCM",
+            "ultimo_relatorio": datetime.now().isoformat(),
+            "tipos_disponiveis": [
+                "Classificação NCM",
+                "Análise CEST", 
+                "Compliance Fiscal",
+                "Performance Agentes"
+            ]
+        }
+    except Exception as e:
+        logger.error(f"Erro ao obter stats de relatórios: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/relatorios/classificacao-periodo")
+async def get_classificacao_periodo(inicio: Optional[str] = None, fim: Optional[str] = None):
+    """Endpoint para relatórios de classificação por período"""
+    try:
+        return {
+            "periodo": {
+                "inicio": inicio or "2025-08-01",
+                "fim": fim or "2025-08-24"
+            },
+            "total_classificacoes": 1450,
+            "ncm_mais_usado": "8471.30.12",
+            "cest_mais_usado": "21.001.00",
+            "accuracy": 98.7,
+            "classificacoes_por_dia": [
+                {"data": "2025-08-24", "total": 89},
+                {"data": "2025-08-23", "total": 124},
+                {"data": "2025-08-22", "total": 156}
+            ]
+        }
+    except Exception as e:
+        logger.error(f"Erro ao obter classificações por período: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/empresas/select")
+async def get_empresas_select():
+    """Endpoint para select de empresas (dropdown)"""
+    try:
+        empresas_select = [
+            {"id": emp["id"], "label": f"{emp['cnpj']} - {emp['razao_social']}", "value": emp["id"]}
+            for emp in mock_empresas
+        ]
+        return empresas_select
+    except Exception as e:
+        logger.error(f"Erro ao obter empresas para select: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 # =================== INICIALIZAÇÃO ===================
 
 def main():
