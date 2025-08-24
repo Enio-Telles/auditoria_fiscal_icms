@@ -44,7 +44,7 @@ import {
 } from '@mui/icons-material';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { produtoService } from '../services/produtoService';
-import { Produto, ProdutoFilter, ClassificacaoStatus } from '../types';
+import { Produto, ProductFilter, ClassificacaoStatus } from '../types';
 import { useSnackbar } from 'notistack';
 
 const ProdutosPage: React.FC = () => {
@@ -55,7 +55,7 @@ const ProdutosPage: React.FC = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [searchTerm, setSearchTerm] = useState('');
-  const [filter, setFilter] = useState<ProdutoFilter>({});
+  const [filter, setFilter] = useState<ProductFilter>({});
   const [selectedProduto, setSelectedProduto] = useState<Produto | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
@@ -64,17 +64,17 @@ const ProdutosPage: React.FC = () => {
   // Queries
   const { data: produtos, isLoading, error } = useQuery({
     queryKey: ['produtos', page, rowsPerPage, searchTerm, filter],
-    queryFn: () => produtoService.getAll({
+    queryFn: () => produtoService.listar({
       ...filter,
       search: searchTerm,
-      limit: rowsPerPage,
-      offset: page * rowsPerPage,
+      page: page + 1, // API usa 1-based indexing
+      size: rowsPerPage,
     }),
   });
 
   // Mutations
   const deleteMutation = useMutation({
-    mutationFn: produtoService.delete,
+    mutationFn: produtoService.excluir,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['produtos'] });
       enqueueSnackbar('Produto excluído com sucesso', { variant: 'success' });
@@ -85,7 +85,7 @@ const ProdutosPage: React.FC = () => {
   });
 
   const uploadMutation = useMutation({
-    mutationFn: produtoService.uploadFile,
+    mutationFn: produtoService.uploadArquivo,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['produtos'] });
       setUploadDialogOpen(false);
@@ -97,7 +97,7 @@ const ProdutosPage: React.FC = () => {
   });
 
   const reclassifyMutation = useMutation({
-    mutationFn: produtoService.reclassify,
+    mutationFn: produtoService.reclassificar,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['produtos'] });
       enqueueSnackbar('Produto reclassificado com sucesso', { variant: 'success' });
@@ -263,7 +263,7 @@ const ProdutosPage: React.FC = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {produtos?.items?.map((produto) => (
+            {produtos?.items?.map((produto: Produto) => (
               <TableRow key={produto.id} hover>
                 <TableCell>{produto.codigo}</TableCell>
                 <TableCell>{produto.descricao}</TableCell>
@@ -282,7 +282,10 @@ const ProdutosPage: React.FC = () => {
                   )}
                 </TableCell>
                 <TableCell>
-                  {getStatusChip(produto.status_classificacao)}
+                  {produto.status_classificacao ? 
+                    getStatusChip(produto.status_classificacao) : 
+                    getStatusChip(produto.status)
+                  }
                 </TableCell>
                 <TableCell>
                   {produto.confianca_classificacao ? 
@@ -290,7 +293,7 @@ const ProdutosPage: React.FC = () => {
                     '-'
                   }
                 </TableCell>
-                <TableCell>{produto.empresa.nome}</TableCell>
+                <TableCell>{produto.empresa?.nome || '-'}</TableCell>
                 <TableCell align="center">
                   <Tooltip title="Visualizar">
                     <IconButton

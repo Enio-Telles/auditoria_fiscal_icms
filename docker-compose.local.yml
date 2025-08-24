@@ -1,0 +1,223 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15
+    container_name: auditoria-postgres-local
+    environment:
+      POSTGRES_DB: auditoria_fiscal_local
+      POSTGRES_USER: auditoria_user
+      POSTGRES_PASSWORD: auditoria123
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - auditoria-local
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U auditoria_user -d auditoria_fiscal_local"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: auditoria-redis-local
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - auditoria-local
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Ollama AI
+  ollama:
+    image: ollama/ollama
+    container_name: auditoria-ollama-local
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    networks:
+      - auditoria-local
+    environment:
+      - OLLAMA_HOST=0.0.0.0
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:11434/api/version"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+  # API Gateway
+  api-gateway:
+    build:
+      context: .
+      dockerfile: microservices/api_gateway/Dockerfile
+    container_name: auditoria-gateway-local
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://auditoria_user:auditoria123@postgres:5432/auditoria_fiscal_local
+      - REDIS_URL=redis://redis:6379
+      - OLLAMA_URL=http://ollama:11434
+      - ENVIRONMENT=local
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - auditoria-local
+    volumes:
+      - ./data/logs:/app/logs
+      - ./data/uploads:/app/uploads
+
+  # Auth Service
+  auth-service:
+    build:
+      context: .
+      dockerfile: microservices/auth_service/Dockerfile
+    container_name: auditoria-auth-local
+    ports:
+      - "8001:8001"
+    environment:
+      - DATABASE_URL=postgresql://auditoria_user:auditoria123@postgres:5432/auditoria_fiscal_local
+      - REDIS_URL=redis://redis:6379
+      - ENVIRONMENT=local
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - auditoria-local
+
+  # Tenant Service
+  tenant-service:
+    build:
+      context: .
+      dockerfile: microservices/tenant_service/Dockerfile
+    container_name: auditoria-tenant-local
+    ports:
+      - "8002:8002"
+    environment:
+      - DATABASE_URL=postgresql://auditoria_user:auditoria123@postgres:5432/auditoria_fiscal_local
+      - REDIS_URL=redis://redis:6379
+      - ENVIRONMENT=local
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - auditoria-local
+
+  # Product Service
+  product-service:
+    build:
+      context: .
+      dockerfile: microservices/product_service/Dockerfile
+    container_name: auditoria-product-local
+    ports:
+      - "8003:8003"
+    environment:
+      - DATABASE_URL=postgresql://auditoria_user:auditoria123@postgres:5432/auditoria_fiscal_local
+      - REDIS_URL=redis://redis:6379
+      - ENVIRONMENT=local
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - auditoria-local
+
+  # Classification Service
+  classification-service:
+    build:
+      context: .
+      dockerfile: microservices/classification_service/Dockerfile
+    container_name: auditoria-classification-local
+    ports:
+      - "8004:8004"
+    environment:
+      - DATABASE_URL=postgresql://auditoria_user:auditoria123@postgres:5432/auditoria_fiscal_local
+      - REDIS_URL=redis://redis:6379
+      - OLLAMA_URL=http://ollama:11434
+      - ENVIRONMENT=local
+    depends_on:
+      postgres:
+        condition: service_healthy
+      ollama:
+        condition: service_healthy
+    networks:
+      - auditoria-local
+
+  # Import Service
+  import-service:
+    build:
+      context: .
+      dockerfile: microservices/import_service/Dockerfile
+    container_name: auditoria-import-local
+    ports:
+      - "8005:8005"
+    environment:
+      - DATABASE_URL=postgresql://auditoria_user:auditoria123@postgres:5432/auditoria_fiscal_local
+      - REDIS_URL=redis://redis:6379
+      - ENVIRONMENT=local
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - auditoria-local
+    volumes:
+      - ./data/uploads:/app/uploads
+      - ./data/temp:/app/temp
+
+  # AI Service
+  ai-service:
+    build:
+      context: .
+      dockerfile: microservices/ai_service/Dockerfile
+    container_name: auditoria-ai-local
+    ports:
+      - "8006:8006"
+    environment:
+      - DATABASE_URL=postgresql://auditoria_user:auditoria123@postgres:5432/auditoria_fiscal_local
+      - REDIS_URL=redis://redis:6379
+      - OLLAMA_URL=http://ollama:11434
+      - ENVIRONMENT=local
+    depends_on:
+      postgres:
+        condition: service_healthy
+      ollama:
+        condition: service_healthy
+    networks:
+      - auditoria-local
+    volumes:
+      - ./data/chroma:/app/chroma
+
+networks:
+  auditoria-local:
+    driver: bridge
+    name: auditoria-local-network
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  ollama_data:
+    driver: local

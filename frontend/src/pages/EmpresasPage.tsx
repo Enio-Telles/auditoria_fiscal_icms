@@ -1,197 +1,304 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-  Container,
-  Typography,
-  Box,
-  Button,
-  TextField,
-  Paper,
-  Grid,
-  IconButton,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Card,
-  CardContent,
-  CardActions,
-  Chip,
-  InputAdornment,
+  Box, Paper, Typography, Button, Table, TableBody,
+  TableCell, TableContainer, TableHead, TableRow,
+  IconButton, Chip, TextField, InputAdornment,
+  Menu, MenuItem, Dialog, DialogTitle, DialogContent,
+  DialogActions, Card, CardContent, Grid, Alert,
+  Tabs, Tab, Divider
 } from '@mui/material';
 import {
-  Add,
-  Search,
-  Edit,
-  Delete,
-  Business,
-  Phone,
-  Email,
-  LocationOn,
-  CloudUpload,
-  Visibility,
+  Add, Search, MoreVert, Edit, Delete, Visibility,
+  Business, LocationOn, Phone, Email, Settings,
+  Archive, Restore, Download
 } from '@mui/icons-material';
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import { useEmpresas, useCreateEmpresa, useUpdateEmpresa, useDeleteEmpresa } from '../hooks/useEmpresas';
-import { Empresa, EmpresaForm } from '../types';
+
+interface Empresa {
+  id: string;
+  razaoSocial: string;
+  nomeFantasia: string;
+  cnpj: string;
+  email: string;
+  telefone: string;
+  cidade: string;
+  estado: string;
+  status: 'ATIVA' | 'INATIVA' | 'SUSPENSA';
+  dataCadastro: string;
+  ultimoAcesso: string;
+  totalProdutos: number;
+  regimeTributario: string;
+  contribuinteICMS: boolean;
+}
 
 const EmpresasPage: React.FC = () => {
   const navigate = useNavigate();
-  const [page, setPage] = useState(1);
-  const [search, setSearch] = useState('');
-  const [openDialog, setOpenDialog] = useState(false);
-  const [editingEmpresa, setEditingEmpresa] = useState<Empresa | null>(null);
+  const [empresas, setEmpresas] = useState<Empresa[]>([]);
+  const [filtro, setFiltro] = useState('');
+  const [tabValue, setTabValue] = useState(0);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [empresaSelecionada, setEmpresaSelecionada] = useState<Empresa | null>(null);
+  const [dialogDetalhes, setDialogDetalhes] = useState(false);
+  const [dialogExcluir, setDialogExcluir] = useState(false);
+  const [carregando, setCarregando] = useState(true);
 
-  const { data: empresasData, isLoading } = useEmpresas(page, 10, search);
-  const createEmpresaMutation = useCreateEmpresa();
-  const updateEmpresaMutation = useUpdateEmpresa();
-  const deleteEmpresaMutation = useDeleteEmpresa();
+  useEffect(() => {
+    carregarEmpresas();
+  }, []);
 
-  const { register, handleSubmit, reset, formState: { errors } } = useForm<EmpresaForm>();
-
-  const handleOpenDialog = (empresa?: Empresa) => {
-    if (empresa) {
-      setEditingEmpresa(empresa);
-      reset({
-        cnpj: empresa.cnpj,
-        razao_social: empresa.razao_social,
-        nome_fantasia: empresa.nome_fantasia || '',
-        atividade_principal: empresa.atividade_principal || '',
-        regime_tributario: empresa.regime_tributario || '',
-      });
-    } else {
-      setEditingEmpresa(null);
-      reset();
+  const carregarEmpresas = async () => {
+    setCarregando(true);
+    try {
+      const response = await fetch('/api/tenants');
+      if (response.ok) {
+        const data = await response.json();
+        
+        // Simular dados se API não retornar dados completos
+        const empresasDemo: Empresa[] = [
+          {
+            id: '1',
+            razaoSocial: 'ABC Comércio de Produtos Ltda',
+            nomeFantasia: 'ABC Loja',
+            cnpj: '12.345.678/0001-90',
+            email: 'contato@abcloja.com.br',
+            telefone: '(11) 99999-9999',
+            cidade: 'São Paulo',
+            estado: 'SP',
+            status: 'ATIVA',
+            dataCadastro: '2025-01-15',
+            ultimoAcesso: '2025-08-23',
+            totalProdutos: 1250,
+            regimeTributario: 'SIMPLES_NACIONAL',
+            contribuinteICMS: true
+          },
+          {
+            id: '2',
+            razaoSocial: 'XYZ Indústria e Comércio S.A.',
+            nomeFantasia: 'XYZ Industrial',
+            cnpj: '98.765.432/0001-10',
+            email: 'admin@xyzindustrial.com',
+            telefone: '(21) 88888-8888',
+            cidade: 'Rio de Janeiro',
+            estado: 'RJ',
+            status: 'ATIVA',
+            dataCadastro: '2024-11-20',
+            ultimoAcesso: '2025-08-22',
+            totalProdutos: 850,
+            regimeTributario: 'LUCRO_PRESUMIDO',
+            contribuinteICMS: true
+          },
+          {
+            id: '3',
+            razaoSocial: 'Tech Solutions Informática ME',
+            nomeFantasia: 'Tech Solutions',
+            cnpj: '45.678.901/0001-23',
+            email: 'contato@techsolutions.com.br',
+            telefone: '(31) 77777-7777',
+            cidade: 'Belo Horizonte',
+            estado: 'MG',
+            status: 'INATIVA',
+            dataCadastro: '2024-08-10',
+            ultimoAcesso: '2025-06-15',
+            totalProdutos: 320,
+            regimeTributario: 'SIMPLES_NACIONAL',
+            contribuinteICMS: false
+          }
+        ];
+        
+        setEmpresas(data.length > 0 ? data : empresasDemo);
+      }
+    } catch (error) {
+      console.error('Erro ao carregar empresas:', error);
+    } finally {
+      setCarregando(false);
     }
-    setOpenDialog(true);
   };
 
-  const handleCloseDialog = () => {
-    setOpenDialog(false);
-    setEditingEmpresa(null);
-    reset();
+  const handleMenuClick = (event: React.MouseEvent<HTMLElement>, empresa: Empresa) => {
+    setAnchorEl(event.currentTarget);
+    setEmpresaSelecionada(empresa);
   };
 
-  const onSubmit = (data: EmpresaForm) => {
-    if (editingEmpresa) {
-      updateEmpresaMutation.mutate({
-        id: editingEmpresa.id,
-        empresa: data,
-      });
-    } else {
-      createEmpresaMutation.mutate(data);
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+    setEmpresaSelecionada(null);
+  };
+
+  const abrirDetalhes = () => {
+    setDialogDetalhes(true);
+    handleMenuClose();
+  };
+
+  const editarEmpresa = () => {
+    if (empresaSelecionada) {
+      navigate(`/empresas/editar/${empresaSelecionada.id}`);
     }
-    handleCloseDialog();
+    handleMenuClose();
   };
 
-  const handleDelete = (id: number) => {
-    if (window.confirm('Tem certeza que deseja excluir esta empresa?')) {
-      deleteEmpresaMutation.mutate(id);
+  const confirmarExclusao = () => {
+    setDialogExcluir(true);
+    handleMenuClose();
+  };
+
+  const excluirEmpresa = async () => {
+    if (empresaSelecionada) {
+      try {
+        const response = await fetch(`/api/tenants/${empresaSelecionada.id}`, {
+          method: 'DELETE'
+        });
+        
+        if (response.ok) {
+          setEmpresas(prev => prev.filter(emp => emp.id !== empresaSelecionada.id));
+          alert('Empresa excluída com sucesso!');
+        }
+      } catch (error) {
+        console.error('Erro ao excluir empresa:', error);
+        alert('Erro ao excluir empresa.');
+      }
+    }
+    setDialogExcluir(false);
+    setEmpresaSelecionada(null);
+  };
+
+  const alterarStatus = async (novoStatus: string) => {
+    if (empresaSelecionada) {
+      try {
+        const response = await fetch(`/api/tenants/${empresaSelecionada.id}/status`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status: novoStatus })
+        });
+        
+        if (response.ok) {
+          setEmpresas(prev =>
+            prev.map(emp =>
+              emp.id === empresaSelecionada.id
+                ? { ...emp, status: novoStatus as any }
+                : emp
+            )
+          );
+          alert(`Status alterado para ${novoStatus}!`);
+        }
+      } catch (error) {
+        console.error('Erro ao alterar status:', error);
+      }
+    }
+    handleMenuClose();
+  };
+
+  const empresasFiltradas = empresas.filter(empresa => {
+    const termo = filtro.toLowerCase();
+    return (
+      empresa.razaoSocial.toLowerCase().includes(termo) ||
+      empresa.nomeFantasia.toLowerCase().includes(termo) ||
+      empresa.cnpj.includes(termo) ||
+      empresa.email.toLowerCase().includes(termo)
+    );
+  });
+
+  const empresasPorStatus = {
+    todas: empresasFiltradas,
+    ativas: empresasFiltradas.filter(emp => emp.status === 'ATIVA'),
+    inativas: empresasFiltradas.filter(emp => emp.status === 'INATIVA'),
+    suspensas: empresasFiltradas.filter(emp => emp.status === 'SUSPENSA')
+  };
+
+  const getEmpresasExibidas = () => {
+    switch (tabValue) {
+      case 1: return empresasPorStatus.ativas;
+      case 2: return empresasPorStatus.inativas;
+      case 3: return empresasPorStatus.suspensas;
+      default: return empresasPorStatus.todas;
     }
   };
 
-  const columns: GridColDef[] = [
-    {
-      field: 'cnpj',
-      headerName: 'CNPJ',
-      width: 150,
-      renderCell: (params) => {
-        const cnpj = params.value;
-        return cnpj ? `${cnpj.slice(0, 2)}.${cnpj.slice(2, 5)}.${cnpj.slice(5, 8)}/${cnpj.slice(8, 12)}-${cnpj.slice(12)}` : '';
-      },
-    },
-    { field: 'razao_social', headerName: 'Razão Social', width: 300 },
-    { field: 'nome_fantasia', headerName: 'Nome Fantasia', width: 200 },
-    { field: 'atividade_principal', headerName: 'Atividade', width: 250 },
-    {
-      field: 'regime_tributario',
-      headerName: 'Regime',
-      width: 150,
-      renderCell: (params) => (
-        <Chip
-          label={params.value}
-          size="small"
-          color={params.value === 'Simples Nacional' ? 'success' : 'primary'}
-        />
-      ),
-    },
-    {
-      field: 'ativo',
-      headerName: 'Status',
-      width: 100,
-      renderCell: (params) => (
-        <Chip
-          label={params.value ? 'Ativo' : 'Inativo'}
-          size="small"
-          color={params.value ? 'success' : 'error'}
-        />
-      ),
-    },
-    {
-      field: 'actions',
-      headerName: 'Ações',
-      width: 200,
-      renderCell: (params) => (
-        <Box>
-          <IconButton
-            size="small"
-            onClick={() => navigate(`/empresas/${params.row.id}/produtos`)}
-            color="primary"
-            title="Ver Produtos"
-          >
-            <Visibility />
-          </IconButton>
-          <IconButton
-            size="small"
-            onClick={() => navigate(`/empresas/${params.row.id}/importar`)}
-            color="secondary"
-            title="Importar Dados"
-          >
-            <CloudUpload />
-          </IconButton>
-          <IconButton
-            size="small"
-            onClick={() => handleOpenDialog(params.row)}
-            title="Editar"
-          >
-            <Edit />
-          </IconButton>
-          <IconButton
-            size="small"
-            onClick={() => handleDelete(params.row.id)}
-            color="error"
-            title="Excluir"
-          >
-            <Delete />
-          </IconButton>
-        </Box>
-      ),
-    },
-  ];
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'ATIVA': return 'success';
+      case 'INATIVA': return 'default';
+      case 'SUSPENSA': return 'warning';
+      default: return 'default';
+    }
+  };
 
   return (
-    <Container maxWidth="xl">
+    <Box sx={{ maxWidth: 1400, mx: 'auto', p: 3 }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-        <Typography variant="h4" gutterBottom>
-          Empresas
+        <Typography variant="h4">
+          Gerenciar Empresas
         </Typography>
+        
         <Button
           variant="contained"
           startIcon={<Add />}
-          onClick={() => handleOpenDialog()}
+          onClick={() => navigate('/empresas/cadastrar')}
+          size="large"
         >
           Nova Empresa
         </Button>
       </Box>
 
+      {/* Estatísticas rápidas */}
       <Grid container spacing={3} sx={{ mb: 3 }}>
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} sm={6} md={3}>
+          <Card>
+            <CardContent>
+              <Typography color="textSecondary" gutterBottom>
+                Total de Empresas
+              </Typography>
+              <Typography variant="h4">
+                {empresas.length}
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+        <Grid item xs={12} sm={6} md={3}>
+          <Card>
+            <CardContent>
+              <Typography color="textSecondary" gutterBottom>
+                Empresas Ativas
+              </Typography>
+              <Typography variant="h4" color="success.main">
+                {empresasPorStatus.ativas.length}
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+        <Grid item xs={12} sm={6} md={3}>
+          <Card>
+            <CardContent>
+              <Typography color="textSecondary" gutterBottom>
+                Total de Produtos
+              </Typography>
+              <Typography variant="h4">
+                {empresas.reduce((total, emp) => total + emp.totalProdutos, 0).toLocaleString()}
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+        <Grid item xs={12} sm={6} md={3}>
+          <Card>
+            <CardContent>
+              <Typography color="textSecondary" gutterBottom>
+                Novos Este Mês
+              </Typography>
+              <Typography variant="h4" color="primary.main">
+                2
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid>
+      </Grid>
+
+      <Paper sx={{ p: 3 }}>
+        {/* Filtros */}
+        <Box sx={{ mb: 3 }}>
           <TextField
             fullWidth
-            placeholder="Buscar empresas..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Buscar por razão social, CNPJ, email..."
+            value={filtro}
+            onChange={(e) => setFiltro(e.target.value)}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
@@ -199,95 +306,248 @@ const EmpresasPage: React.FC = () => {
                 </InputAdornment>
               ),
             }}
+            sx={{ maxWidth: 400 }}
           />
-        </Grid>
-      </Grid>
+        </Box>
 
-      <Paper sx={{ height: 600, width: '100%' }}>
-        <DataGrid
-          rows={empresasData?.items || []}
-          columns={columns}
-          loading={isLoading}
-          pageSizeOptions={[10, 25, 50]}
-          disableRowSelectionOnClick
-          sx={{
-            '& .MuiDataGrid-cell:hover': {
-              color: 'primary.main',
-            },
-          }}
-        />
+        {/* Tabs por status */}
+        <Tabs value={tabValue} onChange={(_, newValue) => setTabValue(newValue)} sx={{ mb: 3 }}>
+          <Tab label={`Todas (${empresasPorStatus.todas.length})`} />
+          <Tab label={`Ativas (${empresasPorStatus.ativas.length})`} />
+          <Tab label={`Inativas (${empresasPorStatus.inativas.length})`} />
+          <Tab label={`Suspensas (${empresasPorStatus.suspensas.length})`} />
+        </Tabs>
+
+        {/* Tabela */}
+        <TableContainer>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Empresa</TableCell>
+                <TableCell>CNPJ</TableCell>
+                <TableCell>Contato</TableCell>
+                <TableCell>Localização</TableCell>
+                <TableCell>Status</TableCell>
+                <TableCell>Produtos</TableCell>
+                <TableCell>Último Acesso</TableCell>
+                <TableCell>Ações</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {getEmpresasExibidas().map((empresa) => (
+                <TableRow key={empresa.id} hover>
+                  <TableCell>
+                    <Box>
+                      <Typography variant="subtitle2">
+                        {empresa.razaoSocial}
+                      </Typography>
+                      {empresa.nomeFantasia && (
+                        <Typography variant="body2" color="textSecondary">
+                          {empresa.nomeFantasia}
+                        </Typography>
+                      )}
+                    </Box>
+                  </TableCell>
+                  <TableCell>{empresa.cnpj}</TableCell>
+                  <TableCell>
+                    <Box>
+                      <Typography variant="body2">{empresa.email}</Typography>
+                      <Typography variant="body2" color="textSecondary">
+                        {empresa.telefone}
+                      </Typography>
+                    </Box>
+                  </TableCell>
+                  <TableCell>
+                    {empresa.cidade}/{empresa.estado}
+                  </TableCell>
+                  <TableCell>
+                    <Chip
+                      label={empresa.status}
+                      color={getStatusColor(empresa.status) as any}
+                      size="small"
+                    />
+                  </TableCell>
+                  <TableCell>{empresa.totalProdutos.toLocaleString()}</TableCell>
+                  <TableCell>
+                    {new Date(empresa.ultimoAcesso).toLocaleDateString('pt-BR')}
+                  </TableCell>
+                  <TableCell>
+                    <IconButton
+                      onClick={(e) => handleMenuClick(e, empresa)}
+                      size="small"
+                    >
+                      <MoreVert />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+
+        {getEmpresasExibidas().length === 0 && (
+          <Alert severity="info" sx={{ mt: 2 }}>
+            Nenhuma empresa encontrada com os critérios de busca.
+          </Alert>
+        )}
       </Paper>
 
-      {/* Dialog para criar/editar empresa */}
-      <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="md" fullWidth>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <DialogTitle>
-            {editingEmpresa ? 'Editar Empresa' : 'Nova Empresa'}
-          </DialogTitle>
-          <DialogContent>
-            <Grid container spacing={2} sx={{ mt: 1 }}>
+      {/* Menu de ações */}
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={handleMenuClose}
+      >
+        <MenuItem onClick={abrirDetalhes}>
+          <Visibility sx={{ mr: 1 }} />
+          Ver Detalhes
+        </MenuItem>
+        <MenuItem onClick={editarEmpresa}>
+          <Edit sx={{ mr: 1 }} />
+          Editar
+        </MenuItem>
+        <Divider />
+        {empresaSelecionada?.status === 'ATIVA' ? (
+          <MenuItem onClick={() => alterarStatus('INATIVA')}>
+            <Archive sx={{ mr: 1 }} />
+            Desativar
+          </MenuItem>
+        ) : (
+          <MenuItem onClick={() => alterarStatus('ATIVA')}>
+            <Restore sx={{ mr: 1 }} />
+            Ativar
+          </MenuItem>
+        )}
+        <MenuItem onClick={() => alterarStatus('SUSPENSA')}>
+          <Settings sx={{ mr: 1 }} />
+          Suspender
+        </MenuItem>
+        <Divider />
+        <MenuItem onClick={confirmarExclusao} sx={{ color: 'error.main' }}>
+          <Delete sx={{ mr: 1 }} />
+          Excluir
+        </MenuItem>
+      </Menu>
+
+      {/* Dialog de detalhes */}
+      <Dialog open={dialogDetalhes} onClose={() => setDialogDetalhes(false)} maxWidth="md" fullWidth>
+        <DialogTitle>
+          Detalhes da Empresa
+        </DialogTitle>
+        <DialogContent>
+          {empresaSelecionada && (
+            <Grid container spacing={3} sx={{ mt: 1 }}>
               <Grid item xs={12} md={6}>
-                <TextField
-                  fullWidth
-                  label="CNPJ"
-                  {...register('cnpj', {
-                    required: 'CNPJ é obrigatório',
-                    pattern: {
-                      value: /^\d{14}$/,
-                      message: 'CNPJ deve ter 14 dígitos',
-                    },
-                  })}
-                  error={!!errors.cnpj}
-                  helperText={errors.cnpj?.message}
-                />
+                <Card>
+                  <CardContent>
+                    <Typography variant="h6" gutterBottom>
+                      <Business sx={{ mr: 1, verticalAlign: 'middle' }} />
+                      Dados Básicos
+                    </Typography>
+                    <Typography variant="body2">
+                      <strong>Razão Social:</strong> {empresaSelecionada.razaoSocial}
+                    </Typography>
+                    <Typography variant="body2">
+                      <strong>Nome Fantasia:</strong> {empresaSelecionada.nomeFantasia}
+                    </Typography>
+                    <Typography variant="body2">
+                      <strong>CNPJ:</strong> {empresaSelecionada.cnpj}
+                    </Typography>
+                    <Typography variant="body2">
+                      <strong>Status:</strong> {empresaSelecionada.status}
+                    </Typography>
+                  </CardContent>
+                </Card>
               </Grid>
+              
               <Grid item xs={12} md={6}>
-                <TextField
-                  fullWidth
-                  label="Regime Tributário"
-                  {...register('regime_tributario')}
-                />
+                <Card>
+                  <CardContent>
+                    <Typography variant="h6" gutterBottom>
+                      <Email sx={{ mr: 1, verticalAlign: 'middle' }} />
+                      Contato
+                    </Typography>
+                    <Typography variant="body2">
+                      <strong>E-mail:</strong> {empresaSelecionada.email}
+                    </Typography>
+                    <Typography variant="body2">
+                      <strong>Telefone:</strong> {empresaSelecionada.telefone}
+                    </Typography>
+                    <Typography variant="body2">
+                      <strong>Localização:</strong> {empresaSelecionada.cidade}/{empresaSelecionada.estado}
+                    </Typography>
+                  </CardContent>
+                </Card>
               </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Razão Social"
-                  {...register('razao_social', {
-                    required: 'Razão Social é obrigatória',
-                  })}
-                  error={!!errors.razao_social}
-                  helperText={errors.razao_social?.message}
-                />
+
+              <Grid item xs={12} md={6}>
+                <Card>
+                  <CardContent>
+                    <Typography variant="h6" gutterBottom>
+                      Informações Fiscais
+                    </Typography>
+                    <Typography variant="body2">
+                      <strong>Regime Tributário:</strong> {empresaSelecionada.regimeTributario}
+                    </Typography>
+                    <Typography variant="body2">
+                      <strong>Contribuinte ICMS:</strong> {empresaSelecionada.contribuinteICMS ? 'Sim' : 'Não'}
+                    </Typography>
+                  </CardContent>
+                </Card>
               </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Nome Fantasia"
-                  {...register('nome_fantasia')}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Atividade Principal"
-                  {...register('atividade_principal')}
-                />
+
+              <Grid item xs={12} md={6}>
+                <Card>
+                  <CardContent>
+                    <Typography variant="h6" gutterBottom>
+                      Estatísticas
+                    </Typography>
+                    <Typography variant="body2">
+                      <strong>Data de Cadastro:</strong> {new Date(empresaSelecionada.dataCadastro).toLocaleDateString('pt-BR')}
+                    </Typography>
+                    <Typography variant="body2">
+                      <strong>Último Acesso:</strong> {new Date(empresaSelecionada.ultimoAcesso).toLocaleDateString('pt-BR')}
+                    </Typography>
+                    <Typography variant="body2">
+                      <strong>Total de Produtos:</strong> {empresaSelecionada.totalProdutos.toLocaleString()}
+                    </Typography>
+                  </CardContent>
+                </Card>
               </Grid>
             </Grid>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleCloseDialog}>Cancelar</Button>
-            <Button
-              type="submit"
-              variant="contained"
-              disabled={createEmpresaMutation.isPending || updateEmpresaMutation.isPending}
-            >
-              {editingEmpresa ? 'Atualizar' : 'Criar'}
-            </Button>
-          </DialogActions>
-        </form>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDialogDetalhes(false)}>
+            Fechar
+          </Button>
+          <Button variant="contained" onClick={editarEmpresa}>
+            Editar
+          </Button>
+        </DialogActions>
       </Dialog>
-    </Container>
+
+      {/* Dialog de confirmação de exclusão */}
+      <Dialog open={dialogExcluir} onClose={() => setDialogExcluir(false)}>
+        <DialogTitle>Confirmar Exclusão</DialogTitle>
+        <DialogContent>
+          <Typography>
+            Tem certeza que deseja excluir a empresa <strong>{empresaSelecionada?.razaoSocial}</strong>?
+          </Typography>
+          <Alert severity="warning" sx={{ mt: 2 }}>
+            Esta ação não pode ser desfeita. Todos os dados da empresa serão perdidos.
+          </Alert>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDialogExcluir(false)}>
+            Cancelar
+          </Button>
+          <Button variant="contained" color="error" onClick={excluirEmpresa}>
+            Excluir
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </Box>
   );
 };
 

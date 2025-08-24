@@ -1,9 +1,9 @@
-########################################################################
-# Configuração do Sistema de IA para Classificação NCM/CEST
-# Versão: 2.0 - IA Real com LLMs
+﻿########################################################################
+# ConfiguraÃ§Ã£o do Sistema de IA para ClassificaÃ§Ã£o NCM/CEST
+# VersÃ£o: 2.0 - IA Real com LLMs
 ########################################################################
 
-# Configurações dos Provedores LLM
+# ConfiguraÃ§Ãµes dos Provedores LLM
 llm:
   # OpenAI Configuration
   openai:
@@ -44,12 +44,12 @@ llm:
     temperature: 0.7
     max_length: 512
 
-# Estratégias de Classificação
+# EstratÃ©gias de ClassificaÃ§Ã£o
 classification:
-  # Estratégia padrão
-  default_strategy: "hybrid"
+  # EstratÃ©gia padrÃ£o
+  default_strategy: 'real_agents'
   
-  # Limiares de confiança
+  # Limiares de confianÃ§a
   confidence_threshold: 0.80
   high_confidence_threshold: 0.90
   low_confidence_threshold: 0.60
@@ -57,10 +57,10 @@ classification:
   # Modelos para ensemble
   ensemble_models: ["openai", "ollama"]
   
-  # Estratégia de fallback
+  # EstratÃ©gia de fallback
   fallback_strategy: "rag"
   
-  # Configurações específicas por estratégia
+  # ConfiguraÃ§Ãµes especÃ­ficas por estratÃ©gia
   strategies:
     direct:
       preferred_model: "openai"
@@ -85,7 +85,7 @@ classification:
       rag_threshold: 0.85
       ensemble_fallback: true
 
-# Configurações de Performance
+# ConfiguraÃ§Ãµes de Performance
 performance:
   # Cache de resultados
   caching:
@@ -94,7 +94,7 @@ performance:
     max_size: 10000
     compression: true
     
-  # Otimização de custos
+  # OtimizaÃ§Ã£o de custos
   cost_optimization:
     enabled: true
     max_daily_cost: 50.0  # USD
@@ -118,20 +118,20 @@ knowledge_base:
   data_path: "data/raw"
   cache_path: "data/cache"
   
-  # Embeddings para busca semântica
+  # Embeddings para busca semÃ¢ntica
   embeddings:
     model: "BAAI/bge-m3"
     dimension: 1024
     device: "cpu"
     batch_size: 32
     
-  # Índices de busca
+  # Ãndices de busca
   search_indices:
     keyword_min_length: 3
     similarity_threshold: 0.7
     max_results: 10
     
-  # Atualizações automáticas
+  # AtualizaÃ§Ãµes automÃ¡ticas
   auto_update:
     enabled: true
     check_interval_hours: 24
@@ -144,10 +144,10 @@ audit:
   # Database de auditoria
   database_path: "data/cache/audit_trail.sqlite"
   
-  # Níveis de log
+  # NÃ­veis de log
   log_level: "INFO"  # DEBUG, INFO, WARNING, ERROR
   
-  # Retenção de dados
+  # RetenÃ§Ã£o de dados
   retention_days: 365
   
   # Campos auditados
@@ -160,18 +160,18 @@ audit:
     - "user_id"
     - "ip_address"
     
-  # Alertas automáticos
+  # Alertas automÃ¡ticos
   alerts:
     low_confidence_threshold: 0.60
     high_cost_threshold: 10.0
     error_rate_threshold: 0.05
 
-# Validação e Qualidade
+# ValidaÃ§Ã£o e Qualidade
 validation:
-  # Validações automáticas
+  # ValidaÃ§Ãµes automÃ¡ticas
   auto_validate: true
   
-  # Regras de negócio
+  # Regras de negÃ³cio
   business_rules:
     ncm_length: 8
     cest_length: 7
@@ -191,7 +191,7 @@ validation:
     - "model_error"
     - "timeout"
 
-# Integração com APIs
+# IntegraÃ§Ã£o com APIs
 api_integration:
   # Rate limiting para APIs externas
   external_apis:
@@ -200,17 +200,17 @@ api_integration:
       timeout: 10
       retry_attempts: 3
       
-  # Webhooks para notificações
+  # Webhooks para notificaÃ§Ãµes
   webhooks:
     enabled: false
     endpoints: []
     
-  # Formato de resposta padrão
+  # Formato de resposta padrÃ£o
   response_format: "json"
   include_metadata: true
-  include_audit_trail: false  # Por segurança
+  include_audit_trail: false  # Por seguranÃ§a
 
-# Configurações de Desenvolvimento
+# ConfiguraÃ§Ãµes de Desenvolvimento
 development:
   # Modo debug
   debug_mode: false
@@ -218,10 +218,10 @@ development:
   # Logs detalhados
   verbose_logging: false
   
-  # Simulação de modelos
+  # SimulaÃ§Ã£o de modelos
   mock_llm_responses: false
   
-  # Métricas de desenvolvimento
+  # MÃ©tricas de desenvolvimento
   collect_metrics: true
   metrics_interval: 3600  # seconds
   
@@ -231,7 +231,7 @@ development:
     test_data_path: "data/test"
     coverage_threshold: 0.90
 
-# Configurações de Produção
+# ConfiguraÃ§Ãµes de ProduÃ§Ã£o
 production:
   # Modo seguro
   safe_mode: true
@@ -242,7 +242,7 @@ production:
     metrics_endpoint: "/metrics"
     health_check_endpoint: "/health"
     
-  # Backup automático
+  # Backup automÃ¡tico
   backup:
     enabled: true
     interval_hours: 6
@@ -254,15 +254,15 @@ production:
     queue_size: 1000
     worker_processes: 4
 
-# Configurações Regionais
+# ConfiguraÃ§Ãµes Regionais
 regional:
-  # Estado padrão
+  # Estado padrÃ£o
   default_state: "RO"
   
   # Suporte multi-estado
   multi_state_support: true
   
-  # Configurações específicas por estado
+  # ConfiguraÃ§Ãµes especÃ­ficas por estado
   state_configs:
     RO:
       cest_required: true
@@ -276,14 +276,14 @@ regional:
       cest_required: true
       st_applicable: true
 
-# Configurações de Segurança
+# ConfiguraÃ§Ãµes de SeguranÃ§a
 security:
-  # Autenticação
+  # AutenticaÃ§Ã£o
   authentication:
     required: true
     method: "jwt"  # jwt, api_key, oauth
     
-  # Autorização
+  # AutorizaÃ§Ã£o
   authorization:
     role_based: true
     permissions:
@@ -291,18 +291,18 @@ security:
       audit: ["admin"]
       config: ["admin"]
       
-  # Rate limiting de segurança
+  # Rate limiting de seguranÃ§a
   security_rate_limits:
     max_requests_per_user: 1000
     suspicious_activity_threshold: 100
     
-  # Logs de segurança
+  # Logs de seguranÃ§a
   security_logging:
     enabled: true
     log_failed_attempts: true
     alert_on_abuse: true
 
-# Configurações de Notificação
+# ConfiguraÃ§Ãµes de NotificaÃ§Ã£o
 notifications:
   # Email
   email:
@@ -317,13 +317,13 @@ notifications:
     enabled: false
     webhook_url: ""
     
-  # Alertas críticos
+  # Alertas crÃ­ticos
   critical_alerts:
     - "system_down"
     - "high_error_rate"
     - "cost_limit_exceeded"
 
-# Configurações Experimentais
+# ConfiguraÃ§Ãµes Experimentais
 experimental:
   # Novos modelos
   new_models:
@@ -339,3 +339,8 @@ experimental:
   ab_testing:
     enabled: false
     experiments: []
+use_real_agents: true
+
+
+
+

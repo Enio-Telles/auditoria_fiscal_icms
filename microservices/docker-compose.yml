@@ -1,0 +1,133 @@
+version: '3.8'
+
+services:
+  # Database
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: auditoria_fiscal_icms
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - microservices
+
+  # API Gateway
+  api-gateway:
+    build:
+      context: ./microservices/gateway
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - AUTH_SERVICE_URL=http://auth-service:8001
+      - TENANT_SERVICE_URL=http://tenant-service:8002
+      - PRODUCT_SERVICE_URL=http://product-service:8003
+      - CLASSIFICATION_SERVICE_URL=http://classification-service:8004
+      - IMPORT_SERVICE_URL=http://import-service:8005
+      - AI_SERVICE_URL=http://ai-service:8006
+    depends_on:
+      - auth-service
+      - tenant-service
+      - product-service
+      - classification-service
+      - import-service
+      - ai-service
+    networks:
+      - microservices
+
+  # Authentication Service
+  auth-service:
+    build:
+      context: ./microservices/auth-service
+      dockerfile: Dockerfile
+    ports:
+      - "8001:8001"
+    environment:
+      - DATABASE_URL=postgresql://postgres:admin@postgres:5432/auditoria_fiscal_icms
+      - SECRET_KEY=your-secret-key-here
+    depends_on:
+      - postgres
+    networks:
+      - microservices
+
+  # Tenant Service
+  tenant-service:
+    build:
+      context: ./microservices/tenant-service
+      dockerfile: Dockerfile
+    ports:
+      - "8002:8002"
+    environment:
+      - DATABASE_URL=postgresql://postgres:admin@postgres:5432/auditoria_fiscal_icms
+    depends_on:
+      - postgres
+    networks:
+      - microservices
+
+  # Product Service
+  product-service:
+    build:
+      context: ./microservices/product-service
+      dockerfile: Dockerfile
+    ports:
+      - "8003:8003"
+    environment:
+      - DATABASE_URL=postgresql://postgres:admin@postgres:5432/auditoria_fiscal_icms
+    depends_on:
+      - postgres
+    networks:
+      - microservices
+
+  # Classification Service
+  classification-service:
+    build:
+      context: ./microservices/classification-service
+      dockerfile: Dockerfile
+    ports:
+      - "8004:8004"
+    environment:
+      - DATABASE_URL=postgresql://postgres:admin@postgres:5432/auditoria_fiscal_icms
+    depends_on:
+      - postgres
+    networks:
+      - microservices
+
+  # Import Service
+  import-service:
+    build:
+      context: ./microservices/import-service
+      dockerfile: Dockerfile
+    ports:
+      - "8005:8005"
+    environment:
+      - DATABASE_URL=postgresql://postgres:admin@postgres:5432/auditoria_fiscal_icms
+    depends_on:
+      - postgres
+    networks:
+      - microservices
+
+  # AI Service
+  ai-service:
+    build:
+      context: ./microservices/ai-service
+      dockerfile: Dockerfile
+    ports:
+      - "8006:8006"
+    environment:
+      - DATABASE_URL=postgresql://postgres:admin@postgres:5432/auditoria_fiscal_icms
+      - OLLAMA_HOST=host.docker.internal:11434
+    depends_on:
+      - postgres
+    networks:
+      - microservices
+
+volumes:
+  postgres_data:
+
+networks:
+  microservices:
+    driver: bridge

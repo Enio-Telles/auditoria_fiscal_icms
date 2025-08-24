@@ -53,6 +53,27 @@ class EmpresaResponse(BaseModel):
     database_name: str
     ativa: bool
 
+class EmpresaCreate(BaseModel):
+    cnpj: str
+    razao_social: str
+    nome_fantasia: Optional[str] = None
+    atividade_principal: Optional[str] = None
+    regime_tributario: Optional[str] = "Simples Nacional"
+
+class ClassificationRequest(BaseModel):
+    description: str
+    strategy: Optional[str] = "ensemble"
+
+class ClassificationResult(BaseModel):
+    ncm_code: str
+    ncm_description: str
+    cest_code: Optional[str] = None
+    cest_description: Optional[str] = None
+    confidence: float
+    justification: str
+    agent_used: str
+    processing_time: float
+
 # =================== DADOS MOCK ===================
 
 mock_empresas = [
@@ -71,6 +92,33 @@ mock_empresas = [
         "nome_fantasia": "TechSol",
         "database_name": "empresa_98765432000110", 
         "ativa": True
+    }
+]
+
+mock_produtos = [
+    {
+        "produto_id": 1,
+        "descricao_produto": "Notebook Dell Inspiron",
+        "ncm": "84713000", 
+        "cest": "0101500"
+    },
+    {
+        "produto_id": 2,
+        "descricao_produto": "Mouse Óptico USB",
+        "ncm": "84716090",
+        "cest": "0101900"
+    },
+    {
+        "produto_id": 3,
+        "descricao_produto": "Teclado Mecânico",
+        "ncm": "84716090",
+        "cest": "0101900"
+    },
+    {
+        "produto_id": 4,
+        "descricao_produto": "Geladeira Brastemp",
+        "ncm": "84182100",
+        "cest": "0301100"
     }
 ]
 
@@ -205,13 +253,127 @@ async def listar_empresas():
         logger.error(f"Erro ao listar empresas: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
+@app.post("/empresas", response_model=EmpresaResponse)
+async def criar_empresa(empresa: EmpresaCreate):
+    """Cria nova empresa (versão simplificada com dados mock)"""
+    try:
+        logger.info(f"Criando empresa: {empresa.cnpj} - {empresa.razao_social}")
+        
+        # Verificar se empresa já existe
+        for emp in mock_empresas:
+            if emp["cnpj"] == empresa.cnpj:
+                raise HTTPException(status_code=400, detail="Empresa já cadastrada")
+        
+        # Criar nova empresa (mock)
+        novo_id = max([emp["id"] for emp in mock_empresas]) + 1
+        cnpj_clean = ''.join(filter(str.isdigit, empresa.cnpj))
+        database_name = f"empresa_{cnpj_clean}"
+        
+        nova_empresa = {
+            "id": novo_id,
+            "cnpj": empresa.cnpj,
+            "razao_social": empresa.razao_social,
+            "nome_fantasia": empresa.nome_fantasia or empresa.razao_social,
+            "database_name": database_name,
+            "ativa": True
+        }
+        
+        # Adicionar aos dados mock
+        mock_empresas.append(nova_empresa)
+        
+        logger.info(f"Empresa criada com sucesso: ID {novo_id}")
+        return nova_empresa
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Erro ao criar empresa: {e}")
+        raise HTTPException(status_code=500, detail=f"Erro ao criar empresa: {str(e)}")
+
+@app.post("/api/classification/classify", response_model=ClassificationResult)
+async def classificar_produto(request: ClassificationRequest):
+    """Classifica produto usando agentes de IA (versão mock para demonstração)"""
+    try:
+        import time
+        start_time = time.time()
+        
+        logger.info(f"Classificando produto: {request.description}")
+        
+        # Simular classificação baseada em palavras-chave (mock)
+        description_lower = request.description.lower()
+        
+        # Mock de classificações baseado em padrões comuns
+        if any(word in description_lower for word in ["notebook", "laptop", "computador"]):
+            result = ClassificationResult(
+                ncm_code="84713000",
+                ncm_description="Máquinas automáticas para processamento de dados, portáteis",
+                cest_code="0101500",
+                cest_description="Computadores portáteis",
+                confidence=0.92,
+                justification="Produto identificado como computador portátil baseado na descrição. NCM 84713000 aplica-se a máquinas automáticas para processamento de dados portáteis.",
+                agent_used="NCMAgent",
+                processing_time=time.time() - start_time
+            )
+        elif any(word in description_lower for word in ["smartphone", "celular", "telefone"]):
+            result = ClassificationResult(
+                ncm_code="85171200",
+                ncm_description="Telefones para redes celulares",
+                cest_code="0104600",
+                cest_description="Aparelhos telefônicos por fio com unidade auscultador-microfone sem fio",
+                confidence=0.89,
+                justification="Produto identificado como telefone celular. NCM 85171200 específico para telefones de redes celulares.",
+                agent_used="NCMAgent",
+                processing_time=time.time() - start_time
+            )
+        elif any(word in description_lower for word in ["mouse", "teclado", "monitor"]):
+            result = ClassificationResult(
+                ncm_code="84716090",
+                ncm_description="Outras unidades de entrada ou saída",
+                cest_code="0101900",
+                cest_description="Outros equipamentos de informática",
+                confidence=0.85,
+                justification="Produto identificado como periférico de informática. NCM 84716090 para unidades de entrada/saída.",
+                agent_used="NCMAgent",
+                processing_time=time.time() - start_time
+            )
+        elif any(word in description_lower for word in ["geladeira", "refrigerador", "freezer"]):
+            result = ClassificationResult(
+                ncm_code="84182100",
+                ncm_description="Refrigeradores tipo doméstico, de compressão",
+                cest_code="0301100",
+                cest_description="Refrigeradores e congeladores tipo doméstico",
+                confidence=0.91,
+                justification="Produto identificado como refrigerador doméstico. NCM 84182100 específico para refrigeradores de compressão.",
+                agent_used="NCMAgent",
+                processing_time=time.time() - start_time
+            )
+        else:
+            # Classificação genérica para produtos não reconhecidos
+            result = ClassificationResult(
+                ncm_code="39269090",
+                ncm_description="Outras obras de plástico",
+                cest_code=None,
+                cest_description=None,
+                confidence=0.45,
+                justification="Produto não reconhecido pelos padrões conhecidos. Classificação genérica aplicada. Recomenda-se revisão manual.",
+                agent_used="NCMAgent",
+                processing_time=time.time() - start_time
+            )
+        
+        logger.info(f"Classificação concluída: NCM {result.ncm_code} com {result.confidence:.2f} de confiança")
+        return result
+        
+    except Exception as e:
+        logger.error(f"Erro na classificação: {e}")
+        raise HTTPException(status_code=500, detail=f"Erro na classificação: {str(e)}")
+
 @app.get("/stats")
-async def estatisticas():
-    """Estatísticas do sistema"""
+async def get_stats():
+    """Retorna estatísticas gerais (mock)"""
     try:
         return {
             "total_empresas": len(mock_empresas),
-            "total_produtos": 42,
+            "total_produtos": len(mock_produtos),
             "golden_set": {
                 "ncm_items": 150,
                 "cest_items": 89
@@ -295,22 +457,21 @@ async def preview_import(
         logger.error(f"Erro no preview: {e}")
         return {"success": False, "error": str(e)}
 
-# =================== DOCUMENTAÇÃO ===================
-
-@app.get("/docs-info")
-async def docs_info():
-    """Informações sobre a documentação da API"""
+@app.get("/api/dashboard/stats")
+async def get_dashboard_stats():
+    """Retorna estatísticas para o dashboard"""
+    # Simulação de dados reais
+    total_produtos = len(mock_produtos)
+    produtos_com_ncm = sum(1 for p in mock_produtos if p.get("ncm"))
+    produtos_com_cest = sum(1 for p in mock_produtos if p.get("cest"))
+    
     return {
-        "swagger_ui": "http://127.0.0.1:8003/docs",
-        "redoc": "http://127.0.0.1:8003/redoc", 
-        "openapi_json": "http://127.0.0.1:8003/openapi.json",
-        "endpoints": {
-            "health": "/health",
-            "empresas": "/empresas",
-            "stats": "/stats",
-            "test_connection": "/api/import/test-connection",
-            "preview": "/api/import/preview"
-        }
+        "totalEmpresas": len(mock_empresas),
+        "totalProdutos": total_produtos,
+        "produtosComNCM": produtos_com_ncm,
+        "produtosComCEST": produtos_com_cest,
+        "classificacoesPendentes": total_produtos - produtos_com_ncm,
+        "accuracy": 94.2  # Valor mockado
     }
 
 # =================== INICIALIZAÇÃO ===================
@@ -321,16 +482,16 @@ def main():
     
     try:
         logger.info("🚀 Iniciando API Multi-Tenant Estável v2.1.1...")
-        logger.info("📚 Documentação: http://127.0.0.1:8003/docs")
-        logger.info("🏢 Empresas: http://127.0.0.1:8003/empresas")
-        logger.info("📊 Estatísticas: http://127.0.0.1:8003/stats")
-        logger.info("🔧 Health Check: http://127.0.0.1:8003/health")
+        logger.info("📚 Documentação: http://127.0.0.1:8000/docs")
+        logger.info("🏢 Empresas: http://127.0.0.1:8000/empresas")
+        logger.info("📊 Estatísticas: http://127.0.0.1:8000/stats")
+        logger.info("🔧 Health Check: http://127.0.0.1:8000/health")
         logger.info("🎯 API configurada para não finalizar automaticamente")
         
         uvicorn.run(
             "api_estavel:app",
             host="127.0.0.1",
-            port=8003,
+            port=8000,  # Mudança para porta 8000
             log_level="info",
             reload=False  # Desabilitar reload para evitar problemas
         )

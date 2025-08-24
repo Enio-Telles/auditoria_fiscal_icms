@@ -17,6 +17,20 @@ import {
   Alert,
   CircularProgress,
   Divider,
+  Tab,
+  Tabs,
+  ButtonGroup,
+  IconButton,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Switch,
+  FormControlLabel,
 } from '@mui/material';
 import {
   Assessment,
@@ -27,6 +41,15 @@ import {
   CheckCircle,
   Error,
   DateRange,
+  Dashboard,
+  Speed,
+  Security,
+  Timeline,
+  Settings,
+  Refresh,
+  Share,
+  Schedule,
+  Notifications,
 } from '@mui/icons-material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -50,6 +73,11 @@ import { useQuery } from '@tanstack/react-query';
 import { relatorioService } from '../services/relatorioService';
 import { useSnackbar } from 'notistack';
 import { ClassificacaoStatus } from '../types';
+
+// Importar os novos componentes avançados
+import ExecutiveDashboard, { ExecutiveMetrics } from '../components/reports/ExecutiveDashboard';
+import PerformanceAnalytics, { PerformanceData } from '../components/reports/PerformanceAnalytics';
+import ComplianceReport, { ComplianceData } from '../components/reports/ComplianceReport';
 
 const RelatoriosPage: React.FC = () => {
   const { enqueueSnackbar } = useSnackbar();
@@ -154,7 +182,11 @@ const RelatoriosPage: React.FC = () => {
                 label="Data Início"
                 value={dataInicio}
                 onChange={setDataInicio}
-                renderInput={(params) => <TextField {...params} fullWidth />}
+                slotProps={{
+                  textField: {
+                    fullWidth: true
+                  }
+                }}
               />
             </Grid>
             <Grid item xs={12} sm={6} md={3}>
@@ -162,7 +194,11 @@ const RelatoriosPage: React.FC = () => {
                 label="Data Fim"
                 value={dataFim}
                 onChange={setDataFim}
-                renderInput={(params) => <TextField {...params} fullWidth />}
+                slotProps={{
+                  textField: {
+                    fullWidth: true
+                  }
+                }}
               />
             </Grid>
             <Grid item xs={12} sm={6} md={3}>

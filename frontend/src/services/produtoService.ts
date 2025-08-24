@@ -1,84 +1,95 @@
+import { Produto, ProductFilter, PaginatedResponse, ApiResponse } from '../types';
 import { apiClient } from './apiClient';
-import {
-  Produto,
-  ProdutoForm,
-  ProductFilter,
-  ClassificationRequest,
-  ClassificationResult,
-  WorkflowResult,
-  PaginatedResponse,
-} from '../types';
 
-export class ProdutoService {
-  async getProdutos(
-    filter: ProductFilter = {},
-    page = 1,
-    size = 10
-  ): Promise<PaginatedResponse<Produto>> {
-    const params = new URLSearchParams({
-      page: page.toString(),
-      size: size.toString(),
+export const produtoService = {
+  // Listar produtos com filtros
+  async listar(filter: ProductFilter = {}): Promise<PaginatedResponse<Produto>> {
+    const params = new URLSearchParams();
+    
+    if (filter.search) params.append('search', filter.search);
+    if (filter.status) params.append('status', filter.status);
+    if (filter.ncm) params.append('ncm', filter.ncm);
+    if (filter.cest) params.append('cest', filter.cest);
+    if (filter.empresa_id) params.append('empresa_id', filter.empresa_id);
+    if (filter.page) params.append('page', filter.page.toString());
+    if (filter.size) params.append('size', filter.size.toString());
+
+    return await apiClient.get<PaginatedResponse<Produto>>(`/produtos?${params.toString()}`);
+  },
+
+  // Buscar produto por ID
+  async buscarPorId(id: string): Promise<Produto> {
+    return await apiClient.get<Produto>(`/produtos/${id}`);
+  },
+
+  // Criar novo produto
+  async criar(produto: Omit<Produto, 'id' | 'created_at' | 'updated_at'>): Promise<Produto> {
+    return await apiClient.post<Produto>('/produtos', produto);
+  },
+
+  // Atualizar produto
+  async atualizar(id: string, produto: Partial<Produto>): Promise<Produto> {
+    return await apiClient.put<Produto>(`/produtos/${id}`, produto);
+  },
+
+  // Excluir produto
+  async excluir(id: string): Promise<void> {
+    await apiClient.delete<void>(`/produtos/${id}`);
+  },
+
+  // Reclassificar produto
+  async reclassificar(id: string): Promise<Produto> {
+    return await apiClient.post<Produto>(`/produtos/${id}/reclassificar`);
+  },
+
+  // Upload de arquivo CSV/Excel
+  async uploadArquivo(file: File, empresaId?: string): Promise<ApiResponse<any>> {
+    const formData = new FormData();
+    formData.append('file', file);
+    if (empresaId) {
+      formData.append('empresa_id', empresaId);
+    }
+
+    return await apiClient.post<ApiResponse<any>>('/produtos/upload', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
     });
+  },
 
-    // Adicionar filtros
-    Object.entries(filter).forEach(([key, value]) => {
-      if (value !== undefined && value !== null && value !== '') {
-        params.append(key, value.toString());
-      }
+  // Classificar produto automaticamente
+  async classificar(id: string): Promise<Produto> {
+    return await apiClient.post<Produto>(`/produtos/${id}/classificar`);
+  },
+
+  // Aprovar classificação automática
+  async aprovarClassificacao(id: string): Promise<Produto> {
+    return await apiClient.post<Produto>(`/produtos/${id}/aprovar`);
+  },
+
+  // Rejeitar classificação automática
+  async rejeitarClassificacao(id: string, motivo?: string): Promise<Produto> {
+    return await apiClient.post<Produto>(`/produtos/${id}/rejeitar`, {
+      motivo
     });
+  },
 
-    return apiClient.get<PaginatedResponse<Produto>>(`/produtos?${params}`);
+  // Estatísticas de produtos
+  async estatisticas(empresaId?: string): Promise<any> {
+    const params = empresaId ? `?empresa_id=${empresaId}` : '';
+    return await apiClient.get<any>(`/produtos/estatisticas${params}`);
+  },
+
+  // Exportar para Excel
+  async exportToExcel(filter: ProductFilter = {}): Promise<Blob> {
+    const params = new URLSearchParams();
+    
+    if (filter.search) params.append('search', filter.search);
+    if (filter.status) params.append('status', filter.status);
+    if (filter.ncm) params.append('ncm', filter.ncm);
+    if (filter.cest) params.append('cest', filter.cest);
+    if (filter.empresa_id) params.append('empresa_id', filter.empresa_id);
+
+    return await apiClient.get<Blob>(`/produtos/export/excel?${params.toString()}`);
   }
-
-  async getProdutoById(id: number): Promise<Produto> {
-    return apiClient.get<Produto>(`/produtos/${id}`);
-  }
-
-  async createProduto(empresaId: number, produto: ProdutoForm): Promise<Produto> {
-    return apiClient.post<Produto>(`/empresas/${empresaId}/produtos`, produto);
-  }
-
-  async updateProduto(id: number, produto: Partial<ProdutoForm>): Promise<Produto> {
-    return apiClient.put<Produto>(`/produtos/${id}`, produto);
-  }
-
-  async deleteProduto(id: number): Promise<void> {
-    return apiClient.delete<void>(`/produtos/${id}`);
-  }
-
-  async importProdutos(empresaId: number, file: File): Promise<any> {
-    return apiClient.uploadFile<any>(`/empresas/${empresaId}/produtos/import`, file);
-  }
-
-  async exportProdutos(empresaId: number, format = 'excel'): Promise<Blob> {
-    const response = await apiClient.get<Blob>(
-      `/empresas/${empresaId}/produtos/export?format=${format}`,
-      { responseType: 'blob' }
-    );
-    return response;
-  }
-
-  // Classificação automática
-  async classifyProduct(request: ClassificationRequest): Promise<ClassificationResult> {
-    return apiClient.post<ClassificationResult>('/classify', request);
-  }
-
-  async executeWorkflow(workflowType: string, params: any): Promise<WorkflowResult> {
-    return apiClient.post<WorkflowResult>(`/workflows/${workflowType}/execute`, params);
-  }
-
-  async getWorkflowStatus(workflowId: string): Promise<WorkflowResult> {
-    return apiClient.get<WorkflowResult>(`/workflows/${workflowId}/status`);
-  }
-
-  // Processamento em lote
-  async processEmpresaProdutos(empresaId: number): Promise<any> {
-    return apiClient.post<any>(`/empresas/${empresaId}/processar`);
-  }
-
-  async getProcessingStatus(empresaId: number): Promise<any> {
-    return apiClient.get<any>(`/empresas/${empresaId}/processing-status`);
-  }
-}
-
-export const produtoService = new ProdutoService();
+};

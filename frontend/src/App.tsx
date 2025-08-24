@@ -10,11 +10,16 @@ import { SnackbarProvider } from 'notistack';
 
 import AppHeader from './components/AppHeader';
 import Dashboard from './pages/Dashboard';
-import EmpresasPage from './pages/EmpresasPage';
-import ProdutosPage from './pages/ProdutosPage';
 import RelatoriosPage from './pages/RelatoriosPage';
 import ImportPage from './pages/ImportPage';
+import AgentsPage from './pages/AgentsPage';
 import LoginPage from './pages/LoginPage';
+import EmpresasPage from './pages/EmpresasPage';
+import CadastroEmpresaPage from './pages/CadastroEmpresaPage';
+import ClassificacaoPage from './pages/ClassificacaoPage';
+import GoldenSetPage from './pages/GoldenSetPage';
+import ImportacaoPage from './pages/ImportacaoPage';
+import OnboardingPage from './pages/OnboardingPage';
 import { useAuth } from './hooks/useAuth';
 
 // Configuração do tema Material-UI
@@ -73,6 +78,12 @@ const queryClient = new QueryClient({
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isAuthenticated } = useAuth();
   
+  // Permitir acesso direto à rota /agents para demonstração
+  const currentPath = window.location.pathname;
+  if (currentPath === '/agents') {
+    return <>{children}</>;
+  }
+  
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
@@ -117,28 +128,6 @@ const App: React.FC = () => {
               />
               
               <Route
-                path="/empresas"
-                element={
-                  <ProtectedRoute>
-                    <AppLayout>
-                      <EmpresasPage />
-                    </AppLayout>
-                  </ProtectedRoute>
-                }
-              />
-              
-              <Route
-                path="/produtos"
-                element={
-                  <ProtectedRoute>
-                    <AppLayout>
-                      <ProdutosPage />
-                    </AppLayout>
-                  </ProtectedRoute>
-                }
-              />
-              
-              <Route
                 path="/relatorios"
                 element={
                   <ProtectedRoute>
@@ -150,11 +139,99 @@ const App: React.FC = () => {
               />
               
               <Route
+                path="/agents"
+                element={
+                  <ProtectedRoute>
+                    <AppLayout>
+                      <AgentsPage />
+                    </AppLayout>
+                  </ProtectedRoute>
+                }
+              />
+              
+              <Route
                 path="/import"
                 element={
                   <ProtectedRoute>
                     <AppLayout>
                       <ImportPage />
+                    </AppLayout>
+                  </ProtectedRoute>
+                }
+              />
+              
+              <Route
+                path="/empresas"
+                element={
+                  <ProtectedRoute>
+                    <AppLayout>
+                      <EmpresasPage />
+                    </AppLayout>
+                  </ProtectedRoute>
+                }
+              />
+              
+              <Route
+                path="/empresas/cadastrar"
+                element={
+                  <ProtectedRoute>
+                    <AppLayout>
+                      <CadastroEmpresaPage />
+                    </AppLayout>
+                  </ProtectedRoute>
+                }
+              />
+              
+              <Route
+                path="/empresas/editar/:id"
+                element={
+                  <ProtectedRoute>
+                    <AppLayout>
+                      <CadastroEmpresaPage />
+                    </AppLayout>
+                  </ProtectedRoute>
+                }
+              />
+              
+              <Route
+                path="/classificacao"
+                element={
+                  <ProtectedRoute>
+                    <AppLayout>
+                      <ClassificacaoPage />
+                    </AppLayout>
+                  </ProtectedRoute>
+                }
+              />
+              
+              <Route
+                path="/golden-set"
+                element={
+                  <ProtectedRoute>
+                    <AppLayout>
+                      <GoldenSetPage />
+                    </AppLayout>
+                  </ProtectedRoute>
+                }
+              />
+              
+              <Route
+                path="/importacao"
+                element={
+                  <ProtectedRoute>
+                    <AppLayout>
+                      <ImportacaoPage />
+                    </AppLayout>
+                  </ProtectedRoute>
+                }
+              />
+              
+              <Route
+                path="/tutorial"
+                element={
+                  <ProtectedRoute>
+                    <AppLayout>
+                      <OnboardingPage />
                     </AppLayout>
                   </ProtectedRoute>
                 }

@@ -11,8 +11,6 @@ import { SnackbarProvider } from 'notistack';
 import AppHeader from './components/AppHeader';
 import Sidebar from './components/Sidebar';
 import Dashboard from './pages/Dashboard';
-import EmpresasPage from './pages/EmpresasPage';
-import ProdutosPage from './pages/ProdutosPage';
 import ClassificacoesPage from './pages/ClassificacoesPage';
 import GoldenSetPage from './pages/GoldenSetPage';
 import RelatoriosPage from './pages/RelatoriosPage';
@@ -132,8 +130,6 @@ const App: React.FC = () => {
                   <Routes>
                     <Route path="/" element={<Navigate to="/dashboard" replace />} />
                     <Route path="/dashboard" element={<Dashboard />} />
-                    <Route path="/empresas" element={<EmpresasPage />} />
-                    <Route path="/empresas/:empresaId/produtos" element={<ProdutosPage />} />
                     <Route path="/empresas/:empresaId/importar" element={<ImportacaoPage />} />
                     <Route path="/classificacoes" element={<ClassificacoesPage />} />
                     <Route path="/golden-set" element={<GoldenSetPage />} />

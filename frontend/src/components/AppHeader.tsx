@@ -18,6 +18,10 @@ import {
   Inventory,
   Assessment,
   CloudUpload,
+  Category,
+  Star,
+  SmartToy,
+  School,
 } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
@@ -45,9 +49,12 @@ const AppHeader: React.FC = () => {
   const menuItems = [
     { label: 'Dashboard', path: '/', icon: <Dashboard /> },
     { label: 'Empresas', path: '/empresas', icon: <Business /> },
-    { label: 'Produtos', path: '/produtos', icon: <Inventory /> },
-    { label: 'Importação', path: '/import', icon: <CloudUpload /> },
+    { label: 'Importação', path: '/importacao', icon: <CloudUpload /> },
+    { label: 'Classificação', path: '/classificacao', icon: <Category /> },
+    { label: 'Golden Set', path: '/golden-set', icon: <Star /> },
+    { label: 'Agentes IA', path: '/agents', icon: <SmartToy /> },
     { label: 'Relatórios', path: '/relatorios', icon: <Assessment /> },
+    { label: 'Tutorial', path: '/tutorial', icon: <School /> },
   ];
 
   return (

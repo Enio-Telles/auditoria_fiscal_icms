@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Container,
   Grid,
@@ -10,6 +10,8 @@ import {
   CardActions,
   Button,
   Alert,
+  CircularProgress,
+  Skeleton,
 } from '@mui/material';
 import {
   Business,
@@ -34,25 +36,51 @@ import {
 } from 'recharts';
 import StatsCard from '../components/StatsCard';
 import { useAuth } from '../hooks/useAuth';
+import { api } from '../services/api'; // Importar a instância da API
+
+interface DashboardStats {
+  totalEmpresas: number;
+  totalProdutos: number;
+  produtosComNCM: number;
+  produtosComCEST: number;
+  classificacoesPendentes: number;
+  accuracy: number;
+}
 
 const Dashboard: React.FC = () => {
   const { user } = useAuth();
+  const [stats, setStats] = useState<DashboardStats | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        setLoading(true);
+        const response = await api.get('/api/dashboard/stats');
+        setStats(response.data);
+        setError(null);
+      } catch (err) {
+        console.error("Erro ao buscar dados do dashboard:", err);
+        setError("Não foi possível carregar os dados do dashboard. Usando dados de exemplo.");
+        // Fallback para dados de exemplo em caso de erro
+        setStats({
+          totalEmpresas: 12,
+          totalProdutos: 8547,
+          produtosComNCM: 7234,
+          produtosComCEST: 3421,
+          classificacoesPendentes: 156,
+          accuracy: 94.2,
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDashboardData();
+  }, []);
 
   // Dados de exemplo para demonstração
-  const stats = {
-    totalEmpresas: 12,
-    totalProdutos: 8547,
-    produtosComNCM: 7234,
-    produtosComCEST: 3421,
-    classificacoesPendentes: 156,
-    accuracy: 94.2,
-  };
-
-  const chartData = [
-    { name: 'Com NCM', value: stats.produtosComNCM, color: '#4caf50' },
-    { name: 'Sem NCM', value: stats.totalProdutos - stats.produtosComNCM, color: '#f44336' },
-  ];
-
   const monthlyData = [
     { month: 'Jan', classificacoes: 1200, accuracy: 92 },
     { month: 'Fev', classificacoes: 1350, accuracy: 93 },
@@ -60,6 +88,32 @@ const Dashboard: React.FC = () => {
     { month: 'Abr', classificacoes: 1420, accuracy: 95 },
     { month: 'Mai', classificacoes: 1650, accuracy: 94 },
     { month: 'Jun', classificacoes: 1580, accuracy: 96 },
+  ];
+
+  if (loading) {
+    return (
+      <Container maxWidth="xl">
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}>
+          <CircularProgress />
+          <Typography variant="h6" sx={{ ml: 2 }}>Carregando dados do dashboard...</Typography>
+        </Box>
+      </Container>
+    );
+  }
+
+  if (!stats) {
+    return (
+      <Container maxWidth="xl">
+        <Alert severity="error">
+          {error || "Não foi possível carregar os dados do dashboard."}
+        </Alert>
+      </Container>
+    );
+  }
+
+  const chartData = [
+    { name: 'Com NCM', value: stats.produtosComNCM, color: '#4caf50' },
+    { name: 'Sem NCM', value: stats.totalProdutos - stats.produtosComNCM, color: '#f44336' },
   ];
 
   return (
@@ -71,6 +125,7 @@ const Dashboard: React.FC = () => {
         <Typography variant="subtitle1" color="text.secondary">
           Bem-vindo, {user?.full_name || user?.username}! Aqui está o resumo do sistema.
         </Typography>
+        {error && <Alert severity="warning" sx={{ mt: 2 }}>{error}</Alert>}
       </Box>
 
       {/* Cards de Estatísticas */}

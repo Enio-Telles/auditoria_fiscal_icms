@@ -20,6 +20,7 @@ import {
   Star as StarIcon,
   Description as ReportsIcon,
   Analytics as AnalyticsIcon,
+  SmartToy as AgentsIcon,
 } from '@mui/icons-material';
 
 const drawerWidth = 240;
@@ -42,6 +43,12 @@ const menuItems: SidebarItem[] = [
     icon: <BusinessIcon />,
     path: '/empresas',
     badge: '3',
+  },
+  {
+    text: 'Agentes',
+    icon: <AgentsIcon />,
+    path: '/agents',
+    badge: 'NEW',
   },
   {
     text: 'Classificações',

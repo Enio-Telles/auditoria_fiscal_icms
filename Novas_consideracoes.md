@@ -2,7 +2,7 @@
 - usar ambiente python do tipo conda
 ## Estrutura de Documentação
 - O arquivo **README.md** deve ser atualizado sempre que houver mudanças no código, com resumo dos demais arquivos `.md`(exceto Novas_consideracoes.md).
-- Criar a pasta **documentos** e mover os demais arquivos `.md` para dentro dela (exceto Novas_consideracoes.md).
+- Criar a pasta **documentos** e mover os demais arquivos `.md` para dentro dela (exceto Novas_consideracoes.md e , MANUAL_USUARIO_FINAL.MD).
 - Padronizar nomes no formato `01_nome_antigo.md`, seguindo a ordem de criação e alteração.
 - Excluir códigos antigos não utilizados, mantendo apenas os ativos na arquitetura.
 - reorganizar estrutura de códigos, mantendo a estrututura do projeto conforme o diagrama de arquitetura.
@@ -125,14 +125,16 @@ RGC/TIPI 1: Determinação do "Ex" Aplicável As Regras Gerais para Interpretaç
 5. **ReconcilerAgent** – Audita o par NCM/CEST, resolve conflitos e valida a classificação final.
 6. **Propagação** – Aplica a classificação final a todos os produtos do grupo agregado.
  implementar IA Real com LLM com integração Ollama/OpenAI (prever possibilidade de mudar facilmente LLM usado na interface web frontend: usar ou llama3, ou gemma3n, ou gpt-oss:20b)
-### Base de Dados de Apoio
-- `Tabela_NCM.xlsx`: códigos e descrições do NCM. Campos []
-- `descricoes_ncm.json`: descrições dos códigos agrupadas com base na estrutura do código NCM .
-- `conv_142_formatado.json`: mapeamento CEST x NCM. Segmento representa o número do segmento descrito pelo nome do Anexo; cest representa o código cest; ncm representa o grupo de ncms associados ao cest; descricao_oficial_cest representa a descrição do cest - um produto, para se enquadrar em um código cest, deve se enquadrar no segmento e na descrição); 
-- `produtos_selecionados`: dados de produtos (GTIN, descrição, NCM, CEST).
-- `CEST_RO`: classificações CEST de Rondônia.
-- `nesh-2022_REGRAS_GERAIS.docx` e `nesh-2022.pdf`: 6 regras gerais e notas explicativas sobre NCM contidas em seções que detalham características de grupos de produtos. Estrutura delineada no SUMÁRIO.
-- `Tabela_ABC_Farma_V2.xlsx`: medicamentos (capítulo 30 NCM, segmento 13 CEST). Referência para identificação de medicamentos
+### Base de Dados de Apoio para RAG
+*Metadados RAG padronizados e rastreáveis
+- `01_nesh-2022_REGRAS_GERAIS.docx` e `01_nesh-2022.pdf`: 6 regras gerais e notas explicativas sobre NCM contidas em seções que detalham características de grupos de produtos. Estrutura delineada no SUMÁRIO.
+- `01_Tabela_NCM.xlsx`: códigos e descrições do NCM. Campos [Código,Descrição, Data Início, Data Fim, Ato Legal Início, Número, Ano]
+- `01-1_descricoes_ncm.json`: descrições dos códigos agrupadas com base na estrutura do código NCM . Campos [Código, Descrição_Completa]
+- `02_conv_142_formatado.json`: mapeamento CEST x NCM. Segmento representa o número do segmento descrito pelo nome do Anexo; cest representa o código cest; ncm representa o grupo de ncms associados ao cest; descricao_oficial_cest representa a descrição do cest - um produto, para se enquadrar em um código cest, deve se enquadrar no segmento e na descrição); Campos [Anexo, segmento, cest, ncm, descricao_oficial_cest]
+- `02-2_CEST_RO`: classificações CEST de Rondônia. Campos [ITEM,	CEST,	NCM/SH,	DESCRIÇÃO,	MVA ORIGINAL,	MVA AJUSTADA 4%,	MVA AJUSTADA 7%,	MVA AJUSTADA 12%,	MVA CORRIGIDA ALCGM,	MVA ORIGINAL - Atacado,	MVA ORIGINAL - Indústria,	Situação,	Início vig.,	Fim vig.,	TABELA	ANEXO
+]
+- `03_produtos_selecionados`: dados de produtos (GTIN, descrição, NCM, CEST). Campos [gtin, descricao, ncm, cest]
+- `04_Tabela_ABC_Farma_V2.xlsx`: medicamentos (capítulo 30 NCM, segmento 13 CEST). Referência para identificação de medicamentos. campos [codigo_barras, DESCRICAO_BRUTA]
 
 ### Arquitetura Técnica
 - Uso de banco relacional para dados estruturados e indexação vetorial para RAG é adequado.
