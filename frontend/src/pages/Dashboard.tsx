@@ -57,21 +57,21 @@ const Dashboard: React.FC = () => {
     const fetchDashboardData = async () => {
       try {
         setLoading(true);
-        const response = await api.get('/api/dashboard/stats');
+                const response = await api.get('/dashboard/stats');
         setStats(response.data);
         setError(null);
       } catch (err) {
         console.error("Erro ao buscar dados do dashboard:", err);
         setError("Não foi possível carregar os dados do dashboard. Usando dados de exemplo.");
         // Fallback para dados de exemplo em caso de erro
-        setStats({
-          totalEmpresas: 12,
-          totalProdutos: 8547,
-          produtosComNCM: 7234,
-          produtosComCEST: 3421,
-          classificacoesPendentes: 156,
-          accuracy: 94.2,
-        });
+        // setStats({
+        //   totalEmpresas: 12,
+        //   totalProdutos: 8547,
+        //   produtosComNCM: 7234,
+        //   produtosComCEST: 3421,
+        //   classificacoesPendentes: 156,
+        //   accuracy: 94.2,
+        // });
       } finally {
         setLoading(false);
       }

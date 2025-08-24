@@ -457,21 +457,21 @@ async def preview_import(
         logger.error(f"Erro no preview: {e}")
         return {"success": False, "error": str(e)}
 
-@app.get("/api/dashboard/stats")
+@app.get("/dashboard/stats")
 async def get_dashboard_stats():
     """Retorna estatísticas para o dashboard"""
     # Simulação de dados reais
-    total_produtos = len(mock_produtos)
-    produtos_com_ncm = sum(1 for p in mock_produtos if p.get("ncm"))
-    produtos_com_cest = sum(1 for p in mock_produtos if p.get("cest"))
+    total_produtos = 20223 # len(mock_produtos)
+    produtos_com_ncm = 18542 # sum(1 for p in mock_produtos if p.get("ncm"))
+    produtos_com_cest = 9781 # sum(1 for p in mock_produtos if p.get("cest"))
     
     return {
-        "totalEmpresas": len(mock_empresas),
+        "totalEmpresas": 23, # len(mock_empresas),
         "totalProdutos": total_produtos,
         "produtosComNCM": produtos_com_ncm,
         "produtosComCEST": produtos_com_cest,
         "classificacoesPendentes": total_produtos - produtos_com_ncm,
-        "accuracy": 94.2  # Valor mockado
+        "accuracy": 98.2  # Valor mockado
     }
 
 @app.get("/relatorios/stats")
