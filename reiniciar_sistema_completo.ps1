@@ -30,9 +30,9 @@ Write-Host "🐳 Reiniciando containers Docker..." -ForegroundColor Yellow
 try {
     docker stop auditoria_postgres auditoria_redis 2>$null
     Write-Host "🛑 Containers parados" -ForegroundColor Gray
-    
+
     Start-Sleep -Seconds 3
-    
+
     docker start auditoria_postgres auditoria_redis 2>$null
     Write-Host "▶️ Containers reiniciados" -ForegroundColor Green
 } catch {

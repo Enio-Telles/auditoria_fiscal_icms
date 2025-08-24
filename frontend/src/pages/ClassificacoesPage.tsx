@@ -155,9 +155,9 @@ const ClassificacoesPage: React.FC = () => {
   const handleApprove = async (id: number) => {
     try {
       // Simular aprovação
-      setClassificacoes(prev => 
-        prev.map(c => 
-          c.id === id 
+      setClassificacoes(prev =>
+        prev.map(c =>
+          c.id === id
             ? { ...c, status: 'aprovado' as const, reviewed_at: new Date().toISOString(), reviewed_by: 'Sistema' }
             : c
         )
@@ -170,9 +170,9 @@ const ClassificacoesPage: React.FC = () => {
   const handleReject = async (id: number) => {
     try {
       // Simular rejeição
-      setClassificacoes(prev => 
-        prev.map(c => 
-          c.id === id 
+      setClassificacoes(prev =>
+        prev.map(c =>
+          c.id === id
             ? { ...c, status: 'rejeitado' as const, reviewed_at: new Date().toISOString(), reviewed_by: 'Sistema' }
             : c
         )
@@ -207,8 +207,8 @@ const ClassificacoesPage: React.FC = () => {
     });
   };
 
-  const filteredClassificacoes = statusFilter === 'all' 
-    ? classificacoes 
+  const filteredClassificacoes = statusFilter === 'all'
+    ? classificacoes
     : classificacoes.filter(c => c.status === statusFilter);
 
   // Dados para gráficos
@@ -319,7 +319,7 @@ const ClassificacoesPage: React.FC = () => {
                     Taxa de Aprovação
                   </Typography>
                   <Typography variant="h4" sx={{ fontWeight: 600 }}>
-                    {classificacoes.length > 0 
+                    {classificacoes.length > 0
                       ? Math.round((classificacoes.filter(c => c.status === 'aprovado').length / classificacoes.length) * 100)
                       : 0}%
                   </Typography>
@@ -458,25 +458,25 @@ const ClassificacoesPage: React.FC = () => {
                         <Typography variant="body2" sx={{ maxWidth: 200 }}>
                           {classificacao.produto_descricao}
                         </Typography>
-                        <Chip 
-                          label={classificacao.categoria} 
-                          size="small" 
+                        <Chip
+                          label={classificacao.categoria}
+                          size="small"
                           variant="outlined"
                           sx={{ mt: 0.5 }}
                         />
                       </TableCell>
                       <TableCell>
-                        <Chip 
+                        <Chip
                           label={classificacao.ncm_sugerido}
-                          color="primary" 
+                          color="primary"
                           sx={{ fontFamily: 'monospace' }}
                         />
                       </TableCell>
                       <TableCell>
                         {classificacao.cest_sugerido ? (
-                          <Chip 
+                          <Chip
                             label={classificacao.cest_sugerido}
-                            color="secondary" 
+                            color="secondary"
                             sx={{ fontFamily: 'monospace' }}
                           />
                         ) : (
@@ -486,14 +486,14 @@ const ClassificacoesPage: React.FC = () => {
                         )}
                       </TableCell>
                       <TableCell>
-                        <Chip 
+                        <Chip
                           label={`${Math.round(classificacao.confianca_ncm * 100)}%`}
-                          size="small" 
+                          size="small"
                           color={getConfidenceColor(classificacao.confianca_ncm)}
                         />
                       </TableCell>
                       <TableCell>
-                        <Chip 
+                        <Chip
                           label={classificacao.status}
                           color={getStatusColor(classificacao.status)}
                           size="small"
@@ -562,7 +562,7 @@ const ClassificacoesPage: React.FC = () => {
                 </Grid>
                 <Grid item xs={12} sm={6}>
                   <Typography variant="subtitle2" gutterBottom>Status</Typography>
-                  <Chip 
+                  <Chip
                     label={selectedClassificacao.status}
                     color={getStatusColor(selectedClassificacao.status)}
                     sx={{ mb: 2 }}
@@ -577,14 +577,14 @@ const ClassificacoesPage: React.FC = () => {
                 <Grid item xs={12} sm={6}>
                   <Typography variant="subtitle2" gutterBottom>NCM Sugerido</Typography>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-                    <Chip 
+                    <Chip
                       label={selectedClassificacao.ncm_sugerido}
                       color="primary"
                       sx={{ fontFamily: 'monospace' }}
                     />
-                    <Chip 
+                    <Chip
                       label={`${Math.round(selectedClassificacao.confianca_ncm * 100)}%`}
-                      size="small" 
+                      size="small"
                       color={getConfidenceColor(selectedClassificacao.confianca_ncm)}
                     />
                   </Box>
@@ -593,15 +593,15 @@ const ClassificacoesPage: React.FC = () => {
                   <Grid item xs={12} sm={6}>
                     <Typography variant="subtitle2" gutterBottom>CEST Sugerido</Typography>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-                      <Chip 
+                      <Chip
                         label={selectedClassificacao.cest_sugerido}
                         color="secondary"
                         sx={{ fontFamily: 'monospace' }}
                       />
                       {selectedClassificacao.confianca_cest && (
-                        <Chip 
+                        <Chip
                           label={`${Math.round(selectedClassificacao.confianca_cest * 100)}%`}
-                          size="small" 
+                          size="small"
                           color={getConfidenceColor(selectedClassificacao.confianca_cest)}
                         />
                       )}
@@ -641,7 +641,7 @@ const ClassificacoesPage: React.FC = () => {
           <Button onClick={() => setDetailsOpen(false)}>Fechar</Button>
           {selectedClassificacao?.status === 'pendente' && (
             <>
-              <Button 
+              <Button
                 onClick={() => {
                   handleApprove(selectedClassificacao.id);
                   setDetailsOpen(false);
@@ -651,7 +651,7 @@ const ClassificacoesPage: React.FC = () => {
               >
                 Aprovar
               </Button>
-              <Button 
+              <Button
                 onClick={() => {
                   handleReject(selectedClassificacao.id);
                   setDetailsOpen(false);

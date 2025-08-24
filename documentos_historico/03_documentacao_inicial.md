@@ -276,10 +276,10 @@ llm:
   models:
     primary: "llama3.1:8b"
     fallback: "llama3.1:70b"
-  
+
 embeddings:
   model_name: "BAAI/bge-m3"
-  
+
 rag:
   similarity_threshold: 0.7
   top_k_vector: 10
@@ -290,13 +290,13 @@ rag:
 api:
   host: "0.0.0.0"
   port: 8000
-  
+
 database:
   postgresql:
     host: "localhost"
     port: 5432
     database: "auditoria_fiscal"
-    
+
 integrations:
   stock_analysis:
     enabled: false  # Habilitar na v2.0

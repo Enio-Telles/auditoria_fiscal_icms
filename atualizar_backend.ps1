@@ -29,24 +29,24 @@ Write-Host "Testando novos endpoints..." -ForegroundColor Cyan
 try {
     $health = Invoke-RestMethod -Uri "http://localhost:8000/health"
     Write-Host "Health Check: OK" -ForegroundColor Green
-    
+
     $relatorios = Invoke-RestMethod -Uri "http://localhost:8000/relatorios/stats"
     Write-Host "Relatórios Stats: OK" -ForegroundColor Green
-    
+
     $empresas = Invoke-RestMethod -Uri "http://localhost:8000/empresas/select"
     Write-Host "Empresas Select: OK" -ForegroundColor Green
-    
-    Write-Host "" 
+
+    Write-Host ""
     Write-Host "====================================" -ForegroundColor Green
     Write-Host "BACKEND ATUALIZADO COM SUCESSO!" -ForegroundColor Green
     Write-Host "====================================" -ForegroundColor Green
     Write-Host "Novos endpoints funcionais:" -ForegroundColor White
     Write-Host "- /relatorios/stats" -ForegroundColor Cyan
-    Write-Host "- /relatorios/classificacao-periodo" -ForegroundColor Cyan  
+    Write-Host "- /relatorios/classificacao-periodo" -ForegroundColor Cyan
     Write-Host "- /empresas/select" -ForegroundColor Cyan
     Write-Host ""
     Write-Host "Os erros 404 no console foram resolvidos!" -ForegroundColor Yellow
-    
+
 } catch {
     Write-Host "Aguarde mais alguns segundos para o backend inicializar..." -ForegroundColor Yellow
     Write-Host "Execute novamente: .\atualizar_backend.ps1" -ForegroundColor White

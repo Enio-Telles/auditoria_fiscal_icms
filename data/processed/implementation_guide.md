@@ -8,7 +8,7 @@
    • Servidor com GPU para embeddings (recomendado)
    • Mínimo 16GB RAM para modelos
    • Storage para índices vetoriais (>10GB)
-   
+
 ✅ 2. Dependências
    • sentence-transformers>=2.2.0
    • transformers>=4.21.0
@@ -40,11 +40,11 @@ index.add(embeddings_matrix)
 # Dense retrieval
 dense_results = faiss_index.search(query_embedding, k=20)
 
-# Sparse retrieval  
+# Sparse retrieval
 sparse_results = tfidf_vectorizer.search(query, k=20)
 
 # Combine with weights
-final_results = combine_results(dense_results, sparse_results, 
+final_results = combine_results(dense_results, sparse_results,
                                dense_weight=0.7, sparse_weight=0.3)
 ```
 
@@ -123,7 +123,7 @@ logger.info("RAG_QUERY", extra={
 
 🎯 Meta de Performance:
    • Q1: Manter >90% RAG Score
-   • Q2: Expandir para >95% RAG Score  
+   • Q2: Expandir para >95% RAG Score
    • Q3: Sub-segundo response time
    • Q4: Multimodal capabilities
 

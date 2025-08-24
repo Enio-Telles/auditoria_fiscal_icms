@@ -69,17 +69,17 @@ const AgentsPage: React.FC = () => {
     systemStatus,
     systemMetrics,
     isSystemLoading,
-    
+
     // Agentes
     agents,
     isAgentsLoading,
-    
+
     // Tarefas
     tasks,
-    
+
     // Workflows
     workflows,
-    
+
     // Ações
     initializeSystem,
     shutdownSystem,
@@ -92,7 +92,7 @@ const AgentsPage: React.FC = () => {
     refreshSystemStatus,
     refreshMetrics,
     quickClassify,
-    
+
     // Estados de carregamento
     isCreatingAgent,
     isClassifying,
@@ -169,7 +169,7 @@ const AgentsPage: React.FC = () => {
           severity: 'error'
         });
       }
-      
+
       setQuickClassifyDialog(false);
       setClassifyDescription('');
     } catch (error) {
@@ -282,11 +282,11 @@ const AgentsPage: React.FC = () => {
 
       {/* Status do Sistema */}
       {systemStatus && (
-        <Alert 
-          severity={getSystemStatusColor()} 
+        <Alert
+          severity={getSystemStatusColor()}
           sx={{ mb: 3 }}
           action={
-            <Chip 
+            <Chip
               label={`${runningAgents}/${totalAgents} Agentes Ativos`}
               size="small"
               color={runningAgents > 0 ? 'success' : 'default'}
@@ -300,27 +300,27 @@ const AgentsPage: React.FC = () => {
       {/* Tabs de Navegação */}
       <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
         <Tabs value={currentTab} onChange={handleTabChange}>
-          <Tab 
-            icon={<DashboardIcon />} 
-            label="Visão Geral" 
+          <Tab
+            icon={<DashboardIcon />}
+            label="Visão Geral"
             id="agents-tab-0"
             aria-controls="agents-tabpanel-0"
           />
-          <Tab 
-            icon={<SettingsIcon />} 
-            label="Agentes" 
+          <Tab
+            icon={<SettingsIcon />}
+            label="Agentes"
             id="agents-tab-1"
             aria-controls="agents-tabpanel-1"
           />
-          <Tab 
-            icon={<TaskIcon />} 
-            label="Tarefas" 
+          <Tab
+            icon={<TaskIcon />}
+            label="Tarefas"
             id="agents-tab-2"
             aria-controls="agents-tabpanel-2"
           />
-          <Tab 
-            icon={<WorkflowIcon />} 
-            label="Workflows" 
+          <Tab
+            icon={<WorkflowIcon />}
+            label="Workflows"
             id="agents-tab-3"
             aria-controls="agents-tabpanel-3"
           />
@@ -328,16 +328,16 @@ const AgentsPage: React.FC = () => {
       </Box>
 
       {/* Tab Panels */}
-      
+
       {/* Visão Geral */}
       <TabPanel value={currentTab} index={0}>
         {systemMetrics ? (
-          <SystemMetricsCard 
+          <SystemMetricsCard
             metrics={{
               ...systemMetrics,
               timestamp: new Date().toISOString()
-            }} 
-            isLoading={isSystemLoading} 
+            }}
+            isLoading={isSystemLoading}
           />
         ) : (
           <Box display="flex" justifyContent="center" p={4}>
@@ -376,7 +376,7 @@ const AgentsPage: React.FC = () => {
               />
             </Grid>
           ))}
-          
+
           {agents.length === 0 && !isAgentsLoading && (
             <Grid item xs={12}>
               <Card>
@@ -410,8 +410,8 @@ const AgentsPage: React.FC = () => {
                 <CardContent>
                   <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
                     <Typography variant="h6">{task.type}</Typography>
-                    <Chip 
-                      label={task.status.toUpperCase()} 
+                    <Chip
+                      label={task.status.toUpperCase()}
                       size="small"
                       color={task.status === 'completed' ? 'success' : task.status === 'failed' ? 'error' : 'default'}
                     />
@@ -431,7 +431,7 @@ const AgentsPage: React.FC = () => {
               </Card>
             </Grid>
           ))}
-          
+
           {tasks.length === 0 && (
             <Grid item xs={12}>
               <Card>
@@ -455,8 +455,8 @@ const AgentsPage: React.FC = () => {
                 <CardContent>
                   <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
                     <Typography variant="h6">{workflow.name}</Typography>
-                    <Chip 
-                      label={workflow.status.toUpperCase()} 
+                    <Chip
+                      label={workflow.status.toUpperCase()}
                       size="small"
                       color={workflow.status === 'completed' ? 'success' : workflow.status === 'failed' ? 'error' : 'default'}
                     />
@@ -474,7 +474,7 @@ const AgentsPage: React.FC = () => {
               </Card>
             </Grid>
           ))}
-          
+
           {workflows.length === 0 && (
             <Grid item xs={12}>
               <Card>
@@ -543,8 +543,8 @@ const AgentsPage: React.FC = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setCreateAgentDialog(false)}>Cancelar</Button>
-          <Button 
-            onClick={handleCreateAgent} 
+          <Button
+            onClick={handleCreateAgent}
             variant="contained"
             disabled={isCreatingAgent}
           >
@@ -584,8 +584,8 @@ const AgentsPage: React.FC = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setQuickClassifyDialog(false)}>Cancelar</Button>
-          <Button 
-            onClick={handleQuickClassify} 
+          <Button
+            onClick={handleQuickClassify}
             variant="contained"
             disabled={isClassifying}
           >
@@ -600,8 +600,8 @@ const AgentsPage: React.FC = () => {
         autoHideDuration={6000}
         onClose={() => setSnackbar({ ...snackbar, open: false })}
       >
-        <Alert 
-          onClose={() => setSnackbar({ ...snackbar, open: false })} 
+        <Alert
+          onClose={() => setSnackbar({ ...snackbar, open: false })}
           severity={snackbar.severity}
           sx={{ width: '100%' }}
         >

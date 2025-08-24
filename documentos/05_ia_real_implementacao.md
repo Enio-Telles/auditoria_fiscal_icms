@@ -62,7 +62,7 @@ llm_providers:
         timeout: 90
     default_model: "phi3:mini"
     max_retries: 3
-    
+
   openai:
     enabled: false  # Requer API key
     api_key: "${OPENAI_API_KEY}"
@@ -77,7 +77,7 @@ llm_providers:
         cost_per_token: 0.03
     default_model: "gpt-3.5-turbo"
     max_retries: 3
-    
+
   anthropic:
     enabled: false  # Requer API key
     api_key: "${ANTHROPIC_API_KEY}"
@@ -95,23 +95,23 @@ classification_strategies:
     enabled: true
     timeout: 30
     cache_results: true
-    
+
   rag:
     enabled: true
     timeout: 60
     knowledge_base_path: "data/golden_set"
     similarity_threshold: 0.7
-    
+
   hierarchical:
     enabled: true
     timeout: 45
     category_tree_path: "configs/category_tree.yaml"
-    
+
   ensemble:
     enabled: false  # Experimental
     min_providers: 2
     consensus_threshold: 0.6
-    
+
   hybrid:
     enabled: true
     adaptive_strategy: true
@@ -122,11 +122,11 @@ performance:
     enabled: true
     max_entries: 10000
     ttl_seconds: 86400  # 24 horas
-    
+
   rate_limiting:
     enabled: true
     requests_per_minute: 60
-    
+
   cost_optimization:
     enabled: true
     max_cost_per_request: 0.10
@@ -146,21 +146,21 @@ audit:
 ```python
 class OllamaProvider(BaseLLMProvider):
     """Provedor para modelos Ollama locais"""
-    
+
     def __init__(self, config: Dict[str, Any]):
         super().__init__(config)
         self.base_url = config.get('base_url', 'http://localhost:11434')
         self.client = httpx.AsyncClient(timeout=httpx.Timeout(60.0))
-        
+
     async def classify_product(
-        self, 
-        product_description: str, 
+        self,
+        product_description: str,
         strategy: str = "direct"
     ) -> ClassificationResult:
         """Classificar produto usando Ollama"""
-        
+
         prompt = self._build_prompt(product_description, strategy)
-        
+
         request_data = {
             "model": self.config.get('default_model', 'phi3:mini'),
             "prompt": prompt,
@@ -170,37 +170,37 @@ class OllamaProvider(BaseLLMProvider):
                 "num_ctx": self.config.get('context_length', 4096)
             }
         }
-        
+
         try:
             response = await self.client.post(
                 f"{self.base_url}/api/generate",
                 json=request_data
             )
             response.raise_for_status()
-            
+
             result_data = response.json()
             return self._parse_response(result_data['response'])
-            
+
         except Exception as e:
             logger.error(f"Erro na classificação Ollama: {e}")
             raise ClassificationError(f"Ollama provider error: {e}")
-    
+
     def _build_prompt(self, description: str, strategy: str) -> str:
         """Construir prompt específico para classificação"""
-        
+
         base_prompt = f"""
         Você é um especialista em classificação fiscal brasileira.
         Sua tarefa é classificar produtos usando códigos NCM e CEST.
-        
+
         Produto para classificar: "{description}"
-        
+
         Instruções:
         1. Analise a descrição do produto cuidadosamente
         2. Determine o código NCM (8 dígitos) mais apropriado
         3. Se aplicável, determine o código CEST (7 dígitos)
         4. Forneça sua confiança na classificação (0-100%)
         5. Explique brevemente sua decisão
-        
+
         Responda APENAS no formato JSON:
         {{
             "ncm": "12345678",
@@ -210,14 +210,14 @@ class OllamaProvider(BaseLLMProvider):
             "reasoning": "Explicação da classificação"
         }}
         """
-        
+
         if strategy == "rag":
             # Adicionar contexto do golden set
             context = self._get_rag_context(description)
             base_prompt += f"\n\nContexto adicional:\n{context}"
-        
+
         return base_prompt
-    
+
     async def test_connection(self) -> bool:
         """Testar conectividade com Ollama"""
         try:
@@ -231,24 +231,24 @@ class OllamaProvider(BaseLLMProvider):
 ```python
 class OpenAIProvider(BaseLLMProvider):
     """Provedor para modelos OpenAI GPT"""
-    
+
     def __init__(self, config: Dict[str, Any]):
         super().__init__(config)
         api_key = config.get('api_key') or os.getenv('OPENAI_API_KEY')
         if not api_key:
             raise ValueError("OpenAI API key não configurada")
-        
+
         self.client = openai.AsyncOpenAI(api_key=api_key)
-        
+
     async def classify_product(
-        self, 
-        product_description: str, 
+        self,
+        product_description: str,
         strategy: str = "direct"
     ) -> ClassificationResult:
         """Classificar produto usando OpenAI"""
-        
+
         messages = self._build_messages(product_description, strategy)
-        
+
         try:
             response = await self.client.chat.completions.create(
                 model=self.config.get('default_model', 'gpt-3.5-turbo'),
@@ -257,20 +257,20 @@ class OpenAIProvider(BaseLLMProvider):
                 max_tokens=self.config.get('max_tokens', 1000),
                 response_format={"type": "json_object"}
             )
-            
+
             result_text = response.choices[0].message.content
             cost = self._calculate_cost(response.usage)
-            
+
             result = self._parse_response(result_text)
             result.cost = cost
             result.tokens_used = response.usage.total_tokens
-            
+
             return result
-            
+
         except Exception as e:
             logger.error(f"Erro na classificação OpenAI: {e}")
             raise ClassificationError(f"OpenAI provider error: {e}")
-    
+
     def _calculate_cost(self, usage) -> float:
         """Calcular custo da requisição"""
         cost_per_token = self.config.get('cost_per_token', 0.0015)
@@ -283,13 +283,13 @@ class OpenAIProvider(BaseLLMProvider):
 ```python
 class DirectClassificationStrategy:
     """Estratégia de classificação direta via prompt"""
-    
+
     def build_prompt(self, product_description: str) -> str:
         return f"""
         Classifique o seguinte produto com códigos NCM e CEST:
-        
+
         Produto: {product_description}
-        
+
         Responda no formato JSON com:
         - ncm: código NCM de 8 dígitos
         - cest: código CEST de 7 dígitos (se aplicável)
@@ -303,24 +303,24 @@ class DirectClassificationStrategy:
 ```python
 class RAGStrategy:
     """Estratégia usando base de conhecimento"""
-    
+
     def __init__(self, knowledge_base_path: str):
         self.knowledge_base = self._load_knowledge_base(knowledge_base_path)
         self.embeddings = self._build_embeddings()
-    
+
     async def get_context(self, product_description: str) -> str:
         """Recuperar contexto relevante da base de conhecimento"""
-        
+
         # Gerar embedding da descrição
         query_embedding = await self._get_embedding(product_description)
-        
+
         # Buscar exemplos similares
         similar_items = self._find_similar_items(
-            query_embedding, 
-            threshold=0.7, 
+            query_embedding,
+            threshold=0.7,
             top_k=5
         )
-        
+
         # Construir contexto
         context = "Exemplos similares da base de conhecimento:\n"
         for item in similar_items:
@@ -328,7 +328,7 @@ class RAGStrategy:
             if item.get('cest'):
                 context += f", CEST: {item['cest']}"
             context += f" (similaridade: {item['similarity']:.2f})\n"
-        
+
         return context
 ```
 
@@ -336,34 +336,34 @@ class RAGStrategy:
 ```python
 class HierarchicalStrategy:
     """Estratégia de classificação hierárquica"""
-    
+
     def __init__(self, category_tree_path: str):
         self.category_tree = self._load_category_tree(category_tree_path)
-    
+
     async def classify_hierarchical(
-        self, 
-        product_description: str, 
+        self,
+        product_description: str,
         llm_provider: BaseLLMProvider
     ) -> ClassificationResult:
         """Classificação em etapas hierárquicas"""
-        
+
         # Etapa 1: Determinar categoria principal
         category = await self._classify_category(product_description, llm_provider)
-        
+
         # Etapa 2: Subcategoria específica
         subcategory = await self._classify_subcategory(
-            product_description, 
-            category, 
+            product_description,
+            category,
             llm_provider
         )
-        
+
         # Etapa 3: NCM específico na subcategoria
         ncm_result = await self._classify_ncm_in_subcategory(
-            product_description, 
-            subcategory, 
+            product_description,
+            subcategory,
             llm_provider
         )
-        
+
         return ncm_result
 ```
 
@@ -373,52 +373,52 @@ class HierarchicalStrategy:
 ```python
 class IntelligentCache:
     """Sistema de cache para respostas de IA"""
-    
+
     def __init__(self, db_path: str):
         self.db_path = db_path
         self._init_database()
-    
+
     async def get_cached_result(
-        self, 
-        product_hash: str, 
-        strategy: str, 
+        self,
+        product_hash: str,
+        strategy: str,
         provider: str
     ) -> Optional[ClassificationResult]:
         """Recuperar resultado do cache"""
-        
+
         query = """
-        SELECT result_data, confidence, created_at 
-        FROM cache_results 
+        SELECT result_data, confidence, created_at
+        FROM cache_results
         WHERE product_hash = ? AND strategy = ? AND provider = ?
         AND created_at > datetime('now', '-24 hours')
         ORDER BY created_at DESC LIMIT 1
         """
-        
+
         async with aiosqlite.connect(self.db_path) as db:
             cursor = await db.execute(query, (product_hash, strategy, provider))
             row = await cursor.fetchone()
-            
+
             if row:
                 result_data = json.loads(row[0])
                 return ClassificationResult.from_dict(result_data)
-        
+
         return None
-    
+
     async def cache_result(
-        self, 
-        product_hash: str, 
-        result: ClassificationResult, 
-        strategy: str, 
+        self,
+        product_hash: str,
+        result: ClassificationResult,
+        strategy: str,
         provider: str
     ):
         """Armazenar resultado no cache"""
-        
+
         insert_query = """
-        INSERT INTO cache_results 
+        INSERT INTO cache_results
         (product_hash, strategy, provider, result_data, confidence, created_at)
         VALUES (?, ?, ?, ?, ?, datetime('now'))
         """
-        
+
         async with aiosqlite.connect(self.db_path) as db:
             await db.execute(insert_query, (
                 product_hash,
@@ -434,7 +434,7 @@ class IntelligentCache:
 ```python
 class PerformanceTracker:
     """Rastreamento de performance do sistema IA"""
-    
+
     def __init__(self):
         self.metrics = {
             'total_requests': 0,
@@ -444,50 +444,50 @@ class PerformanceTracker:
             'total_cost': 0.0,
             'cache_hit_rate': 0.0,
         }
-    
+
     async def track_request(
-        self, 
-        provider: str, 
-        strategy: str, 
-        response_time: float, 
-        success: bool, 
+        self,
+        provider: str,
+        strategy: str,
+        response_time: float,
+        success: bool,
         cost: float = 0.0,
         cached: bool = False
     ):
         """Registrar métricas de uma requisição"""
-        
+
         self.metrics['total_requests'] += 1
-        
+
         if success:
             self.metrics['successful_classifications'] += 1
         else:
             self.metrics['failed_classifications'] += 1
-        
+
         # Atualizar tempo médio de resposta
         current_avg = self.metrics['average_response_time']
         total_requests = self.metrics['total_requests']
         self.metrics['average_response_time'] = (
             (current_avg * (total_requests - 1) + response_time) / total_requests
         )
-        
+
         self.metrics['total_cost'] += cost
-        
+
         if cached:
             # Atualizar taxa de cache hit
             cache_hits = self.metrics.get('cache_hits', 0) + 1
             self.metrics['cache_hits'] = cache_hits
             self.metrics['cache_hit_rate'] = cache_hits / total_requests
-    
+
     def get_performance_report(self) -> Dict[str, Any]:
         """Gerar relatório de performance"""
-        
+
         success_rate = 0.0
         if self.metrics['total_requests'] > 0:
             success_rate = (
-                self.metrics['successful_classifications'] / 
+                self.metrics['successful_classifications'] /
                 self.metrics['total_requests'] * 100
             )
-        
+
         return {
             'total_requests': self.metrics['total_requests'],
             'success_rate': f"{success_rate:.2f}%",
@@ -625,7 +625,7 @@ AI_PREFER_LOCAL=true
 
 ---
 
-**Status:** IA Real 100% Implementada e Funcional  
-**Versão:** 3.0.0  
-**Conectividade:** Ollama verificada, OpenAI/Anthropic configurados  
+**Status:** IA Real 100% Implementada e Funcional
+**Versão:** 3.0.0
+**Conectividade:** Ollama verificada, OpenAI/Anthropic configurados
 **Performance:** 82% confiança média, 0.15 produtos/seg throughput

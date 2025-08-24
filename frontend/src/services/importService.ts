@@ -172,7 +172,7 @@ class ImportService {
       const params = new URLSearchParams({
         sql_query: sqlQuery,
       });
-      
+
       if (empresa_id) {
         params.append('empresa_id', empresa_id);
       }
@@ -194,7 +194,7 @@ class ImportService {
       postgresql: {
         basic: "SELECT produto_id, descricao_produto, ncm, cest FROM dbo.produto LIMIT 1000",
         complete: `
-          SELECT 
+          SELECT
             produto_id,
             descricao_produto,
             ncm,
@@ -203,13 +203,13 @@ class ImportService {
             unidade_medida,
             categoria,
             subcategoria
-          FROM dbo.produto 
-          WHERE descricao_produto IS NOT NULL 
+          FROM dbo.produto
+          WHERE descricao_produto IS NOT NULL
             AND ncm IS NOT NULL
           ORDER BY produto_id
         `.trim(),
         with_company: `
-          SELECT 
+          SELECT
             p.produto_id,
             p.descricao_produto,
             p.ncm,
@@ -233,8 +233,8 @@ class ImportService {
             unidade_medida,
             categoria,
             subcategoria
-          FROM dbo.produto 
-          WHERE descricao_produto IS NOT NULL 
+          FROM dbo.produto
+          WHERE descricao_produto IS NOT NULL
             AND ncm IS NOT NULL
           ORDER BY produto_id
         `.trim()
@@ -242,7 +242,7 @@ class ImportService {
       mysql: {
         basic: "SELECT produto_id, descricao_produto, ncm, cest FROM produto LIMIT 1000",
         complete: `
-          SELECT 
+          SELECT
             produto_id,
             descricao_produto,
             ncm,
@@ -251,8 +251,8 @@ class ImportService {
             unidade_medida,
             categoria,
             subcategoria
-          FROM produto 
-          WHERE descricao_produto IS NOT NULL 
+          FROM produto
+          WHERE descricao_produto IS NOT NULL
             AND ncm IS NOT NULL
           ORDER BY produto_id
           LIMIT 10000

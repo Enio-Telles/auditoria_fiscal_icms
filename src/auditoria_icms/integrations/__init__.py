@@ -7,13 +7,13 @@ from .stock_analysis import (
     ClassificationResult,
     StockAnalysisAdapter,
     GenericStockAdapter,
-    StockIntegrationManager
+    StockIntegrationManager,
 )
 
 __all__ = [
-    'StockItem',
-    'ClassificationResult', 
-    'StockAnalysisAdapter',
-    'GenericStockAdapter',
-    'StockIntegrationManager'
+    "StockItem",
+    "ClassificationResult",
+    "StockAnalysisAdapter",
+    "GenericStockAdapter",
+    "StockIntegrationManager",
 ]

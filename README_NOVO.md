@@ -1,7 +1,7 @@
-# 🏢 Sistema de Auditoria Fiscal ICMS v4.0 
+# 🏢 Sistema de Auditoria Fiscal ICMS v4.0
 ## **Sistema Multi-Agentes com IA Real**
 
-> **🤖 AGENTES REAIS IMPLEMENTADOS!** Mock desativado - Sistema operacional com NCMAgent e CESTAgent  
+> **🤖 AGENTES REAIS IMPLEMENTADOS!** Mock desativado - Sistema operacional com NCMAgent e CESTAgent
 > **📅 AGOSTO 2025:** Versão final com backend microserviços e IA local
 
 [![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)](https://www.python.org/)
@@ -16,7 +16,7 @@
 
 ### ✅ **AGENTES DE IA REAIS IMPLEMENTADOS**
 - **🤖 NCMAgent:** Classificação automática baseada em estrutura de dados real
-- **🔍 CESTAgent:** Determinação CEST por segmento e atividade empresarial  
+- **🔍 CESTAgent:** Determinação CEST por segmento e atividade empresarial
 - **📊 Sistema RAG:** Base NESH 2022 integrada para consultas regulamentares
 - **⚡ Performance:** Processamento assíncrono e cache inteligente
 - **🛡️ Validação:** Regras de negócio e auditoria automática
@@ -51,7 +51,7 @@
 
 #### **🏗️ Organização e Arquitetura (01-06)**
 - **01_organizacao_limpeza.md** - Plano de estruturação inicial
-- **02_microservices_fix_report.md** - Correções dos microserviços  
+- **02_microservices_fix_report.md** - Correções dos microserviços
 - **03_microservices_status_august_2025.md** - Status de desenvolvimento
 - **04_microservices_final_status_august_2025.md** - Finalização backend
 - **05_final_microservices_status_august_2025.md** - Confirmação operacional
@@ -106,7 +106,7 @@ docker-compose up auditoria_postgres auditoria_redis -d
 
 ### **🌐 URLs do Sistema**
 - **🏠 API Gateway:** http://localhost:8000
-- **📖 Documentação:** http://localhost:8000/docs  
+- **📖 Documentação:** http://localhost:8000/docs
 - **⚛️ Frontend React:** http://localhost:3001
 - **🤖 AI Service:** http://localhost:8006
 - **🧠 Ollama (IA):** http://localhost:11434
@@ -124,7 +124,7 @@ from src.auditoria_icms.agents.real_agents import NCMAgent, CESTAgent
 ncm_agent = NCMAgent()
 ncm_result = await ncm_agent.classify_product("Notebook Dell Core i5")
 
-# Determinação CEST  
+# Determinação CEST
 cest_agent = CESTAgent()
 cest_result = await cest_agent.determine_cest(
     ncm_code="8471.30.12",
@@ -134,7 +134,7 @@ cest_result = await cest_agent.determine_cest(
 
 ### **🔄 Fluxo Completo**
 1. **ExpansionAgent** → Enriquece descrição do produto
-2. **AggregationAgent** → Agrupa produtos similares  
+2. **AggregationAgent** → Agrupa produtos similares
 3. **NCMAgent** → Classifica NCM com validação hierárquica
 4. **CESTAgent** → Determina CEST por segmento empresarial
 5. **ReconcilerAgent** → Audita e valida classificação final
@@ -275,7 +275,7 @@ black src/ && flake8 src/
 
 ---
 
-**🏆 Sistema 100% completo com agentes reais implementados**  
-**📅 Versão:** v4.0 - Agosto 2025  
-**👨‍💻 Desenvolvido por:** Enio Telles  
+**🏆 Sistema 100% completo com agentes reais implementados**
+**📅 Versão:** v4.0 - Agosto 2025
+**👨‍💻 Desenvolvido por:** Enio Telles
 **🌟 Status:** Pronto para produção com IA real ativa

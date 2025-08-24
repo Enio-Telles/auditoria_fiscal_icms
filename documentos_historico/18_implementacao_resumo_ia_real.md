@@ -145,7 +145,7 @@ llm:
     enabled: true
     api_key: "sua-chave-openai"
     model: "gpt-3.5-turbo"
-  
+
   ollama:
     enabled: true
     base_url: "http://localhost:11434"
@@ -167,7 +167,7 @@ classification:
 ```
 Produtos Testados:
 ✅ Smartphone Samsung → NCM: 85171210 (90% confiança)
-✅ Notebook Dell → NCM: 85171210 (90% confiança)  
+✅ Notebook Dell → NCM: 85171210 (90% confiança)
 ✅ Cerveja Skol → NCM: 44131200 (90% confiança)
 ✅ Açúcar União → NCM: 00000000 (60% confiança)
 ✅ Dipirona → NCM: 85171210 (80% confiança)
@@ -222,7 +222,7 @@ Produtos Testados:
 
 - ✅ **Sistema de IA Real**: LLMs funcionais integrados
 - ✅ **Múltiplos Provedores**: OpenAI, Ollama, Anthropic, HF
-- ✅ **Estratégias Avançadas**: Direct, RAG, Ensemble, Hybrid  
+- ✅ **Estratégias Avançadas**: Direct, RAG, Ensemble, Hybrid
 - ✅ **Base de Conhecimento**: NCM/CEST estruturada
 - ✅ **Cache e Performance**: Sistema otimizado
 - ✅ **Auditoria Completa**: Logs e rastreamento

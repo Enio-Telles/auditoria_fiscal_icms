@@ -215,7 +215,7 @@ const PerformanceAnalytics: React.FC<PerformanceAnalyticsProps> = ({
             <Typography variant="h6" gutterBottom>
               Performance Individual dos Agentes
             </Typography>
-            
+
             <TableContainer>
               <Table>
                 <TableHead>
@@ -293,7 +293,7 @@ const PerformanceAnalytics: React.FC<PerformanceAnalyticsProps> = ({
                 </TableBody>
               </Table>
             </TableContainer>
-            
+
             <TablePagination
               component="div"
               count={data.agentPerformance.length}
@@ -312,7 +312,7 @@ const PerformanceAnalytics: React.FC<PerformanceAnalyticsProps> = ({
             <Typography variant="h6" gutterBottom>
               Métricas de Sistema em Tempo Real
             </Typography>
-            
+
             <Grid container spacing={3}>
               <Grid item xs={12} lg={8}>
                 <Paper sx={{ p: 2, height: 400 }}>
@@ -333,7 +333,7 @@ const PerformanceAnalytics: React.FC<PerformanceAnalyticsProps> = ({
                   </ResponsiveContainer>
                 </Paper>
               </Grid>
-              
+
               <Grid item xs={12} lg={4}>
                 <Paper sx={{ p: 2, height: 400 }}>
                   <Typography variant="subtitle1" gutterBottom>
@@ -374,7 +374,7 @@ const PerformanceAnalytics: React.FC<PerformanceAnalyticsProps> = ({
             <Typography variant="h6" gutterBottom>
               Análise de Classificações por Categoria
             </Typography>
-            
+
             <Grid container spacing={3}>
               <Grid item xs={12} lg={6}>
                 <Paper sx={{ p: 2, height: 400 }}>
@@ -412,7 +412,7 @@ const PerformanceAnalytics: React.FC<PerformanceAnalyticsProps> = ({
                   </ResponsiveContainer>
                 </Paper>
               </Grid>
-              
+
               <Grid item xs={12} lg={6}>
                 <Paper sx={{ p: 2, height: 400 }}>
                   <Typography variant="subtitle1" gutterBottom>
@@ -431,7 +431,7 @@ const PerformanceAnalytics: React.FC<PerformanceAnalyticsProps> = ({
                 </Paper>
               </Grid>
             </Grid>
-            
+
             <Box sx={{ mt: 3 }}>
               <Typography variant="subtitle1" gutterBottom>
                 Resumo por Categoria
@@ -478,7 +478,7 @@ const PerformanceAnalytics: React.FC<PerformanceAnalyticsProps> = ({
             <Typography variant="h6" gutterBottom>
               Análise de Qualidade e Validação
             </Typography>
-            
+
             <Grid container spacing={3}>
               <Grid item xs={12}>
                 <TableContainer component={Paper}>

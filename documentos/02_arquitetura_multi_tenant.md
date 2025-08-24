@@ -184,12 +184,12 @@ async def criar_empresa(cnpj: str, nome: str):
     # 3. Criar banco dedicado: empresa_{cnpj}
     # 4. Executar scripts de criação de tabelas
     # 5. Configurar permissões iniciais
-    
+
     database_name = f"empresa_{cnpj}"
-    
+
     # SQL para criar banco isolado
     CREATE DATABASE {database_name};
-    
+
     # Aplicar schema padrão no novo banco
     apply_company_schema(database_name)
 ```
@@ -201,7 +201,7 @@ async def get_empresa_database(empresa_id: int):
     empresa = await get_empresa_by_id(empresa_id)
     if not empresa:
         raise HTTPException(404, "Empresa não encontrada")
-    
+
     return empresa.database_name
 
 # Middleware de roteamento
@@ -219,14 +219,14 @@ async def tenant_routing_middleware(request: Request, call_next):
 class DatabaseManager:
     def __init__(self):
         self.connections = {}
-    
+
     async def get_connection(self, database_name: str):
         if database_name not in self.connections:
             self.connections[database_name] = create_engine(
                 f"postgresql://{USER}:{PASS}@{HOST}:{PORT}/{database_name}"
             )
         return self.connections[database_name]
-    
+
     async def execute_query(self, database_name: str, query: str):
         conn = await self.get_connection(database_name)
         return await conn.execute(query)
@@ -263,7 +263,7 @@ def validate_empresa_access(user_id: int, empresa_id: int) -> bool:
         PermissaoEmpresa.empresa_id == empresa_id,
         PermissaoEmpresa.ativo == True
     ).first()
-    
+
     return permission is not None
 
 # Decorator para proteção de endpoints
@@ -271,7 +271,7 @@ def validate_empresa_access(user_id: int, empresa_id: int) -> bool:
 async def get_produtos_empresa(empresa_id: int, user_id: int = Depends(get_current_user)):
     if not validate_empresa_access(user_id, empresa_id):
         raise HTTPException(403, "Acesso negado à empresa")
-    
+
     # Continuar com lógica do endpoint...
 ```
 
@@ -305,8 +305,8 @@ CREATE INDEX idx_classificacoes_confianca ON classificacoes_ia(confianca_ncm DES
 #### **3. Particionamento (Futuro)**
 ```sql
 -- Particionamento por data para auditoria
-CREATE TABLE auditoria_classificacoes_2025_08 
-PARTITION OF auditoria_classificacoes 
+CREATE TABLE auditoria_classificacoes_2025_08
+PARTITION OF auditoria_classificacoes
 FOR VALUES FROM ('2025-08-01') TO ('2025-09-01');
 ```
 
@@ -333,7 +333,7 @@ services:
       - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
     ports:
       - "5432:5432"
-  
+
   api:
     build: .
     environment:
@@ -372,7 +372,7 @@ echo "✅ Ambiente multi-tenant configurado!"
 class TenantMetrics:
     def __init__(self, empresa_id: int):
         self.empresa_id = empresa_id
-    
+
     async def get_metrics(self):
         return {
             'total_produtos': await self.count_produtos(),
@@ -390,7 +390,7 @@ async def check_tenants_health():
     """Verifica saúde de todos os tenants"""
     empresas = await get_all_empresas()
     results = []
-    
+
     for empresa in empresas:
         try:
             db = await get_empresa_database(empresa.id)
@@ -406,7 +406,7 @@ async def check_tenants_health():
                 'status': 'error',
                 'error': str(e)
             })
-    
+
     return results
 ```
 
@@ -426,6 +426,6 @@ async def check_tenants_health():
 
 ---
 
-**Documentação:** Arquitetura Multi-Tenant v3.0  
-**Status:** Implementado e funcional  
+**Documentação:** Arquitetura Multi-Tenant v3.0
+**Status:** Implementado e funcional
 **Próximo documento:** [03_interface_react.md](03_interface_react.md)

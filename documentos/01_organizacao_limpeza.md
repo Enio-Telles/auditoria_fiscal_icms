@@ -1,7 +1,7 @@
 # 🧹 Relatório de Organização e Limpeza do Projeto
 
-**Data:** 22 de Agosto de 2025  
-**Versão:** v3.1.0  
+**Data:** 22 de Agosto de 2025
+**Versão:** v3.1.0
 **Status:** ✅ CONCLUÍDO
 
 ## 🎯 Objetivo

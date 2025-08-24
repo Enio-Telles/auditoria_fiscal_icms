@@ -126,7 +126,7 @@ ollama serve
 
 ```python
 from auditoria_icms.ai_classification_advanced import (
-    AdvancedNCMCESTClassifier, 
+    AdvancedNCMCESTClassifier,
     ClassificationRequest
 )
 
@@ -200,7 +200,7 @@ llm:
     model: "gpt-3.5-turbo"
     temperature: 0.1
     max_tokens: 1500
-  
+
   ollama:
     enabled: true
     base_url: "http://localhost:11434"

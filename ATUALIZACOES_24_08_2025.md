@@ -59,7 +59,7 @@ Invoke-RestMethod -Uri "http://localhost:8000/empresas"
 
 ### 3. **📝 Scripts PowerShell Funcionais**
 **Problema Original:**
-- Erros "TerminatorExpectedAtEndOfString" 
+- Erros "TerminatorExpectedAtEndOfString"
 - Caracteres Unicode (emojis) causando falhas de sintaxe
 
 **Solução Implementada:**
@@ -175,6 +175,6 @@ Get-Process -Name python,node -ErrorAction SilentlyContinue
 
 ---
 
-*Última atualização: 24 de Agosto de 2025*  
-*Commit: 463a6fa*  
+*Última atualização: 24 de Agosto de 2025*
+*Commit: 463a6fa*
 *Status: PRODUÇÃO ESTÁVEL*

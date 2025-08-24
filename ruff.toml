@@ -1,0 +1,7 @@
+# Ruff configuration
+# Ignora completamente a pasta deprecated conforme solicitado.
+exclude = ["deprecated"]
+line-length = 120
+
+[lint]
+select = ["E", "F"]

@@ -77,17 +77,17 @@ const queryClient = new QueryClient({
 // Componente para rotas protegidas
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isAuthenticated } = useAuth();
-  
+
   // Permitir acesso direto à rota /agents para demonstração
   const currentPath = window.location.pathname;
   if (currentPath === '/agents') {
     return <>{children}</>;
   }
-  
+
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
-  
+
   return <>{children}</>;
 };
 
@@ -114,7 +114,7 @@ const App: React.FC = () => {
             <Routes>
               {/* Rota de login */}
               <Route path="/login" element={<LoginPage />} />
-              
+
               {/* Rotas protegidas */}
               <Route
                 path="/"
@@ -126,7 +126,7 @@ const App: React.FC = () => {
                   </ProtectedRoute>
                 }
               />
-              
+
               <Route
                 path="/relatorios"
                 element={
@@ -137,7 +137,7 @@ const App: React.FC = () => {
                   </ProtectedRoute>
                 }
               />
-              
+
               <Route
                 path="/agents"
                 element={
@@ -148,7 +148,7 @@ const App: React.FC = () => {
                   </ProtectedRoute>
                 }
               />
-              
+
               <Route
                 path="/import"
                 element={
@@ -159,7 +159,7 @@ const App: React.FC = () => {
                   </ProtectedRoute>
                 }
               />
-              
+
               <Route
                 path="/empresas"
                 element={
@@ -170,7 +170,7 @@ const App: React.FC = () => {
                   </ProtectedRoute>
                 }
               />
-              
+
               <Route
                 path="/empresas/cadastrar"
                 element={
@@ -181,7 +181,7 @@ const App: React.FC = () => {
                   </ProtectedRoute>
                 }
               />
-              
+
               <Route
                 path="/empresas/editar/:id"
                 element={
@@ -192,7 +192,7 @@ const App: React.FC = () => {
                   </ProtectedRoute>
                 }
               />
-              
+
               <Route
                 path="/classificacao"
                 element={
@@ -203,7 +203,7 @@ const App: React.FC = () => {
                   </ProtectedRoute>
                 }
               />
-              
+
               <Route
                 path="/golden-set"
                 element={
@@ -214,7 +214,7 @@ const App: React.FC = () => {
                   </ProtectedRoute>
                 }
               />
-              
+
               <Route
                 path="/importacao"
                 element={
@@ -225,7 +225,7 @@ const App: React.FC = () => {
                   </ProtectedRoute>
                 }
               />
-              
+
               <Route
                 path="/tutorial"
                 element={
@@ -236,7 +236,7 @@ const App: React.FC = () => {
                   </ProtectedRoute>
                 }
               />
-              
+
               {/* Redirect para dashboard se rota não encontrada */}
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>

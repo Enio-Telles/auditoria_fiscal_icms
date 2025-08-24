@@ -80,9 +80,9 @@ foreach ($disco in $discos) {
     $espacoLivreGB = [math]::Round($disco.FreeSpace/1GB, 2)
     $espacoTotalGB = [math]::Round($disco.Size/1GB, 2)
     $percentualLivre = [math]::Round(($disco.FreeSpace/$disco.Size)*100, 1)
-    
+
     Write-Host "💾 Disco $($disco.DeviceID) - $espacoLivreGB GB livre de $espacoTotalGB GB ($percentualLivre%)" -ForegroundColor White
-    
+
     if ($percentualLivre -lt 10) {
         Write-Host "⚠️ ATENÇÃO: Pouco espaço livre no disco $($disco.DeviceID)!" -ForegroundColor Red
     } elseif ($percentualLivre -lt 20) {
@@ -101,7 +101,7 @@ try {
     $containers = docker ps -a --format "table {{.Names}}\t{{.Status}}" | findstr auditoria
     if ($containers) {
         Write-Host $containers
-        
+
         # Verificar containers não utilizados
         $containersParados = docker ps -a --filter "status=exited" --format "{{.Names}}" | findstr auditoria
         if ($containersParados) {

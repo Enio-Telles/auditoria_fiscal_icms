@@ -52,7 +52,7 @@ const EmpresasPage: React.FC = () => {
       const response = await fetch('/api/tenants');
       if (response.ok) {
         const data = await response.json();
-        
+
         // Simular dados se API não retornar dados completos
         const empresasDemo: Empresa[] = [
           {
@@ -104,7 +104,7 @@ const EmpresasPage: React.FC = () => {
             contribuinteICMS: false
           }
         ];
-        
+
         setEmpresas(data.length > 0 ? data : empresasDemo);
       }
     } catch (error) {
@@ -147,7 +147,7 @@ const EmpresasPage: React.FC = () => {
         const response = await fetch(`/api/tenants/${empresaSelecionada.id}`, {
           method: 'DELETE'
         });
-        
+
         if (response.ok) {
           setEmpresas(prev => prev.filter(emp => emp.id !== empresaSelecionada.id));
           alert('Empresa excluída com sucesso!');
@@ -169,7 +169,7 @@ const EmpresasPage: React.FC = () => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ status: novoStatus })
         });
-        
+
         if (response.ok) {
           setEmpresas(prev =>
             prev.map(emp =>
@@ -228,7 +228,7 @@ const EmpresasPage: React.FC = () => {
         <Typography variant="h4">
           Gerenciar Empresas
         </Typography>
-        
+
         <Button
           variant="contained"
           startIcon={<Add />}
@@ -459,7 +459,7 @@ const EmpresasPage: React.FC = () => {
                   </CardContent>
                 </Card>
               </Grid>
-              
+
               <Grid item xs={12} md={6}>
                 <Card>
                   <CardContent>

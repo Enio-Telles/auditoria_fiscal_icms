@@ -14,7 +14,7 @@ if "%CONDA_DEFAULT_ENV%"=="auditoria-fiscal" (
     echo 📍 Iniciando servidor na porta 8000...
     echo 📚 Documentação: http://localhost:8000/docs
     echo ================================================
-    
+
     REM Executar servidor
     python run_server.py
 ) else (

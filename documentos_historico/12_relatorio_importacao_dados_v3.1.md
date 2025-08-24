@@ -1,6 +1,6 @@
 # Relatório de Implementação - Sistema de Importação de Dados
-**Data:** 20 de Agosto de 2025  
-**Versão:** 3.1.0  
+**Data:** 20 de Agosto de 2025
+**Versão:** 3.1.0
 **Status:** Funcionalidade de Importação Implementada e Funcional
 
 ## 🎯 **RESUMO EXECUTIVO**
@@ -151,7 +151,7 @@ conn = pyodbc.connect(conn_str)
 #### **PostgreSQL (psycopg2)**
 ```python
 conn = psycopg2.connect(
-    host=host, port=port, user=user, 
+    host=host, port=port, user=user,
     password=password, database=database,
     cursor_factory=RealDictCursor
 )
@@ -185,7 +185,7 @@ conn = mysql.connector.connect(
 - **Estados de Job:** pending, running, completed, failed
 
 ### **✅ Mapeamento de Dados**
-- **Campos Mapeados:** 
+- **Campos Mapeados:**
   - `descricao_produto` → `nome` e `descricao`
   - `codigo_produto` → `codigo_produto`
   - `codigo_barra` → `codigo_barra`
@@ -201,7 +201,7 @@ conn = mysql.connector.connect(
 
 ### **Query SQL Pré-configurada**
 ```sql
-SELECT 
+SELECT
     produto_id,
     descricao_produto,
     codigo_produto,
@@ -241,7 +241,7 @@ try:
     PYODBC_AVAILABLE = True
 except ImportError:
     PYODBC_AVAILABLE = False
-    
+
 try:
     import mysql.connector
     MYSQL_AVAILABLE = True
@@ -342,7 +342,7 @@ import_jobs = {
 const checkStatus = async () => {
     const response = await axios.get(`/api/import/status/${jobId}`);
     setImportJob(response.data);
-    
+
     if (response.data.status === 'running') {
         setTimeout(checkStatus, 2000);
     }
@@ -420,8 +420,8 @@ A implementação da **funcionalidade de importação de dados** representa um *
 
 ---
 
-**Desenvolvido por:** Enio Telles  
-**Data:** 20 de Agosto de 2025  
+**Desenvolvido por:** Enio Telles
+**Data:** 20 de Agosto de 2025
 **Versão:** 3.1.0
 
 *Sistema de Importação de Dados - Conectividade universal para auditoria fiscal*

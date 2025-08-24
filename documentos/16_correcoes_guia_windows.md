@@ -3,32 +3,32 @@
 ## ✅ PROBLEMAS IDENTIFICADOS E CORRIGIDOS:
 
 ### 1. **Estrutura de Diretórios dos Microserviços**
-❌ **ERRO ORIGINAL**: `microservices\api_gateway`  
+❌ **ERRO ORIGINAL**: `microservices\api_gateway`
 ✅ **CORREÇÃO**: `microservices\gateway`
 
-❌ **ERRO ORIGINAL**: `microservices\auth_service`  
+❌ **ERRO ORIGINAL**: `microservices\auth_service`
 ✅ **CORREÇÃO**: `microservices\auth-service`
 
-❌ **ERRO ORIGINAL**: `microservices\tenant_service`  
+❌ **ERRO ORIGINAL**: `microservices\tenant_service`
 ✅ **CORREÇÃO**: `microservices\tenant-service`
 
 ### 2. **Nomes dos Containers Docker**
-❌ **ERRO ORIGINAL**: `auditoria-postgres-local`, `auditoria-redis-local`  
+❌ **ERRO ORIGINAL**: `auditoria-postgres-local`, `auditoria-redis-local`
 ✅ **CORREÇÃO**: `auditoria_postgres`, `auditoria_redis` (containers existentes)
 
 ### 3. **Ollama - Container vs Nativo**
-❌ **ERRO ORIGINAL**: `docker exec auditoria-ollama-local ollama pull`  
+❌ **ERRO ORIGINAL**: `docker exec auditoria-ollama-local ollama pull`
 ✅ **CORREÇÃO**: `ollama pull` (Ollama nativo instalado no Windows)
 
 ### 4. **Comandos de Criação de Diretórios**
-❌ **ERRO ORIGINAL**: `mkdir data\logs 2>nul` (causa erro no PowerShell)  
+❌ **ERRO ORIGINAL**: `mkdir data\logs 2>nul` (causa erro no PowerShell)
 ✅ **CORREÇÃO**: `New-Item -ItemType Directory -Path "data\logs" -Force`
 
 ## 🚀 STATUS ATUAL DO SISTEMA:
 
 ### ✅ **FUNCIONANDO:**
 - PostgreSQL: `auditoria_postgres` container (porta 5432)
-- Redis: `auditoria_redis` container (porta 6379)  
+- Redis: `auditoria_redis` container (porta 6379)
 - Ollama: Nativo Windows (porta 11434)
 - Backend: API Gateway (porta 8000) - RODANDO
 - Frontend: React (porta 3001) - PRONTO
@@ -48,7 +48,7 @@ microservices/
 
 ### 🔧 **SCRIPTS FUNCIONAIS CRIADOS:**
 - `start_backend_simples.ps1` ✅ TESTADO E FUNCIONANDO
-- `check_containers.ps1` ✅ TESTADO E FUNCIONANDO  
+- `check_containers.ps1` ✅ TESTADO E FUNCIONANDO
 - `status.ps1` ✅ TESTADO E FUNCIONANDO
 
 ### 🌐 **URLs ATIVAS:**
@@ -70,7 +70,7 @@ microservices/
 
 O guia foi corrigido e o sistema está funcionando perfeitamente com:
 - Containers Docker existentes (PostgreSQL, Redis)
-- Ollama nativo do Windows  
+- Ollama nativo do Windows
 - Backend FastAPI rodando
 - Frontend React pronto
 - Todas as dependências instaladas

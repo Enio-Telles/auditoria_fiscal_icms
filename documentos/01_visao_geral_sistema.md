@@ -191,8 +191,8 @@ O sistema está pronto para uso em produção com todas as funcionalidades princ
 
 ---
 
-**Desenvolvido por:** Enio Telles  
-**Data:** Agosto 2025  
-**Versão:** 3.0.0  
+**Desenvolvido por:** Enio Telles
+**Data:** Agosto 2025
+**Versão:** 3.0.0
 
 *Próximo documento: [02_arquitetura_multi_tenant.md](02_arquitetura_multi_tenant.md)*

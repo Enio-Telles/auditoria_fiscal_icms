@@ -29,16 +29,16 @@ try {
 if (-not $dockerReady) {
     Write-Host "Iniciando Docker Desktop..." -ForegroundColor Yellow
     Start-Process -FilePath $dockerPath -WindowStyle Minimized
-    
+
     Write-Host "Aguardando Docker inicializar..." -ForegroundColor Yellow
     $maxWait = 24  # 120 segundos
     $count = 0
-    
+
     do {
         Start-Sleep -Seconds 5
         $count++
         Write-Host "Tentativa $count de $maxWait..." -ForegroundColor Gray
-        
+
         try {
             docker info | Out-Null
             $dockerReady = $true
@@ -48,7 +48,7 @@ if (-not $dockerReady) {
             # Continua tentando
         }
     } while ($count -lt $maxWait)
-    
+
     if (-not $dockerReady) {
         Write-Host "Docker nao ficou pronto em 2 minutos" -ForegroundColor Red
         Write-Host "Verifique se Docker Desktop inicializou corretamente" -ForegroundColor Yellow

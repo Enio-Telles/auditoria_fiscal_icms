@@ -14,7 +14,7 @@ const ClassificacaoPage: React.FC = () => {
 
   const classificarProduto = async () => {
     if (!produto.trim()) return;
-    
+
     setClassificando(true);
     try {
       const response = await fetch('/api/classification/classify', {
@@ -25,7 +25,7 @@ const ClassificacaoPage: React.FC = () => {
           strategy: 'ensemble'
         })
       });
-      
+
       const result = await response.json();
       setResultado(result);
     } catch (error) {
@@ -40,7 +40,7 @@ const ClassificacaoPage: React.FC = () => {
       <Typography variant="h4" gutterBottom>
         Classificação de Produtos
       </Typography>
-      
+
       <Grid container spacing={3}>
         {/* Formulário de entrada */}
         <Grid item xs={12} md={6}>
@@ -48,7 +48,7 @@ const ClassificacaoPage: React.FC = () => {
             <Typography variant="h6" gutterBottom>
               Produto para Classificar
             </Typography>
-            
+
             <TextField
               fullWidth
               multiline
@@ -59,7 +59,7 @@ const ClassificacaoPage: React.FC = () => {
               placeholder="Ex: Smartphone Samsung Galaxy A54 128GB 5G"
               sx={{ mb: 2 }}
             />
-            
+
             <Button
               variant="contained"
               onClick={classificarProduto}
@@ -70,13 +70,13 @@ const ClassificacaoPage: React.FC = () => {
             >
               {classificando ? 'Classificando...' : 'Classificar Produto'}
             </Button>
-            
+
             {classificando && (
               <LinearProgress sx={{ mt: 2 }} />
             )}
           </Paper>
         </Grid>
-        
+
         {/* Resultado */}
         <Grid item xs={12} md={6}>
           {resultado && (
@@ -84,7 +84,7 @@ const ClassificacaoPage: React.FC = () => {
               <Typography variant="h6" gutterBottom>
                 Resultado da Classificação
               </Typography>
-              
+
               <Grid container spacing={2}>
                 <Grid item xs={6}>
                   <Card>
@@ -98,7 +98,7 @@ const ClassificacaoPage: React.FC = () => {
                     </CardContent>
                   </Card>
                 </Grid>
-                
+
                 <Grid item xs={6}>
                   <Card>
                     <CardContent>
@@ -112,25 +112,25 @@ const ClassificacaoPage: React.FC = () => {
                   </Card>
                 </Grid>
               </Grid>
-              
+
               <Box sx={{ mt: 2 }}>
-                <Chip 
+                <Chip
                   label={`Confiança: ${(resultado.confidence * 100).toFixed(1)}%`}
                   color={resultado.confidence > 0.8 ? 'success' : 'warning'}
                   sx={{ mr: 1 }}
                 />
-                <Chip 
+                <Chip
                   label={resultado.strategy}
                   variant="outlined"
                 />
               </Box>
-              
+
               <Alert severity="info" sx={{ mt: 2 }}>
                 <Typography variant="body2">
                   <strong>Justificativa:</strong> {resultado.justification}
                 </Typography>
               </Alert>
-              
+
               <Box sx={{ mt: 2 }}>
                 <Button
                   variant="contained"

@@ -19,7 +19,7 @@ import { LoginRequest } from '../types';
 const LoginPage: React.FC = () => {
   const navigate = useNavigate();
   const { login, isAuthenticated, loginLoading, loginError } = useAuth();
-  
+
   const { register, handleSubmit, formState: { errors } } = useForm<LoginRequest>();
 
   // Redirecionar se já autenticado
@@ -69,7 +69,7 @@ const LoginPage: React.FC = () => {
                   helperText={errors.username?.message}
                   sx={{ mb: 2 }}
                 />
-                
+
                 <TextField
                   fullWidth
                   label="Senha"

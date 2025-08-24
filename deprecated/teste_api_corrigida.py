@@ -8,16 +8,16 @@ Script para testar especificamente a API corrigida sem conflitos.
 """
 
 import requests
-import json
 import time
+
 
 def test_api_corrigida():
     """Teste da API corrigida"""
     api_url = "http://127.0.0.1:8003"
-    
+
     print("🔄 Testando API Corrigida...")
     print("=" * 50)
-    
+
     # Teste 1: Health Check
     print("\n🔧 Teste 1: Health Check")
     try:
@@ -35,7 +35,7 @@ def test_api_corrigida():
     except Exception as e:
         print(f"❌ Erro no health check: {e}")
         return False
-    
+
     # Teste 2: Root endpoint
     print("\n🔧 Teste 2: Root Endpoint")
     try:
@@ -50,7 +50,7 @@ def test_api_corrigida():
             print(f"❌ Root endpoint falhou: {response.status_code}")
     except Exception as e:
         print(f"❌ Erro no root endpoint: {e}")
-    
+
     # Teste 3: Empresas
     print("\n🔧 Teste 3: Listar Empresas")
     try:
@@ -65,7 +65,7 @@ def test_api_corrigida():
             print(f"❌ Listar empresas falhou: {response.status_code}")
     except Exception as e:
         print(f"❌ Erro ao listar empresas: {e}")
-    
+
     # Teste 4: Estatísticas
     print("\n🔧 Teste 4: Estatísticas")
     try:
@@ -80,31 +80,29 @@ def test_api_corrigida():
             print(f"❌ Estatísticas falharam: {response.status_code}")
     except Exception as e:
         print(f"❌ Erro nas estatísticas: {e}")
-    
+
     # Teste 5: Teste de Conexão de Importação
     print("\n🔧 Teste 5: Teste de Conexão de Importação")
     try:
         connection_data = {
             "type": "postgresql",
-            "host": "localhost", 
+            "host": "localhost",
             "port": 5432,
             "database": "db_04565289005297",
             "user": "postgres",
             "password": "sefin",
-            "schema": "dbo"
+            "schema": "dbo",
         }
-        
+
         response = requests.post(
-            f"{api_url}/api/import/test-connection",
-            json=connection_data,
-            timeout=15
+            f"{api_url}/api/import/test-connection", json=connection_data, timeout=15
         )
-        
+
         if response.status_code == 200:
             result = response.json()
             print("✅ Teste de conexão OK!")
             print(f"📋 Sucesso: {result['success']}")
-            if result['success']:
+            if result["success"]:
                 print(f"📋 Info: {result.get('database_info', 'N/A')[:60]}...")
                 print(f"📋 Host: {result.get('host', 'N/A')}")
                 print(f"📋 Database: {result.get('database', 'N/A')}")
@@ -113,27 +111,28 @@ def test_api_corrigida():
         else:
             print(f"❌ Teste de conexão falhou: {response.status_code}")
             print(f"📋 Resposta: {response.text[:100]}...")
-            
+
     except Exception as e:
         print(f"❌ Erro no teste de conexão: {e}")
-    
+
     print("\n🎉 Teste concluído!")
     return True
+
 
 if __name__ == "__main__":
     print("🚀 Teste da API Multi-Tenant Corrigida")
     print("=" * 60)
     print("⏳ Aguardando API estar pronta...")
     time.sleep(3)
-    
+
     success = test_api_corrigida()
-    
+
     if success:
         print("\n✅ API está funcionando corretamente!")
         print("🎯 Problema de finalização automática foi resolvido!")
     else:
         print("\n❌ Ainda há problemas na API")
-    
+
     print("\n📋 Para mais testes, acesse:")
     print("   • http://127.0.0.1:8003/docs - Documentação interativa")
     print("   • http://127.0.0.1:8003/health - Status da API")

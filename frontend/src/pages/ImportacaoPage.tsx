@@ -92,14 +92,14 @@ interface ImportJob {
 const ImportacaoPage: React.FC = () => {
   const { empresaId } = useParams<{ empresaId: string }>();
   const navigate = useNavigate();
-  
+
   // Estados
   const [activeStep, setActiveStep] = useState(0);
   const [loading, setLoading] = useState(false);
   const [empresa, setEmpresa] = useState<any>(null);
   const [importConfig, setImportConfig] = useState<ImportConfig>({
     empresa_id: parseInt(empresaId || '0'),
-    sql_query: `SELECT 
+    sql_query: `SELECT
                 produto_id,
                 descricao_produto,
                 codigo_produto,
@@ -155,27 +155,27 @@ const ImportacaoPage: React.FC = () => {
   // Testar conexão com banco
   const testConnection = async () => {
     setConnectionTest({ status: 'testing', message: 'Testando conexão...' });
-    
+
     try {
       const response = await axios.post('/api/import/test-connection', {
         connection: importConfig.connection
       });
-      
+
       if (response.data.success) {
-        setConnectionTest({ 
-          status: 'success', 
-          message: `Conexão estabelecida! ${response.data.database_info}` 
+        setConnectionTest({
+          status: 'success',
+          message: `Conexão estabelecida! ${response.data.database_info}`
         });
       } else {
-        setConnectionTest({ 
-          status: 'error', 
-          message: response.data.error || 'Erro na conexão' 
+        setConnectionTest({
+          status: 'error',
+          message: response.data.error || 'Erro na conexão'
         });
       }
     } catch (error: any) {
-      setConnectionTest({ 
-        status: 'error', 
-        message: error.response?.data?.detail || 'Erro ao testar conexão' 
+      setConnectionTest({
+        status: 'error',
+        message: error.response?.data?.detail || 'Erro ao testar conexão'
       });
     }
   };
@@ -189,7 +189,7 @@ const ImportacaoPage: React.FC = () => {
         sql_query: importConfig.sql_query,
         limit: 100
       });
-      
+
       setPreviewData(response.data);
       setActiveStep(1);
     } catch (error: any) {
@@ -207,7 +207,7 @@ const ImportacaoPage: React.FC = () => {
       const response = await axios.post('/api/import/execute', importConfig);
       setImportJob(response.data);
       setActiveStep(3);
-      
+
       // Polling do status
       pollImportStatus(response.data.job_id);
     } catch (error: any) {
@@ -224,7 +224,7 @@ const ImportacaoPage: React.FC = () => {
       try {
         const response = await axios.get(`/api/import/status/${jobId}`);
         setImportJob(response.data);
-        
+
         if (response.data.status === 'running') {
           setTimeout(checkStatus, 2000); // Check a cada 2 segundos
         }
@@ -232,7 +232,7 @@ const ImportacaoPage: React.FC = () => {
         console.error('Erro ao verificar status:', error);
       }
     };
-    
+
     checkStatus();
   };
 
@@ -241,7 +241,7 @@ const ImportacaoPage: React.FC = () => {
       alert('Teste a conexão antes de continuar');
       return;
     }
-    
+
     if (activeStep === 1) {
       setActiveStep(2);
     } else if (activeStep === 2) {
@@ -302,7 +302,7 @@ const ImportacaoPage: React.FC = () => {
             <StorageIcon />
             Configuração da Conexão com Banco de Dados
           </Typography>
-          
+
           <Grid container spacing={3} sx={{ mt: 2 }}>
             <Grid item xs={12} md={6}>
               <TextField
@@ -320,7 +320,7 @@ const ImportacaoPage: React.FC = () => {
                 <MenuItem value="mysql">MySQL</MenuItem>
               </TextField>
             </Grid>
-            
+
             <Grid item xs={12} md={6}>
               <TextField
                 fullWidth
@@ -332,7 +332,7 @@ const ImportacaoPage: React.FC = () => {
                 }))}
               />
             </Grid>
-            
+
             <Grid item xs={12} md={3}>
               <TextField
                 fullWidth
@@ -345,7 +345,7 @@ const ImportacaoPage: React.FC = () => {
                 }))}
               />
             </Grid>
-            
+
             <Grid item xs={12} md={4}>
               <TextField
                 fullWidth
@@ -357,7 +357,7 @@ const ImportacaoPage: React.FC = () => {
                 }))}
               />
             </Grid>
-            
+
             <Grid item xs={12} md={2}>
               <TextField
                 fullWidth
@@ -369,7 +369,7 @@ const ImportacaoPage: React.FC = () => {
                 }))}
               />
             </Grid>
-            
+
             <Grid item xs={12} md={3}>
               <TextField
                 fullWidth
@@ -381,7 +381,7 @@ const ImportacaoPage: React.FC = () => {
                 }))}
               />
             </Grid>
-            
+
             <Grid item xs={12} md={6}>
               <TextField
                 fullWidth
@@ -394,7 +394,7 @@ const ImportacaoPage: React.FC = () => {
                 }))}
               />
             </Grid>
-            
+
             <Grid item xs={12}>
               <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
                 <Button
@@ -405,9 +405,9 @@ const ImportacaoPage: React.FC = () => {
                 >
                   Testar Conexão
                 </Button>
-                
+
                 {connectionTest.status !== 'idle' && (
-                  <Alert 
+                  <Alert
                     severity={connectionTest.status === 'success' ? 'success' : connectionTest.status === 'error' ? 'error' : 'info'}
                     sx={{ flex: 1 }}
                   >
@@ -416,7 +416,7 @@ const ImportacaoPage: React.FC = () => {
                 )}
               </Box>
             </Grid>
-            
+
             <Grid item xs={12}>
               <TextField
                 fullWidth
@@ -432,7 +432,7 @@ const ImportacaoPage: React.FC = () => {
               />
             </Grid>
           </Grid>
-          
+
           <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 3 }}>
             <Button onClick={() => navigate(-1)}>
               Cancelar
@@ -456,11 +456,11 @@ const ImportacaoPage: React.FC = () => {
             <TableIcon />
             Preview dos Dados
           </Typography>
-          
+
           <Alert severity="info" sx={{ mb: 3 }}>
             Mostrando {previewData.sample_size} de {previewData.total_count} registros totais
           </Alert>
-          
+
           <TableContainer sx={{ maxHeight: 400 }}>
             <Table stickyHeader>
               <TableHead>
@@ -481,7 +481,7 @@ const ImportacaoPage: React.FC = () => {
               </TableBody>
             </Table>
           </TableContainer>
-          
+
           <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 3 }}>
             <Button onClick={handleBack}>
               Voltar
@@ -500,7 +500,7 @@ const ImportacaoPage: React.FC = () => {
             <InfoIcon />
             Configurações da Importação
           </Typography>
-          
+
           <Grid container spacing={3} sx={{ mt: 2 }}>
             <Grid item xs={12} md={6}>
               <TextField
@@ -515,7 +515,7 @@ const ImportacaoPage: React.FC = () => {
                 helperText="Número de registros processados por vez"
               />
             </Grid>
-            
+
             <Grid item xs={12} md={6}>
               <FormControl fullWidth>
                 <InputLabel>Atualizar Existentes</InputLabel>
@@ -532,20 +532,20 @@ const ImportacaoPage: React.FC = () => {
               </FormControl>
             </Grid>
           </Grid>
-          
+
           <Alert severity="warning" sx={{ mt: 3 }}>
             <Typography variant="body2">
               <strong>Atenção:</strong> Esta operação irá importar {previewData?.total_count} registros.
               {importConfig.update_existing && ' Registros existentes serão atualizados.'}
             </Typography>
           </Alert>
-          
+
           <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 3 }}>
             <Button onClick={handleBack}>
               Voltar
             </Button>
-            <Button 
-              variant="contained" 
+            <Button
+              variant="contained"
               color="primary"
               onClick={handleNext}
               startIcon={<PlayIcon />}
@@ -560,12 +560,12 @@ const ImportacaoPage: React.FC = () => {
       {activeStep === 3 && importJob && (
         <Paper sx={{ p: 3 }}>
           <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            {importJob.status === 'completed' ? <CheckIcon color="success" /> : 
-             importJob.status === 'failed' ? <ErrorIcon color="error" /> : 
+            {importJob.status === 'completed' ? <CheckIcon color="success" /> :
+             importJob.status === 'failed' ? <ErrorIcon color="error" /> :
              <CircularProgress size={24} />}
             Status da Importação
           </Typography>
-          
+
           <Card sx={{ mt: 2 }}>
             <CardContent>
               <Grid container spacing={2}>
@@ -573,7 +573,7 @@ const ImportacaoPage: React.FC = () => {
                   <Typography variant="body2" color="text.secondary">
                     Status
                   </Typography>
-                  <Chip 
+                  <Chip
                     label={importJob.status}
                     color={
                       importJob.status === 'completed' ? 'success' :
@@ -582,7 +582,7 @@ const ImportacaoPage: React.FC = () => {
                     }
                   />
                 </Grid>
-                
+
                 <Grid item xs={12} md={3}>
                   <Typography variant="body2" color="text.secondary">
                     Progresso
@@ -591,7 +591,7 @@ const ImportacaoPage: React.FC = () => {
                     {importJob.processed_records} / {importJob.total_records}
                   </Typography>
                 </Grid>
-                
+
                 <Grid item xs={12} md={3}>
                   <Typography variant="body2" color="text.secondary">
                     Início
@@ -600,7 +600,7 @@ const ImportacaoPage: React.FC = () => {
                     {new Date(importJob.start_time).toLocaleString()}
                   </Typography>
                 </Grid>
-                
+
                 <Grid item xs={12} md={3}>
                   <Typography variant="body2" color="text.secondary">
                     Fim
@@ -610,16 +610,16 @@ const ImportacaoPage: React.FC = () => {
                   </Typography>
                 </Grid>
               </Grid>
-              
+
               {importJob.total_records > 0 && (
                 <Box sx={{ mt: 2 }}>
-                  <LinearProgress 
-                    variant="determinate" 
+                  <LinearProgress
+                    variant="determinate"
                     value={(importJob.processed_records / importJob.total_records) * 100}
                   />
                 </Box>
               )}
-              
+
               {importJob.error_message && (
                 <Alert severity="error" sx={{ mt: 2 }}>
                   {importJob.error_message}
@@ -627,13 +627,13 @@ const ImportacaoPage: React.FC = () => {
               )}
             </CardContent>
           </Card>
-          
+
           <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 3 }}>
             <Button onClick={() => navigate('/empresas')}>
               Voltar para Empresas
             </Button>
             {importJob.status === 'completed' && (
-              <Button 
+              <Button
                 variant="contained"
                 onClick={() => navigate(`/empresas/${empresaId}/produtos`)}
                 startIcon={<CheckIcon />}

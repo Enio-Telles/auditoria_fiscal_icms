@@ -26,7 +26,7 @@ interface DadosEmpresa {
   cnpj: string;
   inscricaoEstadual: string;
   inscricaoMunicipal: string;
-  
+
   // Endereço
   cep: string;
   logradouro: string;
@@ -35,15 +35,15 @@ interface DadosEmpresa {
   bairro: string;
   cidade: string;
   estado: string;
-  
+
   // Contato
   telefone: string;
   email: string;
   responsavel: string;
-  
+
   // Atividades econômicas
   atividades: AtividadeEconomica[];
-  
+
   // Configurações
   regimeTributario: string;
   porteEmpresa: string;
@@ -121,7 +121,7 @@ const CadastroEmpresaPage: React.FC = () => {
       try {
         const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
         const data = await response.json();
-        
+
         if (!data.erro) {
           setDados(prev => ({
             ...prev,
@@ -154,7 +154,7 @@ const CadastroEmpresaPage: React.FC = () => {
           atividades: [...prev.atividades, novaAtividade]
         }));
       }
-      
+
       setNovaAtividade({ cnae: '', descricao: '', principal: false });
       setDialogAtividade(false);
     }
@@ -169,7 +169,7 @@ const CadastroEmpresaPage: React.FC = () => {
 
   const salvarEmpresa = async () => {
     setSalvando(true);
-    
+
     try {
       // Validação básica de campos obrigatórios
       if (!dados.razaoSocial || !dados.cnpj) {
@@ -180,7 +180,7 @@ const CadastroEmpresaPage: React.FC = () => {
 
       const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:8000';
       const endpoint = `${apiUrl}/empresas`;
-      
+
       const requestData = {
         cnpj: dados.cnpj,
         razao_social: dados.razaoSocial,
@@ -216,14 +216,14 @@ const CadastroEmpresaPage: React.FC = () => {
       } else {
         const errorText = await response.text();
         console.log('Error Response Text:', errorText);
-        
+
         let errorData;
         try {
           errorData = JSON.parse(errorText);
         } catch (e) {
           errorData = { detail: errorText };
         }
-        
+
         throw new Error(errorData.detail || 'Erro ao salvar empresa');
       }
     } catch (error) {
@@ -553,7 +553,7 @@ const CadastroEmpresaPage: React.FC = () => {
             <Typography variant="h6" gutterBottom>
               Confirmar Dados da Empresa
             </Typography>
-            
+
             <Grid container spacing={3}>
               <Grid item xs={12} md={6}>
                 <Card>
@@ -576,7 +576,7 @@ const CadastroEmpresaPage: React.FC = () => {
                   </CardContent>
                 </Card>
               </Grid>
-              
+
               <Grid item xs={12} md={6}>
                 <Card>
                   <CardContent>
@@ -596,7 +596,7 @@ const CadastroEmpresaPage: React.FC = () => {
                   </CardContent>
                 </Card>
               </Grid>
-              
+
               <Grid item xs={12} md={6}>
                 <Card>
                   <CardContent>
@@ -616,7 +616,7 @@ const CadastroEmpresaPage: React.FC = () => {
                   </CardContent>
                 </Card>
               </Grid>
-              
+
               <Grid item xs={12} md={6}>
                 <Card>
                   <CardContent>
@@ -665,7 +665,7 @@ const CadastroEmpresaPage: React.FC = () => {
       <Typography variant="h4" gutterBottom>
         Cadastro de Nova Empresa
       </Typography>
-      
+
       <Paper sx={{ p: 3 }}>
         <Stepper activeStep={activeStep} sx={{ mb: 4 }}>
           {steps.map((label) => (
@@ -690,7 +690,7 @@ const CadastroEmpresaPage: React.FC = () => {
           >
             Voltar
           </Button>
-          
+
           <Box>
             {activeStep === steps.length - 1 ? (
               <Button

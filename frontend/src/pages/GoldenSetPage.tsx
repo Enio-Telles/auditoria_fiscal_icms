@@ -40,16 +40,16 @@ const GoldenSetPage: React.FC = () => {
   const salvarItem = async (item: Partial<GoldenSetItem>) => {
     try {
       const method = editingItem ? 'PUT' : 'POST';
-      const url = editingItem 
+      const url = editingItem
         ? `/api/golden-set/${editingItem.id}`
         : '/api/golden-set';
-      
+
       await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(item)
       });
-      
+
       setDialogOpen(false);
       setEditingItem(null);
       carregarGoldenSet();
@@ -64,7 +64,7 @@ const GoldenSetPage: React.FC = () => {
         <Typography variant="h4">
           Golden Set - Base de Conhecimento
         </Typography>
-        
+
         <Box>
           <Button
             variant="outlined"
@@ -118,14 +118,14 @@ const GoldenSetPage: React.FC = () => {
                     <Chip label={item.ncm} size="small" />
                   </TableCell>
                   <TableCell>
-                    <Chip 
-                      label={item.cest || 'N/A'} 
-                      size="small" 
-                      variant="outlined" 
+                    <Chip
+                      label={item.cest || 'N/A'}
+                      size="small"
+                      variant="outlined"
                     />
                   </TableCell>
                   <TableCell>
-                    <Chip 
+                    <Chip
                       label={`${(item.confianca * 100).toFixed(0)}%`}
                       color={item.confianca > 0.9 ? 'success' : 'warning'}
                       size="small"

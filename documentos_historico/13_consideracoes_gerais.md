@@ -1,10 +1,10 @@
-O sistema multi-agentes rag de auditoria de icms de empresas deve dar a possibilidade, inclusive, na interface web frontend, de: 
+O sistema multi-agentes rag de auditoria de icms de empresas deve dar a possibilidade, inclusive, na interface web frontend, de:
 0) a classificação das mercadorias em termos de ncm e cest será feita com base na descrição da mercadoria, os ncm e cest serão analisados para confirmação: primeiro os agentes irão verificar se a classificação inicial está correta, caso não se confirme essa classificação, os agentes irão fazer nova classificação e determinar o ncm e o cest
 0.1) um agente irá identificar e agregar produtos que são iguais, mas possuem descrições diferentes; por exemplo, produtos que tem descrições iguais já são agregados na consulta inicial (id_agregados), pois são iguais, mesmo que com ncm, cest, codigo_produto, codigo_barra e produto_id diferentes (nesse caso, a confirmação dos códigos ncm e cest será feita em relação à todas as classificações dos produtos agregados – que são iguais, com mesmo id_agregados); caso do codigo_produto seja igual, mas a descrição seja similar, é provável que sejam produtos iguais; caso tenham codigo_produto diferentes, e descrição similar, é possível que sejam produtos iguais
 1) Na interface web frontend, ter uma página para cada opção de classificação: classificar apenas um produto, classificar um determinado número de produtos, ou classificar todos os produtos da base de dados da empresa;
 2) a base de dados da empresa será importada de outros bancos de dados (como postgres e SQL), a exemplo da consulta do banco de dados referenciado à empresa do banco de dados db_04565289005297
 “””
-SELECT 
+SELECT
                 produto_id,
                 descricao_produto,
                 codigo_produto,
@@ -29,9 +29,9 @@ DB_SCHEMA=dbo
 a) criar bando de dados usuários – nome – email – cargo - identificação - primeiro: Enio Telles – eniotelles@gmail.com
 b) criar banco de dados empresas – dados gerais (como no sintegra, sócios, contador, endereço) –> obrigatórios: nome e atividades
 -> identificar empresa cujos produtos estão sendo classificados e agrupados (futuramente, serão implementadas outras funções relacionadas à análise das atividades da empresa) e possibilitar selecionar, ou cadastrar nova empresa)
-->dentro do banco de dados da empresa existirão várias tabelas 
-- (modularidade que comporte verificação de estoques posterior) – 
-pretendo que, futuramente, importe dados da efd (diveras tabelas inter-relacionadas) 
+->dentro do banco de dados da empresa existirão várias tabelas
+- (modularidade que comporte verificação de estoques posterior) –
+pretendo que, futuramente, importe dados da efd (diveras tabelas inter-relacionadas)
 - no sistema atual, é para ter banco de dados de produtos, importado de outro banco de dados (Postgres), em que o nome do banco de dados identifica a empresa (é um outro banco de dados sobre a empresa, cujo nome é, por exemplo, DB_NAME=db_04565289005297)
 	->possibilidade de importar dados de bancos de dados oracle sql e postgres
 5) após login do usuário, apresentar página com todas as possibilidades do sistema em botões, ícones ou links
@@ -40,8 +40,8 @@ pretendo que, futuramente, importe dados da efd (diveras tabelas inter-relaciona
 8) ao fazer a consulta no banco de dados relativo à empresa para importar para os bancos de dados do sistema (também um por empresa):
 ->  como comentado em 0.1) , é feita uma agregação inicial mediante a consulta sql (descrições iguais)
 -_ Criar tabelas dentro do banco do sistema por empresa, com tabelas sobre os dados cadastrais da empresa e tabelas sobre os produtos (acessíveis por meio da interface web)
-9) possibilitar executar as funçõesoes de apenas um agente (acessível pelo ambiente web): enriquecer descrições, classificação ncm, classificação cest, agregação de produtos iguais com descrições diferentes – 
-10) no contexto das classificações e agregações pelo sistema, armazenar nos bancos de dados as justificativas e os contextos RAG que fundamentaram as decisões 
+9) possibilitar executar as funçõesoes de apenas um agente (acessível pelo ambiente web): enriquecer descrições, classificação ncm, classificação cest, agregação de produtos iguais com descrições diferentes –
+10) no contexto das classificações e agregações pelo sistema, armazenar nos bancos de dados as justificativas e os contextos RAG que fundamentaram as decisões
 11) dar a possibilidade (inclusive na interface web) de escolher quantas mercadorias classificar ou todas
 - possibilitar retomar a classificação ou classificar as mercadorias restantes ou quantas mais classificar - identificar quais dados devem constar
 12) dar a possibilidade de visualizar classificações realizadas
@@ -51,7 +51,7 @@ pretendo que, futuramente, importe dados da efd (diveras tabelas inter-relaciona
 16) dar a possibilidade de revisar a classificação, com visualização de todas as informações sobre a classificação, inclusive justificativas e consultas RAG que fundamentaram a classificação (todos os campos, inclusive produto_id, descricao_produto, codigo_barra, código_produto, ncm e cest), com identificação do usuário que fez a correção: confirmar, corrigir e incluir a classificação no golden set (tornar possível incluir as classificações corrigidas no golden set)
 17) criação de golden set para futuramente realimentar o sistema – criar um banco próprio a ser usado por todas as empresas - índice próprio- referência a fonte: usuário e empresa -
 18) Possibilidade de revisar e alterar golden set por dados e por mercadorias (inclusive na inteface web)
-19) cada decisão dos agentes deve ser documentada: acessos a bancos de dados RAG, contexto, justificativas para decisões 
+19) cada decisão dos agentes deve ser documentada: acessos a bancos de dados RAG, contexto, justificativas para decisões
 20) as atividades da empresa devem fazer parte do contexto da classificação do produto: por exemplo, vendedores de autopeças provavelmente vendem produtos do segmento CEST autopeças; farmácias vendem medicamentos; empresas que fazem venda porta a porta se enquadram nesse segmento do CEST 28
 21) ao confirmar ou determinar o ncm, considerar:
 	-> a atividade da empresa auxilia na identificação das mercadorias
@@ -77,33 +77,24 @@ RGC/TIPI 1: Determinação do "Ex" Aplicável As Regras Gerais para Interpretaç
 	-> todo CEST se relaciona a um NCM ou grupo de NCMs
   	-> Nem todo NCM tem CEST
     ->  Um CEST pode abranger vários NCMs
-	->Um CEST pode abranger vários NCMs ou grupos de NCM 
+	->Um CEST pode abranger vários NCMs ou grupos de NCM
         nas tabelas que relacionam CEST NCM podem constar, por exemplo CEST relacionado a mais de um ncm, como no caso do CEST 01.001.00, que engloba os NCMs 3815.12.10 e 3815.12.90. Nesse a mercadoria deve se enquadrar nesse NCM e com base na descrição contida na tabela.
         Em outros casos, a o CEST pode se referir a uma categoria de NCMs, como no CEST 01.002.00, que se refere ao NCM 3917. Nesse caso, o NCM deve se enquadrar nessa categoria e estar conforme a descrição.
         Pode ocorrer também de, como ocorre no CEST 01.006.00, de a categoria de NCM estar mais detalhada, como a relação com o NCM 4010.3
     -> o produto pode ter ncm que se enquadra no cest mas não fazer parte do segmento, então essa descrição fica sem cest (exemplo, produtos não vendidos porta a porta não se enquadram no segmento 28 do CEST)
     -> No caso do segmento Venda Porta a Porta (Segmento 28, Anexo XXIX), depende da descrição da atividade da empresa (se faz venda porta a porta). Se não faz, não se enquadra. – considerar item 20)
         Operações que envolvem contribuintes que atuam na modalidade porta a porta devem observar o CEST previsto no Anexo XXIX, mesmo que as mercadorias estejam listadas em outros anexos.
-    ->  seguir a estrutura do código CEST SS.III.DD (7 dígitos): identificar o segmento econômico e se o ncm se enquadra no CEST correspondente 
+    ->  seguir a estrutura do código CEST SS.III.DD (7 dígitos): identificar o segmento econômico e se o ncm se enquadra no CEST correspondente
             SS - Segmento Econômico
             III - item dentro do segmento
             DD - diferenciação ou agrupamento
 23) as consultas RAG devem ser referenciadas com metadados dos arquivos de origem (arquivo, capítulo, campo se tabela)
 24) base de dados
-    Da data\raw\Tabela_NCM.xlsx, serão importados os campos Código (que representa o código ncm) e Descrição; 
-    O arquivo descricoes_ncm.json é uma reprodução da Tabela_NCM.xlsx, porém com a diferença que as descrições dos códigos são agrupadas com base na estrutura do código NCM 
-    Do arquivo conv_142_formatado.json, serão importadas todos os campos (Anexo se refere ao Anexo do Convênio 142, Segmento representa o número do segmento descrito pelo nome do Anexo; cest representa o código cest; ncm representa o grupo de ncms associados ao cest; descricao_oficial_cest representa a descrição do cest - um produto, para se enquadrar em um código cest, deve se enquadrar no segmento e na descrição); 
+    Da data\raw\Tabela_NCM.xlsx, serão importados os campos Código (que representa o código ncm) e Descrição;
+    O arquivo descricoes_ncm.json é uma reprodução da Tabela_NCM.xlsx, porém com a diferença que as descrições dos códigos são agrupadas com base na estrutura do código NCM
+    Do arquivo conv_142_formatado.json, serão importadas todos os campos (Anexo se refere ao Anexo do Convênio 142, Segmento representa o número do segmento descrito pelo nome do Anexo; cest representa o código cest; ncm representa o grupo de ncms associados ao cest; descricao_oficial_cest representa a descrição do cest - um produto, para se enquadrar em um código cest, deve se enquadrar no segmento e na descrição);
     no arquivo produtos_selecionados (serão importados todos os campos), o campo gtin contém o número que descreve um produto único (como em codigo_barra); o campo descrição contém a descrição desse produto; o campo ncm contém o ncm desse produto; e o campo cest, se nulo, indica que não há código cest para esse produto e, se há código cest, representa o código cest do produto descrito);
-    O arquivo CEST_RO representa as classificações de cest para o Estado de Rondônia, com lógica semelhante à do arquivo conv_142_formatado.json, porém com mais informações – cada CEST relaciona-se a um grupo de ncm (campo NCM/SH), e a uma descrição, com os MVAs, o campo situação refere-se à situação atual do Item da Tabela (que se referem ao CEST), se está vigente ou se foi alterado pela legislação. Os campos Início vig. e Fim vig. informam o período de início e fim da vigência (quando o segundo campo está vazio, ainda não ocorreu o fim da vigência) 
+    O arquivo CEST_RO representa as classificações de cest para o Estado de Rondônia, com lógica semelhante à do arquivo conv_142_formatado.json, porém com mais informações – cada CEST relaciona-se a um grupo de ncm (campo NCM/SH), e a uma descrição, com os MVAs, o campo situação refere-se à situação atual do Item da Tabela (que se referem ao CEST), se está vigente ou se foi alterado pela legislação. Os campos Início vig. e Fim vig. informam o período de início e fim da vigência (quando o segundo campo está vazio, ainda não ocorreu o fim da vigência)
     O arquivo nesh-2022_REGRAS_GERAIS.docx contém as regras gerais.
     O arquivo nesh-2022.pdf é um compêndio estruturado das notas explicativas sobre o código ncm (compreende o  conteúdo do arquivo nesh-2022_REGRAS_GERAIS.docx, porém é mais abrangente)
     A data\raw\Tabela_ABC_Farma_V2.xlsx contém a descrição completa dos produtos associada ao codigo_barras: são todos Medicamentos que se enquadram no capítulo 30 do NCM (3003 ou 3004) e no segmento 13 do CEST. Usar para identificar as mercadorias analisadas ncm e cest.
-
-
-	
-
-
-
-
-
- 

@@ -27,21 +27,21 @@ function Test-Port {
 # Funcao para aguardar servico ficar disponivel
 function Wait-ForService {
     param($porta, $nomeServico, $tempoLimite = 60)
-    
+
     Write-Host "Aguardando $nomeServico ficar disponivel..." -ForegroundColor Yellow
     $tempoInicio = Get-Date
-    
+
     do {
         Start-Sleep -Seconds 2
         $disponivel = Test-Port $porta
         $tempoDecorrido = (Get-Date) - $tempoInicio
-        
+
         if ($tempoDecorrido.TotalSeconds -gt $tempoLimite) {
             Write-Host "Timeout aguardando $nomeServico" -ForegroundColor Yellow
             return $false
         }
     } while (-not $disponivel)
-    
+
     Write-Host "$nomeServico disponivel!" -ForegroundColor Green
     return $true
 }
@@ -98,10 +98,10 @@ try {
 # Iniciar PostgreSQL se nao estiver rodando
 if (-not (Test-Port 5432)) {
     Write-Host "Iniciando PostgreSQL..." -ForegroundColor Yellow
-    
+
     # Verificar se ja existe um container PostgreSQL
     $postgresContainer = docker ps -a --filter "name=postgres_auditoria" --format "{{.Names}}"
-    
+
     if ($postgresContainer) {
         Write-Host "Container PostgreSQL encontrado, iniciando..." -ForegroundColor Yellow
         docker start postgres_auditoria
@@ -114,7 +114,7 @@ if (-not (Test-Port 5432)) {
             -p 5432:5432 `
             postgres:13
     }
-    
+
     # Aguardar PostgreSQL ficar disponivel
     if (-not (Wait-ForService 5432 "PostgreSQL")) {
         Write-Host "Falha ao iniciar PostgreSQL" -ForegroundColor Red
@@ -127,10 +127,10 @@ if (-not (Test-Port 5432)) {
 # Iniciar Redis se nao estiver rodando
 if (-not (Test-Port 6379)) {
     Write-Host "Iniciando Redis..." -ForegroundColor Yellow
-    
+
     # Verificar se ja existe um container Redis
     $redisContainer = docker ps -a --filter "name=redis_auditoria" --format "{{.Names}}"
-    
+
     if ($redisContainer) {
         Write-Host "Container Redis encontrado, iniciando..." -ForegroundColor Yellow
         docker start redis_auditoria
@@ -138,7 +138,7 @@ if (-not (Test-Port 6379)) {
         Write-Host "Criando novo container Redis..." -ForegroundColor Yellow
         docker run -d --name redis_auditoria -p 6379:6379 redis:7-alpine
     }
-    
+
     # Aguardar Redis ficar disponivel
     if (-not (Wait-ForService 6379 "Redis")) {
         Write-Host "Falha ao iniciar Redis" -ForegroundColor Red
@@ -172,10 +172,10 @@ if (Test-Port 8000) {
     Write-Host "Backend ja esta rodando na porta 8000" -ForegroundColor Green
 } else {
     Write-Host "Iniciando API Gateway..." -ForegroundColor Yellow
-    
+
     # Iniciar o backend em uma nova janela do PowerShell
     Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd '$PWD'; conda activate auditoria-fiscal; python apis\api_estavel.py"
-    
+
     # Aguardar o backend ficar disponivel
     if (Wait-ForService 8000 "API Gateway" 30) {
         Write-Host "Backend iniciado com sucesso!" -ForegroundColor Green
@@ -194,12 +194,12 @@ if (Test-Port 11434) {
     Write-Host "Ollama ja esta rodando na porta 11434" -ForegroundColor Green
 } else {
     Write-Host "Iniciando Ollama..." -ForegroundColor Yellow
-    
+
     # Verificar se Ollama esta instalado
     if (Get-Command ollama -ErrorAction SilentlyContinue) {
         # Iniciar Ollama em background
         Start-Process "ollama" -ArgumentList "serve" -WindowStyle Hidden
-        
+
         # Aguardar Ollama ficar disponivel
         if (Wait-ForService 11434 "Ollama" 30) {
             Write-Host "Ollama iniciado com sucesso!" -ForegroundColor Green
@@ -223,13 +223,13 @@ if (Test-Port 3001) {
     if (Test-Path "frontend") {
         Write-Host "Navegando para pasta frontend..." -ForegroundColor Yellow
         Set-Location "frontend"
-        
+
         # Verificar se node_modules existe
         if (-not (Test-Path "node_modules")) {
             Write-Host "Instalando dependencias do frontend..." -ForegroundColor Yellow
             npm install
         }
-        
+
         # Criar arquivo .env.local se nao existir
         if (-not (Test-Path ".env.local")) {
             Write-Host "Criando arquivo .env.local..." -ForegroundColor Yellow
@@ -238,14 +238,14 @@ REACT_APP_API_URL=http://localhost:8000
 REACT_APP_ENVIRONMENT=local
 "@ | Out-File -FilePath ".env.local" -Encoding UTF8
         }
-        
+
         # Iniciar servidor de desenvolvimento
         Write-Host "Iniciando servidor React..." -ForegroundColor Green
         Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd '$PWD'; npm start"
-        
+
         # Voltar para pasta raiz
         Set-Location ".."
-        
+
         # Aguardar frontend ficar disponivel
         if (Wait-ForService 3001 "Frontend React" 60) {
             Write-Host "Frontend iniciado com sucesso!" -ForegroundColor Green

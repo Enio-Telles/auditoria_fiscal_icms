@@ -11,12 +11,12 @@ from .cest_agent import CESTAgent
 from .reconciliation_agent import ReconciliationAgent
 
 __all__ = [
-    'BaseAgent',
-    'AgentDecision', 
-    'AuditTrail',
-    'ManagerAgent',
-    'EnrichmentAgent',
-    'NCMAgent',
-    'CESTAgent',
-    'ReconciliationAgent'
+    "BaseAgent",
+    "AgentDecision",
+    "AuditTrail",
+    "ManagerAgent",
+    "EnrichmentAgent",
+    "NCMAgent",
+    "CESTAgent",
+    "ReconciliationAgent",
 ]

@@ -49,7 +49,7 @@ foreach ($modelo in $modelos) {
     $nomeModelo = $modelo.nome
     $descricao = $modelo.descricao
     $essencial = $modelo.essencial
-    
+
     if ($modelosInstalados -like "*$nomeModelo*") {
         Write-Host "✅ $nomeModelo já instalado" -ForegroundColor Green
     } else {

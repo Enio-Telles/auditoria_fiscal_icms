@@ -54,7 +54,7 @@
 | Auditor | auditor@demo.com | auditor123 | Auditoria |
 | Operador | operador@demo.com | oper123 | Básicas |
 
-## 🔧 PROBLEMAS? 
+## 🔧 PROBLEMAS?
 
 ### 1️⃣ SEMPRE execute primeiro:
 ```powershell
@@ -128,7 +128,7 @@
 
 ---
 
-**Sistema de Auditoria Fiscal ICMS v4.0**  
+**Sistema de Auditoria Fiscal ICMS v4.0**
 *Desenvolvido para Windows 11 - Ambiente 100% Local*
 
 🔒 **Seguro** | 🚀 **Rápido** | 🤖 **Inteligente** | 📊 **Completo**

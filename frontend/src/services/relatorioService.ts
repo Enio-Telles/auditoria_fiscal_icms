@@ -102,7 +102,7 @@ export interface NCMAnalysis {
 class RelatorioService {
   async getStats(filter: RelatorioFilter): Promise<RelatorioStats> {
     const params = new URLSearchParams();
-    
+
     if (filter.dataInicio) {
       params.append('data_inicio', filter.dataInicio.toISOString().split('T')[0]);
     }
@@ -119,7 +119,7 @@ class RelatorioService {
 
   async getClassificacaoPorPeriodo(filter: RelatorioFilter): Promise<ClassificacaoPeriodo[]> {
     const params = new URLSearchParams();
-    
+
     if (filter.dataInicio) {
       params.append('data_inicio', filter.dataInicio.toISOString().split('T')[0]);
     }
@@ -141,10 +141,10 @@ class RelatorioService {
 
   async exportar(request: ExportRequest): Promise<Blob> {
     const params = new URLSearchParams();
-    
+
     params.append('formato', request.formato);
     params.append('tipo', request.tipo);
-    
+
     if (request.dataInicio) {
       params.append('data_inicio', request.dataInicio.toISOString().split('T')[0]);
     }
@@ -158,13 +158,13 @@ class RelatorioService {
     const response = await apiClient.get(`/relatorios/exportar?${params.toString()}`, {
       responseType: 'blob',
     });
-    
+
     return (response as any).data;
   }
 
   async getConformidadeReport(filter: RelatorioFilter) {
     const params = new URLSearchParams();
-    
+
     if (filter.dataInicio) {
       params.append('data_inicio', filter.dataInicio.toISOString().split('T')[0]);
     }
@@ -181,7 +181,7 @@ class RelatorioService {
 
   async getProdutividadeReport(filter: RelatorioFilter) {
     const params = new URLSearchParams();
-    
+
     if (filter.dataInicio) {
       params.append('data_inicio', filter.dataInicio.toISOString().split('T')[0]);
     }
@@ -214,7 +214,7 @@ class RelatorioService {
   // Novos métodos para relatórios avançados
   async getExecutiveMetrics(filter: RelatorioFilter): Promise<ExecutiveMetrics> {
     const params = new URLSearchParams();
-    
+
     if (filter.dataInicio) {
       params.append('data_inicio', filter.dataInicio.toISOString().split('T')[0]);
     }
@@ -231,7 +231,7 @@ class RelatorioService {
 
   async getPerformanceMetrics(filter: RelatorioFilter): Promise<PerformanceMetrics> {
     const params = new URLSearchParams();
-    
+
     if (filter.dataInicio) {
       params.append('data_inicio', filter.dataInicio.toISOString().split('T')[0]);
     }
@@ -245,7 +245,7 @@ class RelatorioService {
 
   async getComplianceMetrics(filter: RelatorioFilter): Promise<ComplianceMetrics> {
     const params = new URLSearchParams();
-    
+
     if (filter.dataInicio) {
       params.append('data_inicio', filter.dataInicio.toISOString().split('T')[0]);
     }
@@ -262,7 +262,7 @@ class RelatorioService {
 
   async getProductivityReport(filter: RelatorioFilter): Promise<ProductivityReport> {
     const params = new URLSearchParams();
-    
+
     if (filter.dataInicio) {
       params.append('data_inicio', filter.dataInicio.toISOString().split('T')[0]);
     }
@@ -279,7 +279,7 @@ class RelatorioService {
 
   async getNCMAnalysis(filter: RelatorioFilter): Promise<NCMAnalysis> {
     const params = new URLSearchParams();
-    
+
     if (filter.dataInicio) {
       params.append('data_inicio', filter.dataInicio.toISOString().split('T')[0]);
     }
@@ -301,7 +301,7 @@ class RelatorioService {
 
   async getAuditLog(filter: RelatorioFilter & { userId?: string; action?: string }): Promise<any> {
     const params = new URLSearchParams();
-    
+
     if (filter.dataInicio) {
       params.append('data_inicio', filter.dataInicio.toISOString().split('T')[0]);
     }

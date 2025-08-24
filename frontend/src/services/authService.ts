@@ -29,7 +29,7 @@ export class AuthService {
 
     // Salvar token
     apiClient.setToken(response.access_token);
-    
+
     return response;
   }
 
@@ -41,16 +41,16 @@ export class AuthService {
       { username: 'demo@demo.com', password: 'demo123', role: 'user', name: 'Demo User' },
       { username: 'auditor@demo.com', password: 'auditor123', role: 'auditor', name: 'Auditor Demo' }
     ];
-    
+
     await new Promise(resolve => setTimeout(resolve, 500)); // Simular delay de rede
-    
+
     const validUser = demoCredentials.find(
       cred => cred.username === credentials.username && cred.password === credentials.password
     );
-    
+
     if (validUser) {
       const mockToken = `demo_token_${Date.now()}_${validUser.role}`;
-      
+
       // Salvar dados do usuário demo
       const userData: User = {
         id: Date.now(),
@@ -60,10 +60,10 @@ export class AuthService {
         is_active: true,
         created_at: new Date().toISOString()
       };
-      
+
       localStorage.setItem('demo_user', JSON.stringify(userData));
       apiClient.setToken(mockToken);
-      
+
       return {
         access_token: mockToken,
         token_type: 'bearer',
@@ -89,7 +89,7 @@ export class AuthService {
       }
       throw new Error('Usuário não encontrado');
     }
-    
+
     return apiClient.get<User>('/auth/me');
   }
 
@@ -106,7 +106,7 @@ export class AuthService {
       }
       throw new Error('Token inválido');
     }
-    
+
     return apiClient.post<AuthToken>('/auth/refresh');
   }
 
@@ -116,7 +116,7 @@ export class AuthService {
       const userData = localStorage.getItem('demo_user');
       return !!(token && userData && token.startsWith('demo_token_'));
     }
-    
+
     return apiClient.isAuthenticated();
   }
 }

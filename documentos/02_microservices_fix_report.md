@@ -1,6 +1,6 @@
 # 🔧 Microservices Fix Report
 
-**Data:** 22 de Agosto de 2025  
+**Data:** 22 de Agosto de 2025
 **Status:** ✅ PARCIALMENTE RESOLVIDO
 
 ## 🎯 Problema Original
@@ -42,7 +42,7 @@ Corrigido nome do ambiente conda nos scripts:
 **Arquivo:** `start_microservices_dev.bat`
 - ❌ `auditoria-microservices` → ✅ `auditoria-fiscal-icms`
 
-**Arquivo:** `setup_microservices_conda.bat`  
+**Arquivo:** `setup_microservices_conda.bat`
 - Atualizado para usar ambiente principal existente
 
 ### 3. **Dependências Missing**
@@ -63,9 +63,9 @@ pip install httpx
 ### ✅ **Funcionando**
 - **API Gateway** (Port 8000): ✅ Status 200 - FUNCIONANDO
 
-### ⚠️ **Em Inicialização**  
+### ⚠️ **Em Inicialização**
 - **Auth Service** (Port 8001): 🔄 Ainda inicializando
-- **Tenant Service** (Port 8002): 🔄 Ainda inicializando  
+- **Tenant Service** (Port 8002): 🔄 Ainda inicializando
 - **Product Service** (Port 8003): 🔄 Ainda inicializando
 - **Classification Service** (Port 8004): 🔄 Ainda inicializando
 - **Import Service** (Port 8005): 🔄 Ainda inicializando

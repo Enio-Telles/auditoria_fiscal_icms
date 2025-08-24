@@ -2,33 +2,39 @@
 Tenant Service
 Manages multi-tenant configuration and isolation
 """
-from fastapi import FastAPI, HTTPException, Depends, status, Header
-from sqlalchemy.orm import Session
-from sqlalchemy import Column, Integer, String, DateTime, JSON, Text
+
+# Standard Library Imports
+import sys
+import os
 from datetime import datetime
 from typing import Optional, Dict, Any
 from contextlib import asynccontextmanager
-import sys
-import os
 
-# Add the microservices directory to Python path
+# Third-party Imports
+from fastapi import FastAPI, HTTPException, Depends, status
+from pydantic import BaseModel
+from sqlalchemy.orm import Session
+from sqlalchemy import Column, Integer, String, DateTime, JSON, Text
+
+# Add the microservices directory to Python path for local imports
 current_dir = os.path.dirname(os.path.abspath(__file__))
 microservices_dir = os.path.dirname(current_dir)
 sys.path.insert(0, microservices_dir)
 
-from shared.database import Base, get_db, db_config
-from shared.auth import get_current_user, get_current_tenant
-from shared.models import BaseResponse, ErrorResponse, TenantInfo
-from shared.logging_config import setup_logger
-from pydantic import BaseModel
+# Local Application Imports
+from shared.database import Base, get_db, db_config  # noqa: E402
+from shared.auth import get_current_user  # noqa: E402
+from shared.models import BaseResponse  # noqa: E402
+from shared.logging_config import setup_logger  # noqa: E402
 
 # Initialize logger
 logger = setup_logger("tenant-service")
 
+
 # Database Models
 class Tenant(Base):
     __tablename__ = "tenants"
-    
+
     id = Column(Integer, primary_key=True, index=True)
     tenant_id = Column(String, unique=True, index=True, nullable=False)
     tenant_name = Column(String, nullable=False)
@@ -38,6 +44,7 @@ class Tenant(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
+
 # Pydantic Models
 class TenantCreate(BaseModel):
     tenant_id: str
@@ -45,11 +52,13 @@ class TenantCreate(BaseModel):
     description: Optional[str] = None
     settings: Optional[Dict[str, Any]] = {}
 
+
 class TenantUpdate(BaseModel):
     tenant_name: Optional[str] = None
     description: Optional[str] = None
     settings: Optional[Dict[str, Any]] = None
     is_active: Optional[str] = None
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -60,49 +69,52 @@ async def lifespan(app: FastAPI):
     yield
     # Cleanup code (if needed) would go here
 
+
 # FastAPI App
 app = FastAPI(
     title="Tenant Service",
     description="Multi-tenant configuration and isolation management",
     version="1.0.0",
-    lifespan=lifespan
+    lifespan=lifespan,
 )
+
 
 @app.get("/health")
 async def health_check():
     return BaseResponse(message="Tenant service is healthy")
 
+
 @app.post("/tenants", response_model=BaseResponse)
 async def create_tenant(
-    tenant_data: TenantCreate, 
+    tenant_data: TenantCreate,
     db: Session = Depends(get_db),
-    current_user: dict = Depends(get_current_user)
+    current_user: dict = Depends(get_current_user),
 ):
     """Create a new tenant"""
     try:
         # Check if tenant already exists
-        existing_tenant = db.query(Tenant).filter(
-            Tenant.tenant_id == tenant_data.tenant_id
-        ).first()
-        
+        existing_tenant = (
+            db.query(Tenant).filter(Tenant.tenant_id == tenant_data.tenant_id).first()
+        )
+
         if existing_tenant:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Tenant ID already exists"
+                detail="Tenant ID already exists",
             )
-        
+
         # Create new tenant
         new_tenant = Tenant(
             tenant_id=tenant_data.tenant_id,
             tenant_name=tenant_data.tenant_name,
             description=tenant_data.description,
-            settings=tenant_data.settings or {}
+            settings=tenant_data.settings or {},
         )
-        
+
         db.add(new_tenant)
         db.commit()
         db.refresh(new_tenant)
-        
+
         # Create tenant schema in database
         try:
             schema_name = db_config.get_tenant_schema(tenant_data.tenant_id)
@@ -111,9 +123,9 @@ async def create_tenant(
             logger.info(f"Created schema for tenant: {schema_name}")
         except Exception as schema_error:
             logger.warning(f"Could not create schema: {str(schema_error)}")
-        
+
         logger.info(f"New tenant created: {tenant_data.tenant_id}")
-        
+
         return BaseResponse(
             message="Tenant created successfully",
             data={
@@ -122,10 +134,10 @@ async def create_tenant(
                 "tenant_name": new_tenant.tenant_name,
                 "description": new_tenant.description,
                 "settings": new_tenant.settings,
-                "created_at": new_tenant.created_at
-            }
+                "created_at": new_tenant.created_at,
+            },
         )
-        
+
     except HTTPException:
         raise
     except Exception as e:
@@ -133,47 +145,47 @@ async def create_tenant(
         db.rollback()
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Internal server error"
+            detail="Internal server error",
         )
+
 
 @app.get("/tenants", response_model=BaseResponse)
 async def list_tenants(
-    db: Session = Depends(get_db),
-    current_user: dict = Depends(get_current_user)
+    db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)
 ):
     """List all tenants (admin only)"""
     try:
         tenants = db.query(Tenant).all()
-        
+
         tenant_list = []
         for tenant in tenants:
-            tenant_list.append({
-                "id": tenant.id,
-                "tenant_id": tenant.tenant_id,
-                "tenant_name": tenant.tenant_name,
-                "description": tenant.description,
-                "is_active": tenant.is_active,
-                "created_at": tenant.created_at,
-                "updated_at": tenant.updated_at
-            })
-        
-        return BaseResponse(
-            message="Tenants retrieved successfully",
-            data=tenant_list
-        )
-        
+            tenant_list.append(
+                {
+                    "id": tenant.id,
+                    "tenant_id": tenant.tenant_id,
+                    "tenant_name": tenant.tenant_name,
+                    "description": tenant.description,
+                    "is_active": tenant.is_active,
+                    "created_at": tenant.created_at,
+                    "updated_at": tenant.updated_at,
+                }
+            )
+
+        return BaseResponse(message="Tenants retrieved successfully", data=tenant_list)
+
     except Exception as e:
         logger.error(f"Error listing tenants: {str(e)}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Internal server error"
+            detail="Internal server error",
         )
+
 
 @app.get("/tenants/{tenant_id}", response_model=BaseResponse)
 async def get_tenant(
     tenant_id: str,
     db: Session = Depends(get_db),
-    current_user: dict = Depends(get_current_user)
+    current_user: dict = Depends(get_current_user),
 ):
     """Get tenant information"""
     try:
@@ -182,17 +194,16 @@ async def get_tenant(
         if user_tenant_id != tenant_id:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
-                detail="Access denied to tenant information"
+                detail="Access denied to tenant information",
             )
-        
+
         tenant = db.query(Tenant).filter(Tenant.tenant_id == tenant_id).first()
-        
+
         if not tenant:
             raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Tenant not found"
+                status_code=status.HTTP_404_NOT_FOUND, detail="Tenant not found"
             )
-        
+
         return BaseResponse(
             message="Tenant information retrieved",
             data={
@@ -203,25 +214,26 @@ async def get_tenant(
                 "settings": tenant.settings,
                 "is_active": tenant.is_active,
                 "created_at": tenant.created_at,
-                "updated_at": tenant.updated_at
-            }
+                "updated_at": tenant.updated_at,
+            },
         )
-        
+
     except HTTPException:
         raise
     except Exception as e:
         logger.error(f"Error getting tenant: {str(e)}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Internal server error"
+            detail="Internal server error",
         )
+
 
 @app.put("/tenants/{tenant_id}", response_model=BaseResponse)
 async def update_tenant(
     tenant_id: str,
     tenant_data: TenantUpdate,
     db: Session = Depends(get_db),
-    current_user: dict = Depends(get_current_user)
+    current_user: dict = Depends(get_current_user),
 ):
     """Update tenant information"""
     try:
@@ -230,17 +242,16 @@ async def update_tenant(
         if user_tenant_id != tenant_id:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
-                detail="Access denied to update tenant"
+                detail="Access denied to update tenant",
             )
-        
+
         tenant = db.query(Tenant).filter(Tenant.tenant_id == tenant_id).first()
-        
+
         if not tenant:
             raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Tenant not found"
+                status_code=status.HTTP_404_NOT_FOUND, detail="Tenant not found"
             )
-        
+
         # Update fields
         if tenant_data.tenant_name is not None:
             tenant.tenant_name = tenant_data.tenant_name
@@ -250,14 +261,14 @@ async def update_tenant(
             tenant.settings = tenant_data.settings
         if tenant_data.is_active is not None:
             tenant.is_active = tenant_data.is_active
-        
+
         tenant.updated_at = datetime.utcnow()
-        
+
         db.commit()
         db.refresh(tenant)
-        
+
         logger.info(f"Tenant updated: {tenant_id}")
-        
+
         return BaseResponse(
             message="Tenant updated successfully",
             data={
@@ -267,10 +278,10 @@ async def update_tenant(
                 "description": tenant.description,
                 "settings": tenant.settings,
                 "is_active": tenant.is_active,
-                "updated_at": tenant.updated_at
-            }
+                "updated_at": tenant.updated_at,
+            },
         )
-        
+
     except HTTPException:
         raise
     except Exception as e:
@@ -278,14 +289,15 @@ async def update_tenant(
         db.rollback()
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Internal server error"
+            detail="Internal server error",
         )
+
 
 @app.get("/tenants/{tenant_id}/settings", response_model=BaseResponse)
 async def get_tenant_settings(
     tenant_id: str,
     db: Session = Depends(get_db),
-    current_user: dict = Depends(get_current_user)
+    current_user: dict = Depends(get_current_user),
 ):
     """Get tenant-specific settings"""
     try:
@@ -294,34 +306,34 @@ async def get_tenant_settings(
         if user_tenant_id != tenant_id:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
-                detail="Access denied to tenant settings"
+                detail="Access denied to tenant settings",
             )
-        
+
         tenant = db.query(Tenant).filter(Tenant.tenant_id == tenant_id).first()
-        
+
         if not tenant:
             raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Tenant not found"
+                status_code=status.HTTP_404_NOT_FOUND, detail="Tenant not found"
             )
-        
+
         return BaseResponse(
-            message="Tenant settings retrieved",
-            data=tenant.settings or {}
+            message="Tenant settings retrieved", data=tenant.settings or {}
         )
-        
+
     except HTTPException:
         raise
     except Exception as e:
         logger.error(f"Error getting tenant settings: {str(e)}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Internal server error"
+            detail="Internal server error",
         )
+
 
 # Incluir rotas de empresas se disponíveis
 try:
     from empresa_routes import router as empresa_router
+
     app.include_router(empresa_router, tags=["empresas"])
     logger.info("Rotas de empresas incluídas com sucesso")
 except ImportError as e:
@@ -331,4 +343,5 @@ except Exception as e:
 
 if __name__ == "__main__":
     import uvicorn
+
     uvicorn.run(app, host="0.0.0.0", port=8002)

@@ -127,7 +127,7 @@ const Sidebar: React.FC = () => {
               >
                 {item.icon}
               </ListItemIcon>
-              <ListItemText 
+              <ListItemText
                 primary={item.text}
                 primaryTypographyProps={{
                   fontSize: '0.875rem',
@@ -135,12 +135,12 @@ const Sidebar: React.FC = () => {
                 }}
               />
               {item.badge && (
-                <Chip 
-                  label={item.badge} 
-                  size="small" 
+                <Chip
+                  label={item.badge}
+                  size="small"
                   color="primary"
-                  sx={{ 
-                    height: 20, 
+                  sx={{
+                    height: 20,
                     fontSize: '0.75rem',
                     backgroundColor: location.pathname === item.path ? 'white' : 'primary.main',
                     color: location.pathname === item.path ? 'primary.main' : 'white',

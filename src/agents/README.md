@@ -140,7 +140,7 @@ workflow_id = agent_coordinator.create_workflow(
         {
             "id": "classify_ncm",
             "agent_name": "ncm_agent",
-            "task_type": "classify_ncm", 
+            "task_type": "classify_ncm",
             "task_data": {"description": "${step_expand_data_result.expanded_description}"},
             "dependencies": ["expand_data"]
         }
@@ -280,15 +280,15 @@ from src.agents import BaseAgent, AgentTask
 class CustomAgent(BaseAgent):
     def __init__(self, config=None):
         super().__init__(name="CustomAgent", config=config)
-    
+
     def get_capabilities(self):
         return ["custom_task"]
-    
+
     async def process_task(self, task: AgentTask):
         if task.type == "custom_task":
             return await self._custom_processing(task.data)
         raise ValueError(f"Tarefa não suportada: {task.type}")
-    
+
     async def _custom_processing(self, data):
         # Implementar lógica personalizada
         return {"result": "processed"}

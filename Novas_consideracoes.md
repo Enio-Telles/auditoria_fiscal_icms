@@ -12,7 +12,7 @@
 ### Classificação de Mercadorias
 - A classificação será feita com base na **descrição da mercadoria**.
 - as atividades da empresa devem fazer parte do contexto da classificação do produto, pois a atividade da empresa auxilia na identificação das mercadorias. Por exemplo, vendedores de autopeças provavelmente vendem produtos do segmento CEST autopeças; farmácias vendem medicamentos; empresas que fazem venda porta a porta se enquadram nesse segmento do CEST 28
-- a entrada das informações das mercadorias da empresa a serem verificadas e classificadas em termos de ncm e cest será com os seguintes campos, no mínimo: produto_id, descricao_produto, codigo_produto, codigo_barra, ncm, cest 
+- a entrada das informações das mercadorias da empresa a serem verificadas e classificadas em termos de ncm e cest será com os seguintes campos, no mínimo: produto_id, descricao_produto, codigo_produto, codigo_barra, ncm, cest
 - Os agentes verificarão se a classificação inicial em termos de **NCM** e **CEST** está correta. Caso contrário, gerarão nova classificação de **NCM** e **CEST**.
 - ao importar os dados de outro banco de dados, ou após essas informações serem integradas ao banco de dados da empresa (que contém as informações das mercadorias da empresa), será feita consulta inicial para agregar produtos com descrição igual (já na importação, ou após a importação dos dados para o banco de dados da empresa): Produtos com mesma descrição já são agregados na consulta inicial (`id_agregados`).
 - produtos iguais com descrições diferentes serão identificados e agregados por agente.
@@ -113,7 +113,7 @@ RGC/TIPI 1: Determinação do "Ex" Aplicável As Regras Gerais para Interpretaç
 - Permitir exportação/importação para integração com outros sistemas.
 
 ### Fluxo de Trabalho (Agentes)
--cada decisão dos agentes deve ser documentada: acessos a bancos de dados RAG, contexto, justificativas para decisões 
+-cada decisão dos agentes deve ser documentada: acessos a bancos de dados RAG, contexto, justificativas para decisões
 - Definir contratos claros (JSON schemas) para inputs e outputs, garantindo interoperabilidade.
 - Implementar logs detalhados para cada agente, incluindo versões de modelos e prompts usados.
 - Prever fallback para revisão humana em casos de baixa confiança.
@@ -154,8 +154,3 @@ RGC/TIPI 1: Determinação do "Ex" Aplicável As Regras Gerais para Interpretaç
 4. **Abordagem híbrida: regras + RAG** — aplicar regras determinísticas antes ou como filtro ao RAG (ex.: filtro por capítulo NCM, mapas CEST→NCM, vigências legais).
 
 5. **Fluxo human-in-the-loop** — definir limiares: auto-aplicar (alto score + compatibilidade com regras), revisão (médio), bloqueio/revisão manual (baixo).
-
-
-
-
-

@@ -90,7 +90,7 @@ fi
 if command -v nvidia-smi >/dev/null 2>&1; then
     info "GPU NVIDIA detectada:"
     nvidia-smi --query-gpu=name,memory.total --format=csv,noheader,nounits | head -1
-    
+
     docker run --rm --gpus all nvidia/cuda:11.0-base nvidia-smi >/dev/null 2>&1
     check_status "NVIDIA Docker runtime"
     [ $? -ne 0 ] && warning "GPU não será utilizada pelos containers"
@@ -196,14 +196,14 @@ echo "-----------------------------------------------"
 # Arquivo .env
 if [ -f "deploy/production/.env.production" ]; then
     check_status "Arquivo .env.production existe"
-    
+
     # Verificar variáveis críticas
     if grep -q "POSTGRES_PASSWORD=changeme" deploy/production/.env.production; then
         warning "POSTGRES_PASSWORD usando valor padrão!"
     else
         check_status "POSTGRES_PASSWORD configurada"
     fi
-    
+
     if grep -q "JWT_SECRET=your-secret-key" deploy/production/.env.production; then
         warning "JWT_SECRET usando valor padrão!"
     else
@@ -217,7 +217,7 @@ fi
 # SSL
 if [ -d "deploy/production/ssl" ]; then
     check_status "Diretório SSL existe"
-    
+
     if [ -f "deploy/production/ssl/auditoria-fiscal.com.crt" ] && [ -f "deploy/production/ssl/auditoria-fiscal.com.key" ]; then
         check_status "Certificados SSL encontrados"
     else
@@ -266,14 +266,14 @@ if [ $ERRORS -eq 0 ]; then
     echo "Todas as verificações passaram com sucesso."
     echo "O sistema está preparado para deploy em produção."
     echo -e "${NC}"
-    
+
     echo
     echo "🚀 PRÓXIMOS PASSOS:"
     echo "1. Configurar certificados SSL se necessário"
     echo "2. Revisar variáveis de ambiente em .env.production"
     echo "3. Executar: ./scripts/deploy_producao.sh"
     echo
-    
+
     exit 0
 else
     echo -e "${RED}"
@@ -281,7 +281,7 @@ else
     echo "--------------------------------"
     echo "Corrija os problemas acima antes do deploy."
     echo -e "${NC}"
-    
+
     echo
     echo "🔧 AÇÕES RECOMENDADAS:"
     echo "1. Instalar dependências faltantes"
@@ -290,6 +290,6 @@ else
     echo "4. Corrigir arquivos de configuração"
     echo "5. Executar novamente este script"
     echo
-    
+
     exit 1
 fi

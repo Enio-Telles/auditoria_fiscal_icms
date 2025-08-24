@@ -87,11 +87,11 @@ if /i "%choice%"=="s" (
     echo 🚀 Iniciando frontend React...
     cd frontend
     start cmd /k "npm start"
-    
+
     echo.
     echo ⏳ Aguardando frontend inicializar...
     timeout /t 10 /nobreak >nul
-    
+
     echo 🌐 Abrindo navegador...
     start http://localhost:3000/agents
 )

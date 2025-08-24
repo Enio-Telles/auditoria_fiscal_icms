@@ -105,8 +105,8 @@ const App: React.FC = () => {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider theme={theme}>
         <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ptBR}>
-          <SnackbarProvider 
-            maxSnack={3} 
+          <SnackbarProvider
+            maxSnack={3}
             anchorOrigin={{
               vertical: 'top',
               horizontal: 'right',
@@ -117,10 +117,10 @@ const App: React.FC = () => {
               <Box sx={{ display: 'flex', minHeight: '100vh' }}>
                 <AppHeader />
                 <Sidebar />
-                <Box 
-                  component="main" 
-                  sx={{ 
-                    flexGrow: 1, 
+                <Box
+                  component="main"
+                  sx={{
+                    flexGrow: 1,
                     mt: 8, // Account for AppBar height
                     ml: { xs: 0, sm: 30 }, // Account for Sidebar width
                     p: 3,

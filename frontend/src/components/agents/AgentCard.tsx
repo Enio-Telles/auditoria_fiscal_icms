@@ -84,8 +84,8 @@ const AgentCard: React.FC<AgentCardProps> = ({
     : 0;
 
   return (
-    <Card 
-      sx={{ 
+    <Card
+      sx={{
         height: '100%',
         transition: 'transform 0.2s, box-shadow 0.2s',
         '&:hover': {
@@ -167,7 +167,7 @@ const AgentCard: React.FC<AgentCardProps> = ({
               borderRadius: 3,
               backgroundColor: '#f0f0f0',
               '& .MuiLinearProgress-bar': {
-                backgroundColor: agent.metrics.success_rate_percentage >= 80 ? '#4caf50' : 
+                backgroundColor: agent.metrics.success_rate_percentage >= 80 ? '#4caf50' :
                                  agent.metrics.success_rate_percentage >= 60 ? '#ff9800' : '#f44336',
                 borderRadius: 3,
               },
@@ -256,23 +256,23 @@ const AgentCard: React.FC<AgentCardProps> = ({
             Parar
           </MenuItem>
         )}
-        
+
         <MenuItem onClick={() => { onRestart(agent.id); handleMenuClose(); }}>
           <RestartIcon sx={{ mr: 1 }} />
           Reiniciar
         </MenuItem>
-        
+
         <MenuItem onClick={() => { onConfigure(agent); handleMenuClose(); }}>
           <SettingsIcon sx={{ mr: 1 }} />
           Configurar
         </MenuItem>
-        
+
         <MenuItem onClick={() => { onViewDetails(agent); handleMenuClose(); }}>
           <SettingsIcon sx={{ mr: 1 }} />
           Ver Detalhes
         </MenuItem>
-        
-        <MenuItem 
+
+        <MenuItem
           onClick={() => { onRemove(agent.id); handleMenuClose(); }}
           sx={{ color: 'error.main' }}
         >

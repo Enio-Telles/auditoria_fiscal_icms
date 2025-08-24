@@ -42,9 +42,9 @@ test_endpoint() {
     local url=$1
     local description=$2
     local expected_code=${3:-200}
-    
+
     response=$(curl -s -o /dev/null -w "%{http_code}" --connect-timeout 10 --max-time 30 "$url")
-    
+
     if [ "$response" = "$expected_code" ]; then
         status_ok "$description (HTTP $response)"
         return 0
@@ -58,7 +58,7 @@ test_endpoint() {
 check_container() {
     local container_name=$1
     local description=$2
-    
+
     if docker ps --format "table {{.Names}}" | grep -q "^$container_name$"; then
         local status=$(docker inspect --format='{{.State.Status}}' "$container_name" 2>/dev/null)
         if [ "$status" = "running" ]; then
@@ -78,9 +78,9 @@ check_container() {
 check_logs() {
     local container_name=$1
     local description=$2
-    
+
     local errors=$(docker logs "$container_name" --since="5m" 2>&1 | grep -i "error\|exception\|failed" | wc -l)
-    
+
     if [ "$errors" -eq 0 ]; then
         status_ok "$description - Sem erros recentes"
         return 0
@@ -205,7 +205,7 @@ if check_container "auditoria-ollama" "Ollama AI Engine"; then
     OLLAMA_RESPONSE=$(curl -s --connect-timeout 10 http://localhost:11434/api/version 2>/dev/null)
     if [ $? -eq 0 ] && [[ $OLLAMA_RESPONSE == *"version"* ]]; then
         status_ok "Ollama API respondendo"
-        
+
         # Verificar modelos carregados
         MODELS=$(curl -s http://localhost:11434/api/tags 2>/dev/null | grep -o '"name"' | wc -l)
         if [ "$MODELS" -gt 0 ]; then
@@ -300,7 +300,7 @@ if [ $TOTAL_ERRORS -eq 0 ]; then
     echo "✅ Sistema de IA funcionando"
     echo "✅ Monitoramento ativo"
     echo -e "${NC}"
-    
+
     echo
     echo "🔗 LINKS ÚTEIS:"
     echo "• Frontend: https://$DOMAIN"
@@ -308,7 +308,7 @@ if [ $TOTAL_ERRORS -eq 0 ]; then
     echo "• Grafana: http://$DOMAIN:3000 (admin/admin)"
     echo "• Prometheus: http://$DOMAIN:9090"
     echo
-    
+
 else
     echo -e "${RED}"
     echo "⚠️  PROBLEMAS DETECTADOS: $TOTAL_ERRORS"
@@ -320,7 +320,7 @@ else
     echo "• Problemas de IA: $AI_ERRORS"
     echo "• Problemas de monitoramento: $MONITORING_ERRORS"
     echo -e "${NC}"
-    
+
     echo
     echo "🔧 AÇÕES RECOMENDADAS:"
     echo "1. Verificar logs dos containers com problema"
@@ -328,7 +328,7 @@ else
     echo "3. Verificar conectividade de rede"
     echo "4. Consultar documentação de troubleshooting"
     echo
-    
+
     if [ $LOG_ISSUES -gt 0 ]; then
         echo "📋 VERIFICAR LOGS DETALHADOS:"
         for container in "${CRITICAL_CONTAINERS[@]}"; do

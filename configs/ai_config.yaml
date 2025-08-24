@@ -1,9 +1,9 @@
-﻿########################################################################
-# ConfiguraÃ§Ã£o do Sistema de IA para ClassificaÃ§Ã£o NCM/CEST
-# VersÃ£o: 2.0 - IA Real com LLMs
+########################################################################
+# Configuração do Sistema de IA para Classificação NCM/CEST
+# Versão: 2.0 - IA Real com LLMs
 ########################################################################
 
-# ConfiguraÃ§Ãµes dos Provedores LLM
+# Configurações dos Provedores LLM
 llm:
   # OpenAI Configuration
   openai:
@@ -16,8 +16,8 @@ llm:
     timeout: 30
     retry_attempts: 3
     cost_optimization: true
-    
-  # Anthropic Claude Configuration  
+
+  # Anthropic Claude Configuration
   anthropic:
     enabled: false
     api_key: ${ANTHROPIC_API_KEY}
@@ -25,7 +25,7 @@ llm:
     temperature: 0.1
     max_tokens: 1500
     timeout: 30
-    
+
   # Ollama Local Configuration
   ollama:
     enabled: true
@@ -35,7 +35,7 @@ llm:
     temperature: 0.1
     max_tokens: 1500
     timeout: 60
-    
+
   # Hugging Face Configuration
   huggingface:
     enabled: false
@@ -44,48 +44,48 @@ llm:
     temperature: 0.7
     max_length: 512
 
-# EstratÃ©gias de ClassificaÃ§Ã£o
+# Estratégias de Classificação
 classification:
-  # EstratÃ©gia padrÃ£o
+  # Estratégia padrão
   default_strategy: 'real_agents'
-  
-  # Limiares de confianÃ§a
+
+  # Limiares de confiança
   confidence_threshold: 0.80
   high_confidence_threshold: 0.90
   low_confidence_threshold: 0.60
-  
+
   # Modelos para ensemble
   ensemble_models: ["openai", "ollama"]
-  
-  # EstratÃ©gia de fallback
+
+  # Estratégia de fallback
   fallback_strategy: "rag"
-  
-  # ConfiguraÃ§Ãµes especÃ­ficas por estratÃ©gia
+
+  # Configurações específicas por estratégia
   strategies:
     direct:
       preferred_model: "openai"
       complexity: "low"
-      
+
     rag:
       preferred_model: "ollama"
       context_limit: 5
       similarity_threshold: 0.7
-      
+
     hierarchical:
       models_by_level:
         capitulo: "ollama"
         posicao: "openai"
         item: "openai"
-        
+
     ensemble:
       voting_strategy: "weighted"  # simple, weighted, ranked
       min_models: 2
-      
+
     hybrid:
       rag_threshold: 0.85
       ensemble_fallback: true
 
-# ConfiguraÃ§Ãµes de Performance
+# Configurações de Performance
 performance:
   # Cache de resultados
   caching:
@@ -93,19 +93,19 @@ performance:
     ttl_hours: 24
     max_size: 10000
     compression: true
-    
-  # OtimizaÃ§Ã£o de custos
+
+  # Otimização de custos
   cost_optimization:
     enabled: true
     max_daily_cost: 50.0  # USD
     prefer_local_models: true
     batch_requests: true
-    
+
   # Rate limiting
   rate_limiting:
     requests_per_minute: 60
     requests_per_hour: 1000
-    
+
   # Timeouts
   timeouts:
     default: 30
@@ -117,21 +117,21 @@ knowledge_base:
   # Paths
   data_path: "data/raw"
   cache_path: "data/cache"
-  
-  # Embeddings para busca semÃ¢ntica
+
+  # Embeddings para busca semântica
   embeddings:
     model: "BAAI/bge-m3"
     dimension: 1024
     device: "cpu"
     batch_size: 32
-    
-  # Ãndices de busca
+
+  # Índices de busca
   search_indices:
     keyword_min_length: 3
     similarity_threshold: 0.7
     max_results: 10
-    
-  # AtualizaÃ§Ãµes automÃ¡ticas
+
+  # Atualizações automáticas
   auto_update:
     enabled: true
     check_interval_hours: 24
@@ -143,13 +143,13 @@ knowledge_base:
 audit:
   # Database de auditoria
   database_path: "data/cache/audit_trail.sqlite"
-  
-  # NÃ­veis de log
+
+  # Níveis de log
   log_level: "INFO"  # DEBUG, INFO, WARNING, ERROR
-  
-  # RetenÃ§Ã£o de dados
+
+  # Retenção de dados
   retention_days: 365
-  
+
   # Campos auditados
   track_fields:
     - "modelo_usado"
@@ -159,30 +159,30 @@ audit:
     - "estrategia"
     - "user_id"
     - "ip_address"
-    
-  # Alertas automÃ¡ticos
+
+  # Alertas automáticos
   alerts:
     low_confidence_threshold: 0.60
     high_cost_threshold: 10.0
     error_rate_threshold: 0.05
 
-# ValidaÃ§Ã£o e Qualidade
+# Validação e Qualidade
 validation:
-  # ValidaÃ§Ãµes automÃ¡ticas
+  # Validações automáticas
   auto_validate: true
-  
-  # Regras de negÃ³cio
+
+  # Regras de negócio
   business_rules:
     ncm_length: 8
     cest_length: 7
     required_fields: ["descricao_produto"]
-    
+
   # Cross-validation
   cross_validation:
     enabled: true
     ncm_cest_compatibility: true
     hierarchy_consistency: true
-    
+
   # Flags de alerta
   alert_flags:
     - "ncm_not_found"
@@ -191,7 +191,7 @@ validation:
     - "model_error"
     - "timeout"
 
-# IntegraÃ§Ã£o com APIs
+# Integração com APIs
 api_integration:
   # Rate limiting para APIs externas
   external_apis:
@@ -199,110 +199,110 @@ api_integration:
       rate_limit: 100
       timeout: 10
       retry_attempts: 3
-      
-  # Webhooks para notificaÃ§Ãµes
+
+  # Webhooks para notificações
   webhooks:
     enabled: false
     endpoints: []
-    
-  # Formato de resposta padrÃ£o
+
+  # Formato de resposta padrão
   response_format: "json"
   include_metadata: true
-  include_audit_trail: false  # Por seguranÃ§a
+  include_audit_trail: false  # Por segurança
 
-# ConfiguraÃ§Ãµes de Desenvolvimento
+# Configurações de Desenvolvimento
 development:
   # Modo debug
   debug_mode: false
-  
+
   # Logs detalhados
   verbose_logging: false
-  
-  # SimulaÃ§Ã£o de modelos
+
+  # Simulação de modelos
   mock_llm_responses: false
-  
-  # MÃ©tricas de desenvolvimento
+
+  # Métricas de desenvolvimento
   collect_metrics: true
   metrics_interval: 3600  # seconds
-  
+
   # Testes automatizados
   automated_tests:
     enabled: true
     test_data_path: "data/test"
     coverage_threshold: 0.90
 
-# ConfiguraÃ§Ãµes de ProduÃ§Ã£o
+# Configurações de Produção
 production:
   # Modo seguro
   safe_mode: true
-  
+
   # Monitoramento
   monitoring:
     enabled: true
     metrics_endpoint: "/metrics"
     health_check_endpoint: "/health"
-    
-  # Backup automÃ¡tico
+
+  # Backup automático
   backup:
     enabled: true
     interval_hours: 6
     retention_days: 30
-    
+
   # Escalabilidade
   scaling:
     max_concurrent_requests: 100
     queue_size: 1000
     worker_processes: 4
 
-# ConfiguraÃ§Ãµes Regionais
+# Configurações Regionais
 regional:
-  # Estado padrÃ£o
+  # Estado padrão
   default_state: "RO"
-  
+
   # Suporte multi-estado
   multi_state_support: true
-  
-  # ConfiguraÃ§Ãµes especÃ­ficas por estado
+
+  # Configurações específicas por estado
   state_configs:
     RO:
       cest_required: true
       st_applicable: true
-      
+
     SP:
       cest_required: true
       st_applicable: true
-      
+
     RJ:
       cest_required: true
       st_applicable: true
 
-# ConfiguraÃ§Ãµes de SeguranÃ§a
+# Configurações de Segurança
 security:
-  # AutenticaÃ§Ã£o
+  # Autenticação
   authentication:
     required: true
     method: "jwt"  # jwt, api_key, oauth
-    
-  # AutorizaÃ§Ã£o
+
+  # Autorização
   authorization:
     role_based: true
     permissions:
       classify: ["user", "admin"]
       audit: ["admin"]
       config: ["admin"]
-      
-  # Rate limiting de seguranÃ§a
+
+  # Rate limiting de segurança
   security_rate_limits:
     max_requests_per_user: 1000
     suspicious_activity_threshold: 100
-    
-  # Logs de seguranÃ§a
+
+  # Logs de segurança
   security_logging:
     enabled: true
     log_failed_attempts: true
     alert_on_abuse: true
 
-# ConfiguraÃ§Ãµes de NotificaÃ§Ã£o
+# Configurações de Notificação
 notifications:
   # Email
   email:
@@ -311,37 +311,32 @@ notifications:
     smtp_port: 587
     username: ""
     password: ""
-    
+
   # Slack
   slack:
     enabled: false
     webhook_url: ""
-    
-  # Alertas crÃ­ticos
+
+  # Alertas críticos
   critical_alerts:
     - "system_down"
     - "high_error_rate"
     - "cost_limit_exceeded"
 
-# ConfiguraÃ§Ãµes Experimentais
+# Configurações Experimentais
 experimental:
   # Novos modelos
   new_models:
     enabled: false
     models: []
-    
+
   # Features em beta
   beta_features:
     - "advanced_rag"
     - "multi_modal_input"
-    
+
   # A/B Testing
   ab_testing:
     enabled: false
     experiments: []
 use_real_agents: true
-
-
-
-
-

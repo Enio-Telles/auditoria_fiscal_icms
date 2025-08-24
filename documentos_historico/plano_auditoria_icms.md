@@ -349,4 +349,3 @@ Cada decisão precisa ser reconstruível: salve `input_snapshot`, `agentes_envol
 
 
 ---
-

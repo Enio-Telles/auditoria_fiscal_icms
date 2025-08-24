@@ -223,7 +223,7 @@ const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({
       {/* Alertas de Alto Nível */}
       {metrics.errorRate > 0.1 && (
         <Alert severity="warning" sx={{ mb: 3 }}>
-          <strong>Taxa de erro elevada:</strong> {formatPercentage(metrics.errorRate)} dos produtos 
+          <strong>Taxa de erro elevada:</strong> {formatPercentage(metrics.errorRate)} dos produtos
           apresentaram problemas na classificação. Recomenda-se revisão dos parâmetros.
         </Alert>
       )}
@@ -287,7 +287,7 @@ const ExecutiveDashboard: React.FC<ExecutiveDashboardProps> = ({
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="period" />
                 <YAxis />
-                <RechartsTooltip 
+                <RechartsTooltip
                   formatter={(value, name) => [
                     typeof value === 'number' ? formatPercentage(value) : value,
                     name === 'classified' ? 'Classificados' :

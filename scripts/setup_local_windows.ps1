@@ -38,7 +38,7 @@ Write-Status "Docker instalado" $dockerInstalled
 if ($dockerInstalled) {
     $dockerVersion = docker --version
     Write-Host "   Versão: $dockerVersion" -ForegroundColor Gray
-    
+
     # Verificar se Docker está rodando
     try {
         docker info | Out-Null
@@ -90,44 +90,44 @@ if ($dockerInstalled) {
     Write-Host "📡 Criando network local..."
     docker network create auditoria-local-network 2>$null
     Write-Host "✅ Network criada" -ForegroundColor Green
-    
+
     # Verificar se containers já existem
     $containers = @(
         @{Name="auditoria-postgres-local"; Image="postgres:15"; Port="5432:5432"; Env=@("-e", "POSTGRES_DB=auditoria_fiscal_local", "-e", "POSTGRES_USER=auditoria_user", "-e", "POSTGRES_PASSWORD=auditoria123")},
         @{Name="auditoria-redis-local"; Image="redis:7-alpine"; Port="6379:6379"; Env=@()},
         @{Name="auditoria-ollama-local"; Image="ollama/ollama"; Port="11434:11434"; Env=@()}
     )
-    
+
     foreach ($container in $containers) {
         Write-Host "🐳 Configurando $($container.Name)..."
-        
+
         # Verificar se já existe
         $existing = docker ps -a --format "{{.Names}}" | Where-Object { $_ -eq $container.Name }
-        
+
         if ($existing) {
             Write-Host "   Container já existe, iniciando..." -ForegroundColor Yellow
             docker start $container.Name | Out-Null
         } else {
             Write-Host "   Criando novo container..." -ForegroundColor Yellow
-            
+
             $volumeParam = ""
             if ($container.Name -eq "auditoria-postgres-local") {
                 $volumeParam = "-v", "${PWD}\data\postgres:/var/lib/postgresql/data"
             } elseif ($container.Name -eq "auditoria-ollama-local") {
                 $volumeParam = "-v", "${PWD}\data\ollama:/root/.ollama"
             }
-            
+
             $cmd = @("docker", "run", "-d", "--name", $container.Name, "--network", "auditoria-local-network", "-p", $container.Port) + $container.Env + $volumeParam + $container.Image
             & $cmd[0] $cmd[1..($cmd.Length-1)] | Out-Null
         }
-        
+
         Write-Host "✅ $($container.Name) configurado" -ForegroundColor Green
     }
-    
+
     Write-Host ""
     Write-Host "⏳ Aguardando containers inicializarem..." -ForegroundColor Yellow
     Start-Sleep -Seconds 15
-    
+
 } else {
     Write-Host "❌ Docker não disponível, pule esta etapa" -ForegroundColor Red
 }
@@ -138,7 +138,7 @@ Write-Host "----------------------------"
 
 $directories = @(
     "data\logs",
-    "data\uploads", 
+    "data\uploads",
     "data\backups",
     "data\chroma",
     "data\postgres",
@@ -162,19 +162,19 @@ Write-Host "-------------------------------------"
 
 if ($condaInstalled) {
     Write-Host "🔄 Criando ambiente conda 'auditoria-fiscal'..."
-    
+
     # Verificar se ambiente já existe
     $envExists = conda env list | Select-String "auditoria-fiscal"
-    
+
     if (-not $envExists) {
         conda create -n auditoria-fiscal python=3.10 -y | Out-Null
         Write-Host "✅ Ambiente conda criado" -ForegroundColor Green
     } else {
         Write-Host "✅ Ambiente conda já existe" -ForegroundColor Green
     }
-    
+
     Write-Host "📦 Ativando ambiente e instalando dependências..."
-    
+
     # Ativar ambiente e instalar dependências
     & conda activate auditoria-fiscal
     if (Test-Path "requirements.txt") {
@@ -193,13 +193,13 @@ Write-Host "------------------------------"
 
 if ($nodeInstalled -and (Test-Path "frontend")) {
     Write-Host "📥 Instalando dependências do frontend..."
-    
+
     Push-Location "frontend"
-    
+
     if (Test-Path "package.json") {
         npm install | Out-Null
         Write-Host "✅ Dependências frontend instaladas" -ForegroundColor Green
-        
+
         # Criar arquivo .env local
         $envContent = @"
 REACT_APP_API_URL=http://localhost:8000
@@ -208,11 +208,11 @@ GENERATE_SOURCEMAP=false
 "@
         $envContent | Out-File -FilePath ".env.local" -Encoding UTF8
         Write-Host "✅ Arquivo .env.local criado" -ForegroundColor Green
-        
+
     } else {
         Write-Host "⚠️  package.json não encontrado" -ForegroundColor Yellow
     }
-    
+
     Pop-Location
 } else {
     Write-Host "⚠️  Node.js não disponível ou pasta frontend não encontrada" -ForegroundColor Yellow
@@ -225,7 +225,7 @@ Write-Host "------------------------------------------"
 # Verificar se é administrador
 if (([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
     Write-Host "🛡️  Configurando regras de firewall..."
-    
+
     $ports = @(
         @{Name="Auditoria Frontend"; Port="3000"},
         @{Name="Auditoria Backend"; Port="8000"},
@@ -234,7 +234,7 @@ if (([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]:
         @{Name="Auditoria Redis"; Port="6379"},
         @{Name="Auditoria Ollama"; Port="11434"}
     )
-    
+
     foreach ($portRule in $ports) {
         try {
             if ($portRule.Port -contains "-") {
@@ -262,12 +262,12 @@ Write-Host "---------------------------------"
 if ($dockerInstalled) {
     Write-Host "📥 Baixando modelos essenciais do Ollama..."
     Write-Host "   Isso pode levar alguns minutos..." -ForegroundColor Yellow
-    
+
     # Aguardar Ollama estar pronto
     $maxAttempts = 12
     $attempt = 0
     $ollamaReady = $false
-    
+
     while ($attempt -lt $maxAttempts -and -not $ollamaReady) {
         try {
             $response = Invoke-RestMethod -Uri "http://localhost:11434/api/version" -TimeoutSec 2 -ErrorAction SilentlyContinue
@@ -279,21 +279,21 @@ if ($dockerInstalled) {
             Start-Sleep -Seconds 5
         }
     }
-    
+
     if ($ollamaReady) {
         # Instalar modelos básicos
         $models = @("llama3.1:8b", "codellama:7b", "mistral:7b")
-        
+
         foreach ($model in $models) {
             Write-Host "📦 Instalando modelo: $model..."
             docker exec auditoria-ollama-local ollama pull $model | Out-Null
             Write-Host "✅ Modelo $model instalado" -ForegroundColor Green
         }
-        
+
         # Verificar modelos instalados
         Write-Host "📋 Modelos disponíveis:"
         docker exec auditoria-ollama-local ollama list
-        
+
     } else {
         Write-Host "❌ Ollama não está respondendo" -ForegroundColor Red
         Write-Host "   Execute manualmente: docker exec auditoria-ollama-local ollama pull llama3.1:8b" -ForegroundColor Yellow
@@ -416,7 +416,7 @@ Write-Host "• Documentação: http://localhost:8000/docs" -ForegroundColor Whi
 Write-Host ""
 Write-Host "📊 CONTAINERS DOCKER:" -ForegroundColor Cyan
 Write-Host "• PostgreSQL: localhost:5432" -ForegroundColor White
-Write-Host "• Redis: localhost:6379" -ForegroundColor White  
+Write-Host "• Redis: localhost:6379" -ForegroundColor White
 Write-Host "• Ollama: localhost:11434" -ForegroundColor White
 Write-Host ""
 Write-Host "🎊 Sistema 100% configurado para Windows 11!" -ForegroundColor Green

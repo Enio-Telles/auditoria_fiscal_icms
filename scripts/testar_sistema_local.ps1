@@ -13,7 +13,7 @@ function Test-Endpoint {
         [int]$ExpectedStatus = 200,
         [int]$Timeout = 10
     )
-    
+
     try {
         $response = Invoke-WebRequest -Uri $Url -TimeoutSec $Timeout -UseBasicParsing
         if ($response.StatusCode -eq $ExpectedStatus) {
@@ -36,7 +36,7 @@ function Test-DockerContainer {
         [string]$TestCommand,
         [string]$Description
     )
-    
+
     try {
         $result = docker exec $ContainerName $TestCommand 2>$null
         if ($LASTEXITCODE -eq 0) {
@@ -93,7 +93,7 @@ if (Test-DockerContainer "auditoria-redis-local" "redis-cli ping" "Redis conecti
 $totalTests++
 if (Test-Endpoint "http://localhost:11434/api/version" "Ollama API" 200 5) {
     $passedTests++
-    
+
     # Testar modelos Ollama
     try {
         $models = docker exec auditoria-ollama-local ollama list 2>$null
@@ -146,7 +146,7 @@ Write-Host "-------------------------"
 $totalTests++
 if (Test-Endpoint "http://localhost:3000" "React Frontend" 200 10) {
     $passedTests++
-    
+
     # Verificar se é uma aplicação React
     try {
         $frontendContent = Invoke-WebRequest -Uri "http://localhost:3000" -UseBasicParsing -TimeoutSec 5
@@ -171,13 +171,13 @@ try {
         description = "Notebook Dell Inspiron i7"
         category = "informatica"
     } | ConvertTo-Json
-    
+
     $response = Invoke-RestMethod -Uri "http://localhost:8004/classify" -Method POST -Body $classificationTest -ContentType "application/json" -TimeoutSec 10
-    
+
     if ($response) {
         Write-Host "✅ Sistema de classificação funcionando" -ForegroundColor Green
         $passedTests++
-        
+
         if ($response.ncm -or $response.classification) {
             Write-Host "✅ Classificação retornou dados válidos" -ForegroundColor Green
         } else {
@@ -202,26 +202,26 @@ try {
         username = "admin"
         password = "admin123"
     } | ConvertTo-Json
-    
+
     $loginResponse = Invoke-RestMethod -Uri "http://localhost:8001/auth/login" -Method POST -Body $loginData -ContentType "application/json" -TimeoutSec 5 -ErrorAction SilentlyContinue
-    
+
     if ($loginResponse -and $loginResponse.access_token) {
         Write-Host "✅ Sistema de autenticação funcionando" -ForegroundColor Green
         $passedTests++
-        
+
         # 2. Testar endpoint protegido
         $headers = @{
             Authorization = "Bearer $($loginResponse.access_token)"
         }
-        
+
         $protectedResponse = Invoke-RestMethod -Uri "http://localhost:8002/tenants/" -Headers $headers -TimeoutSec 5 -ErrorAction SilentlyContinue
-        
+
         if ($protectedResponse) {
             Write-Host "✅ Autenticação JWT funcionando" -ForegroundColor Green
         } else {
             Write-Host "⚠️  Endpoint protegido não respondeu" -ForegroundColor Yellow
         }
-        
+
     } else {
         Write-Host "⚠️  Sistema de autenticação não configurado ou usuário não existe" -ForegroundColor Yellow
     }

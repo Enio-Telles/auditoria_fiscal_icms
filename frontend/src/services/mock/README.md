@@ -21,7 +21,7 @@ python mock_agents_api.py
 ## Endpoints Disponíveis
 
 - GET `/agents/status` - Status do sistema
-- GET `/agents/metrics` - Métricas do sistema  
+- GET `/agents/metrics` - Métricas do sistema
 - GET `/agents` - Lista de agentes
 - POST `/agents` - Criar agente
 - GET `/agents/{id}` - Detalhes do agente

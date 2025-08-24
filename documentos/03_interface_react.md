@@ -172,7 +172,7 @@ export const Dashboard: React.FC = () => {
       <Typography variant="h4" gutterBottom>
         Dashboard Executivo
       </Typography>
-      
+
       <Grid container spacing={3}>
         {/* Métricas Principais */}
         <Grid item xs={12} md={3}>
@@ -212,7 +212,7 @@ export const Dashboard: React.FC = () => {
         <Grid item xs={12} md={8}>
           <ChartsPanel data={metrics?.charts} />
         </Grid>
-        
+
         <Grid item xs={12} md={4}>
           <Card>
             <CardContent>
@@ -402,7 +402,7 @@ export const ImportStepper: React.FC = () => {
           </Step>
         ))}
       </Stepper>
-      
+
       <Box sx={{ mt: 4 }}>
         {renderStepContent(activeStep)}
       </Box>
@@ -473,7 +473,7 @@ export const ConnectionForm: React.FC<ConnectionFormProps> = ({
                 </Select>
               </FormControl>
             </Grid>
-            
+
             <Grid item xs={12} md={6}>
               <TextField
                 fullWidth
@@ -485,7 +485,7 @@ export const ConnectionForm: React.FC<ConnectionFormProps> = ({
                 required
               />
             </Grid>
-            
+
             <Grid item xs={12} md={3}>
               <TextField
                 fullWidth
@@ -497,7 +497,7 @@ export const ConnectionForm: React.FC<ConnectionFormProps> = ({
                 required
               />
             </Grid>
-            
+
             <Grid item xs={12} md={9}>
               <TextField
                 fullWidth
@@ -509,7 +509,7 @@ export const ConnectionForm: React.FC<ConnectionFormProps> = ({
                 required
               />
             </Grid>
-            
+
             <Grid item xs={12} md={6}>
               <TextField
                 fullWidth
@@ -521,7 +521,7 @@ export const ConnectionForm: React.FC<ConnectionFormProps> = ({
                 required
               />
             </Grid>
-            
+
             <Grid item xs={12} md={6}>
               <TextField
                 fullWidth
@@ -534,7 +534,7 @@ export const ConnectionForm: React.FC<ConnectionFormProps> = ({
                 required
               />
             </Grid>
-            
+
             <Grid item xs={12}>
               <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
                 <Button
@@ -666,7 +666,7 @@ export const empresaService = {
 // Hook personalizado para loading
 export const useLoading = () => {
   const [loading, setLoading] = useState(false);
-  
+
   const withLoading = async <T>(fn: () => Promise<T>): Promise<T> => {
     setLoading(true);
     try {
@@ -834,6 +834,6 @@ docker run -p 3000:3000 auditoria-frontend
 
 ---
 
-**Status:** Interface React 100% Implementada  
-**Versão:** 3.0.0  
+**Status:** Interface React 100% Implementada
+**Versão:** 3.0.0
 **Próximo documento:** [04_importacao_dados.md](04_importacao_dados.md)

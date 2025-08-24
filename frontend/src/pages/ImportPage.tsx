@@ -170,7 +170,7 @@ const ImportPage: React.FC<ImportPageProps> = () => {
                 Configuração da Conexão
               </Typography>
             </Grid>
-            
+
             <Grid item xs={12} sm={6}>
               <FormControl fullWidth>
                 <InputLabel>Tipo de Banco</InputLabel>
@@ -284,7 +284,7 @@ const ImportPage: React.FC<ImportPageProps> = () => {
 
             {connectionResult && (
               <Grid item xs={12}>
-                <Alert 
+                <Alert
                   severity={connectionResult.success ? 'success' : 'error'}
                   icon={connectionResult.success ? <CheckCircle /> : <Error />}
                 >
@@ -367,11 +367,11 @@ const ImportPage: React.FC<ImportPageProps> = () => {
                   <AccordionSummary expandIcon={<ExpandMore />}>
                     <Typography variant="h6">
                       Resultado do Preview
-                      <Chip 
-                        label={`${previewData.preview_count} registros`} 
-                        color="primary" 
-                        size="small" 
-                        sx={{ ml: 2 }} 
+                      <Chip
+                        label={`${previewData.preview_count} registros`}
+                        color="primary"
+                        size="small"
+                        sx={{ ml: 2 }}
                       />
                     </Typography>
                   </AccordionSummary>
@@ -457,7 +457,7 @@ const ImportPage: React.FC<ImportPageProps> = () => {
 
             {importResult && (
               <Grid item xs={12}>
-                <Alert 
+                <Alert
                   severity={importResult.success ? 'success' : 'error'}
                   icon={importResult.success ? <CheckCircle /> : <Error />}
                 >
@@ -526,20 +526,20 @@ const ImportPage: React.FC<ImportPageProps> = () => {
               </Typography>
               {apiHealth ? (
                 <Box>
-                  <Chip 
-                    label={`${apiHealth.status} - v${apiHealth.version}`} 
-                    color="success" 
-                    icon={<CheckCircle />} 
+                  <Chip
+                    label={`${apiHealth.status} - v${apiHealth.version}`}
+                    color="success"
+                    icon={<CheckCircle />}
                   />
                   <Typography variant="body2" sx={{ mt: 1 }}>
                     Conectado em: http://localhost:8003
                   </Typography>
                 </Box>
               ) : (
-                <Chip 
-                  label="Desconectado" 
-                  color="error" 
-                  icon={<Error />} 
+                <Chip
+                  label="Desconectado"
+                  color="error"
+                  icon={<Error />}
                 />
               )}
             </CardContent>
@@ -574,7 +574,7 @@ const ImportPage: React.FC<ImportPageProps> = () => {
       <Stepper activeStep={activeStep} sx={{ mb: 4 }}>
         {steps.map((label, index) => (
           <Step key={label} completed={completed[index]}>
-            <StepLabel 
+            <StepLabel
               onClick={handleStep(index)}
               sx={{ cursor: 'pointer' }}
             >

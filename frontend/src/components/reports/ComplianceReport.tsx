@@ -151,7 +151,7 @@ const ComplianceReport: React.FC<ComplianceReportProps> = ({
   const complianceChartData = data.complianceAreas.map(area => ({
     name: area.area,
     value: area.score,
-    color: area.status === 'compliant' ? '#4caf50' : 
+    color: area.status === 'compliant' ? '#4caf50' :
            area.status === 'warning' ? '#ff9800' : '#f44336'
   }));
 

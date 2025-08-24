@@ -89,11 +89,11 @@ const OnboardingPage: React.FC = () => {
             🎯 O que este sistema faz?
           </Typography>
           <Typography paragraph>
-            Este é um sistema avançado de auditoria fiscal que utiliza Inteligência Artificial 
-            para classificar mercadorias automaticamente, garantindo conformidade com as 
+            Este é um sistema avançado de auditoria fiscal que utiliza Inteligência Artificial
+            para classificar mercadorias automaticamente, garantindo conformidade com as
             regulamentações de ICMS.
           </Typography>
-          
+
           <Grid container spacing={2} sx={{ mt: 2 }}>
             <Grid item xs={12} md={4}>
               <Card variant="outlined">
@@ -106,7 +106,7 @@ const OnboardingPage: React.FC = () => {
                 </CardContent>
               </Card>
             </Grid>
-            
+
             <Grid item xs={12} md={4}>
               <Card variant="outlined">
                 <CardContent>
@@ -118,7 +118,7 @@ const OnboardingPage: React.FC = () => {
                 </CardContent>
               </Card>
             </Grid>
-            
+
             <Grid item xs={12} md={4}>
               <Card variant="outlined">
                 <CardContent>
@@ -143,44 +143,44 @@ const OnboardingPage: React.FC = () => {
           <Typography variant="h6" gutterBottom>
             📋 Como cadastrar uma empresa
           </Typography>
-          
+
           <Alert severity="info" sx={{ mb: 2 }}>
             O cadastro de empresa é o primeiro passo para usar o sistema
           </Alert>
-          
+
           <List>
             <ListItem>
               <ListItemIcon><CheckIcon /></ListItemIcon>
-              <ListItemText 
-                primary="Dados Básicos" 
-                secondary="CNPJ, Razão Social, Nome Fantasia" 
+              <ListItemText
+                primary="Dados Básicos"
+                secondary="CNPJ, Razão Social, Nome Fantasia"
               />
             </ListItem>
             <ListItem>
               <ListItemIcon><CheckIcon /></ListItemIcon>
-              <ListItemText 
-                primary="Endereço" 
-                secondary="Endereço completo com busca automática por CEP" 
+              <ListItemText
+                primary="Endereço"
+                secondary="Endereço completo com busca automática por CEP"
               />
             </ListItem>
             <ListItem>
               <ListItemIcon><CheckIcon /></ListItemIcon>
-              <ListItemText 
-                primary="Contato" 
-                secondary="Telefone, email e responsável" 
+              <ListItemText
+                primary="Contato"
+                secondary="Telefone, email e responsável"
               />
             </ListItem>
             <ListItem>
               <ListItemIcon><CheckIcon /></ListItemIcon>
-              <ListItemText 
-                primary="Atividades" 
-                secondary="CNAEs principal e secundários" 
+              <ListItemText
+                primary="Atividades"
+                secondary="CNAEs principal e secundários"
               />
             </ListItem>
           </List>
-          
-          <Button 
-            variant="contained" 
+
+          <Button
+            variant="contained"
             onClick={() => startDemo('empresa')}
             sx={{ mt: 2 }}
           >
@@ -199,11 +199,11 @@ const OnboardingPage: React.FC = () => {
           <Typography variant="h6" gutterBottom>
             📤 Importação de Produtos
           </Typography>
-          
+
           <Typography paragraph>
             O sistema suporta importação de dados de diversas fontes:
           </Typography>
-          
+
           <Grid container spacing={2}>
             <Grid item xs={12} md={6}>
               <Card variant="outlined">
@@ -216,7 +216,7 @@ const OnboardingPage: React.FC = () => {
                 </CardContent>
               </Card>
             </Grid>
-            
+
             <Grid item xs={12} md={6}>
               <Card variant="outlined">
                 <CardContent>
@@ -229,14 +229,14 @@ const OnboardingPage: React.FC = () => {
               </Card>
             </Grid>
           </Grid>
-          
+
           <Alert severity="success" sx={{ mt: 2 }}>
-            <strong>Campos Obrigatórios:</strong> produto_id, descricao_produto, 
+            <strong>Campos Obrigatórios:</strong> produto_id, descricao_produto,
             codigo_produto (opcional: codigo_barra, ncm, cest)
           </Alert>
-          
-          <Button 
-            variant="contained" 
+
+          <Button
+            variant="contained"
             onClick={() => startDemo('importacao')}
             sx={{ mt: 2 }}
           >
@@ -255,58 +255,58 @@ const OnboardingPage: React.FC = () => {
           <Typography variant="h6" gutterBottom>
             🤖 Sistema Multi-Agentes de IA
           </Typography>
-          
+
           <Typography paragraph>
             O sistema utiliza 6 agentes especializados para classificação precisa:
           </Typography>
-          
+
           <List>
             <ListItem>
               <ListItemIcon><Chip label="1" color="primary" /></ListItemIcon>
-              <ListItemText 
-                primary="Expansion Agent" 
-                secondary="Enriquece descrições de produtos" 
+              <ListItemText
+                primary="Expansion Agent"
+                secondary="Enriquece descrições de produtos"
               />
             </ListItem>
             <ListItem>
               <ListItemIcon><Chip label="2" color="primary" /></ListItemIcon>
-              <ListItemText 
-                primary="Aggregation Agent" 
-                secondary="Agrupa produtos similares" 
+              <ListItemText
+                primary="Aggregation Agent"
+                secondary="Agrupa produtos similares"
               />
             </ListItem>
             <ListItem>
               <ListItemIcon><Chip label="3" color="primary" /></ListItemIcon>
-              <ListItemText 
-                primary="NCM Agent" 
-                secondary="Classifica código NCM" 
+              <ListItemText
+                primary="NCM Agent"
+                secondary="Classifica código NCM"
               />
             </ListItem>
             <ListItem>
               <ListItemIcon><Chip label="4" color="primary" /></ListItemIcon>
-              <ListItemText 
-                primary="CEST Agent" 
-                secondary="Determina código CEST" 
+              <ListItemText
+                primary="CEST Agent"
+                secondary="Determina código CEST"
               />
             </ListItem>
             <ListItem>
               <ListItemIcon><Chip label="5" color="primary" /></ListItemIcon>
-              <ListItemText 
-                primary="Reconciler Agent" 
-                secondary="Valida e resolve conflitos" 
+              <ListItemText
+                primary="Reconciler Agent"
+                secondary="Valida e resolve conflitos"
               />
             </ListItem>
             <ListItem>
               <ListItemIcon><Chip label="6" color="primary" /></ListItemIcon>
-              <ListItemText 
-                primary="Manager Agent" 
-                secondary="Coordena todo o processo" 
+              <ListItemText
+                primary="Manager Agent"
+                secondary="Coordena todo o processo"
               />
             </ListItem>
           </List>
-          
-          <Button 
-            variant="contained" 
+
+          <Button
+            variant="contained"
             onClick={() => startDemo('classificacao')}
             sx={{ mt: 2 }}
           >
@@ -325,15 +325,15 @@ const OnboardingPage: React.FC = () => {
           <Typography variant="h6" gutterBottom>
             🏆 Golden Set - Base de Conhecimento
           </Typography>
-          
+
           <Typography paragraph>
             O Golden Set é sua base de classificações validadas e corretas:
           </Typography>
-          
+
           <Alert severity="info" sx={{ mb: 2 }}>
             Cada classificação confirmada enriquece o sistema, melhorando a precisão futura
           </Alert>
-          
+
           <Grid container spacing={2}>
             <Grid item xs={12} md={6}>
               <Card variant="outlined">
@@ -346,7 +346,7 @@ const OnboardingPage: React.FC = () => {
                 </CardContent>
               </Card>
             </Grid>
-            
+
             <Grid item xs={12} md={6}>
               <Card variant="outlined">
                 <CardContent>
@@ -359,9 +359,9 @@ const OnboardingPage: React.FC = () => {
               </Card>
             </Grid>
           </Grid>
-          
-          <Button 
-            variant="contained" 
+
+          <Button
+            variant="contained"
             onClick={() => startDemo('golden')}
             sx={{ mt: 2 }}
           >
@@ -380,42 +380,42 @@ const OnboardingPage: React.FC = () => {
           <Typography variant="h6" gutterBottom>
             📊 Relatórios Executivos
           </Typography>
-          
+
           <Typography paragraph>
             Acompanhe todo o processo de classificação com relatórios detalhados:
           </Typography>
-          
+
           <List>
             <ListItem>
               <ListItemIcon><ReportIcon color="primary" /></ListItemIcon>
-              <ListItemText 
-                primary="Relatório de Classificações" 
-                secondary="Status e resultados por produto" 
+              <ListItemText
+                primary="Relatório de Classificações"
+                secondary="Status e resultados por produto"
               />
             </ListItem>
             <ListItem>
               <ListItemIcon><InfoIcon color="info" /></ListItemIcon>
-              <ListItemText 
-                primary="Auditoria Completa" 
-                secondary="Logs detalhados de cada decisão" 
+              <ListItemText
+                primary="Auditoria Completa"
+                secondary="Logs detalhados de cada decisão"
               />
             </ListItem>
             <ListItem>
               <ListItemIcon><CheckIcon color="success" /></ListItemIcon>
-              <ListItemText 
-                primary="Estatísticas" 
-                secondary="Métricas de performance e precisão" 
+              <ListItemText
+                primary="Estatísticas"
+                secondary="Métricas de performance e precisão"
               />
             </ListItem>
           </List>
-          
+
           <Alert severity="success" sx={{ mt: 2 }}>
-            <strong>Rastreabilidade Total:</strong> Cada decisão é documentada com 
+            <strong>Rastreabilidade Total:</strong> Cada decisão é documentada com
             justificativas, fontes RAG e metadados completos
           </Alert>
-          
-          <Button 
-            variant="contained" 
+
+          <Button
+            variant="contained"
             onClick={() => startDemo('relatorios')}
             sx={{ mt: 2 }}
           >
@@ -433,18 +433,18 @@ const OnboardingPage: React.FC = () => {
         <Typography variant="h4" gutterBottom align="center">
           🎓 Tutorial do Sistema
         </Typography>
-        
+
         <Typography variant="subtitle1" align="center" sx={{ mb: 3 }}>
           Aprenda a usar todas as funcionalidades em poucos passos
         </Typography>
-        
+
         <Box sx={{ mb: 3 }}>
           <Typography variant="body2" sx={{ mb: 1 }}>
             Progresso: {Math.round(progress)}%
           </Typography>
-          <LinearProgress 
-            variant="determinate" 
-            value={progress} 
+          <LinearProgress
+            variant="determinate"
+            value={progress}
             sx={{ height: 8, borderRadius: 4 }}
           />
         </Box>
@@ -493,8 +493,8 @@ const OnboardingPage: React.FC = () => {
             <Typography variant="body1" sx={{ mb: 3 }}>
               Agora você está pronto para usar todas as funcionalidades do sistema.
             </Typography>
-            <Button 
-              variant="contained" 
+            <Button
+              variant="contained"
               size="large"
               onClick={() => window.location.href = '/'}
             >
@@ -505,8 +505,8 @@ const OnboardingPage: React.FC = () => {
       </Paper>
 
       {/* Dialog para demos */}
-      <Dialog 
-        open={showDemo} 
+      <Dialog
+        open={showDemo}
         onClose={() => setShowDemo(false)}
         maxWidth="md"
         fullWidth

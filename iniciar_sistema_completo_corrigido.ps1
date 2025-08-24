@@ -27,21 +27,21 @@ function Test-Port {
 # Função para aguardar serviço ficar disponível
 function Wait-ForService {
     param($porta, $nomeServico, $tempoLimite = 60)
-    
+
     Write-Host "⏳ Aguardando $nomeServico ficar disponível..." -ForegroundColor Yellow
     $tempoInicio = Get-Date
-    
+
     do {
         Start-Sleep -Seconds 2
         $disponivel = Test-Port $porta
         $tempoDecorrido = (Get-Date) - $tempoInicio
-        
+
         if ($tempoDecorrido.TotalSeconds -gt $tempoLimite) {
             Write-Host "⚠️ Timeout aguardando $nomeServico" -ForegroundColor Yellow
             return $false
         }
     } while (-not $disponivel)
-    
+
     Write-Host "✅ $nomeServico disponível!" -ForegroundColor Green
     return $true
 }
@@ -98,7 +98,7 @@ try {
 # Iniciar PostgreSQL se não estiver rodando
 if (-not (Test-Port 5432)) {
     Write-Host "🔄 Iniciando PostgreSQL..." -ForegroundColor Yellow
-    
+
     # Verificar se container existe
     $pgContainer = docker ps -a --filter "name=auditoria_postgres" --format "{{.Names}}"
     if ($pgContainer) {
@@ -108,7 +108,7 @@ if (-not (Test-Port 5432)) {
         Write-Host "📦 Criando container PostgreSQL..." -ForegroundColor White
         docker run -d --name auditoria_postgres -e POSTGRES_DB=auditoria_fiscal -e POSTGRES_USER=admin -e POSTGRES_PASSWORD=admin123 -p 5432:5432 postgres:13
     }
-    
+
     if (Wait-ForService 5432 "PostgreSQL" 30) {
         Write-Host "✅ PostgreSQL iniciado com sucesso!" -ForegroundColor Green
     } else {
@@ -122,7 +122,7 @@ if (-not (Test-Port 5432)) {
 # Iniciar Redis se não estiver rodando
 if (-not (Test-Port 6379)) {
     Write-Host "🔄 Iniciando Redis..." -ForegroundColor Yellow
-    
+
     # Verificar se container existe
     $redisContainer = docker ps -a --filter "name=auditoria_redis" --format "{{.Names}}"
     if ($redisContainer) {
@@ -132,7 +132,7 @@ if (-not (Test-Port 6379)) {
         Write-Host "📦 Criando container Redis..." -ForegroundColor White
         docker run -d --name auditoria_redis -p 6379:6379 redis:7-alpine
     }
-    
+
     if (Wait-ForService 6379 "Redis" 20) {
         Write-Host "✅ Redis iniciado com sucesso!" -ForegroundColor Green
     } else {
@@ -148,7 +148,7 @@ if (-not (Test-Port 11434)) {
     Write-Host "🔄 Iniciando Ollama..." -ForegroundColor Yellow
     if (Get-Command ollama -ErrorAction SilentlyContinue) {
         Start-Process -FilePath "ollama" -ArgumentList "serve" -WindowStyle Hidden
-        
+
         if (Wait-ForService 11434 "Ollama" 30) {
             Write-Host "✅ Ollama iniciado com sucesso!" -ForegroundColor Green
         } else {
@@ -175,13 +175,13 @@ if (-not $condaEnvs) {
     $errosEncontrados++
 } else {
     Write-Host "✅ Ambiente conda encontrado" -ForegroundColor Green
-    
+
     # Verificar se backend já está rodando
     if (Test-Port 8000) {
         Write-Host "✅ Backend já está rodando na porta 8000" -ForegroundColor Green
     } else {
         Write-Host "🔄 Iniciando backend..." -ForegroundColor Yellow
-        
+
         # Criar script temporário para iniciar backend
         $scriptBackend = @'
 conda activate auditoria-fiscal
@@ -189,12 +189,12 @@ cd microservices\gateway
 Write-Host "🚀 Iniciando Gateway..." -ForegroundColor Green
 python main.py
 '@
-        
+
         $scriptBackend | Out-File -FilePath "temp_start_backend.ps1" -Encoding UTF8
-        
+
         # Executar em nova janela
         Start-Process powershell.exe -ArgumentList "-NoExit", "-File", "temp_start_backend.ps1" -WindowStyle Normal
-        
+
         # Aguardar backend ficar disponível
         if (Wait-ForService 8000 "Backend" 60) {
             Write-Host "✅ Backend iniciado com sucesso!" -ForegroundColor Green
@@ -202,7 +202,7 @@ python main.py
             Write-Host "❌ Falha ao iniciar Backend" -ForegroundColor Red
             $errosEncontrados++
         }
-        
+
         # Remover script temporário
         Start-Sleep -Seconds 2
         Remove-Item "temp_start_backend.ps1" -ErrorAction SilentlyContinue
@@ -220,7 +220,7 @@ if (Test-Path "frontend") {
         Write-Host "✅ Frontend já está rodando na porta 3001" -ForegroundColor Green
     } else {
         Write-Host "🔄 Iniciando frontend..." -ForegroundColor Yellow
-        
+
         # Verificar se node_modules existe
         if (-not (Test-Path "frontend\node_modules")) {
             Write-Host "📦 Instalando dependências do frontend..." -ForegroundColor White
@@ -228,7 +228,7 @@ if (Test-Path "frontend") {
             npm install
             cd ..
         }
-        
+
         # Criar script temporário para iniciar frontend
         $scriptFrontend = @'
 cd frontend
@@ -240,12 +240,12 @@ if (-not (Test-Path ".env.local")) {
 Write-Host "🚀 Iniciando servidor React..." -ForegroundColor Green
 npm start
 '@
-        
+
         $scriptFrontend | Out-File -FilePath "temp_start_frontend.ps1" -Encoding UTF8
-        
+
         # Executar em nova janela
         Start-Process powershell.exe -ArgumentList "-NoExit", "-File", "temp_start_frontend.ps1" -WindowStyle Normal
-        
+
         # Aguardar frontend ficar disponível
         if (Wait-ForService 3001 "Frontend" 90) {
             Write-Host "✅ Frontend iniciado com sucesso!" -ForegroundColor Green
@@ -253,7 +253,7 @@ npm start
             Write-Host "❌ Falha ao iniciar Frontend" -ForegroundColor Red
             $errosEncontrados++
         }
-        
+
         # Remover script temporário
         Start-Sleep -Seconds 2
         Remove-Item "temp_start_frontend.ps1" -ErrorAction SilentlyContinue
@@ -290,11 +290,11 @@ if ($errosEncontrados -eq 0) {
     Write-Host "• Senha: admin123" -ForegroundColor White
     Write-Host ""
     Write-Host "💡 DICA: O navegador abrirá automaticamente em alguns segundos" -ForegroundColor Yellow
-    
+
     # Aguardar um pouco e abrir navegador
     Start-Sleep -Seconds 5
     Start-Process "http://localhost:3001"
-    
+
 } else {
     Write-Host "⚠️ SISTEMA INICIADO COM $errosEncontrados PROBLEMA(S)" -ForegroundColor Yellow
     Write-Host ""

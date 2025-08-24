@@ -17,7 +17,7 @@ if ($pgStatus -eq "running") {
 
 $redisStatus = docker inspect --format='{{.State.Status}}' auditoria_redis 2>$null
 if ($redisStatus -eq "running") {
-    Write-Host "Redis: JA RODANDO" -ForegroundColor Green  
+    Write-Host "Redis: JA RODANDO" -ForegroundColor Green
 } else {
     Write-Host "Iniciando Redis..." -ForegroundColor Yellow
     docker start auditoria_redis
@@ -37,5 +37,5 @@ Invoke-RestMethod -Uri "http://localhost:11434/api/version" -TimeoutSec 3
 Write-Host ""
 Write-Host "SISTEMA PRONTO!" -ForegroundColor Green
 Write-Host "PostgreSQL: localhost:5432"
-Write-Host "Redis: localhost:6379"  
+Write-Host "Redis: localhost:6379"
 Write-Host "Ollama: localhost:11434"

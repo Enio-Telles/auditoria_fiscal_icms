@@ -42,7 +42,7 @@ Com base no arquivo `Fases_2_e_3.md` e nas considerações do `Plano_fase_02`, f
 
 **Bancos suportados:**
 - PostgreSQL
-- SQL Server  
+- SQL Server
 - Oracle
 
 ### 3. **Agentes Multi-Tenant** (`manager_agent_v2.py`)
@@ -56,9 +56,9 @@ Com base no arquivo `Fases_2_e_3.md` e nas considerações do `Plano_fase_02`, f
 
 **Estados do workflow:**
 ```
-PENDENTE → ENRIQUECENDO → ENRIQUECIDO → 
-CLASSIFICANDO_NCM → NCM_CLASSIFICADO → 
-CLASSIFICANDO_CEST → CEST_CLASSIFICADO → 
+PENDENTE → ENRIQUECENDO → ENRIQUECIDO →
+CLASSIFICANDO_NCM → NCM_CLASSIFICADO →
+CLASSIFICANDO_CEST → CEST_CLASSIFICADO →
 RECONCILIANDO → CONCLUIDO
 ```
 
@@ -233,7 +233,7 @@ O sistema está pronto para a implementação da **Fase 3** (interface web e API
 
 ---
 
-**Data**: 19 de agosto de 2025  
-**Versão**: 2.0 - Multi-Tenant  
-**Status**: ✅ Implementação Completa  
+**Data**: 19 de agosto de 2025
+**Versão**: 2.0 - Multi-Tenant
+**Status**: ✅ Implementação Completa
 **Próxima Fase**: Interface Web (Fase 3)

@@ -50,7 +50,7 @@ import { useSnackbar } from 'notistack';
 const ProdutosPage: React.FC = () => {
   const queryClient = useQueryClient();
   const { enqueueSnackbar } = useSnackbar();
-  
+
   // Estados
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -282,14 +282,14 @@ const ProdutosPage: React.FC = () => {
                   )}
                 </TableCell>
                 <TableCell>
-                  {produto.status_classificacao ? 
-                    getStatusChip(produto.status_classificacao) : 
+                  {produto.status_classificacao ?
+                    getStatusChip(produto.status_classificacao) :
                     getStatusChip(produto.status)
                   }
                 </TableCell>
                 <TableCell>
-                  {produto.confianca_classificacao ? 
-                    `${Math.round(produto.confianca_classificacao * 100)}%` : 
+                  {produto.confianca_classificacao ?
+                    `${Math.round(produto.confianca_classificacao * 100)}%` :
                     '-'
                   }
                 </TableCell>
@@ -306,7 +306,7 @@ const ProdutosPage: React.FC = () => {
                       <Visibility />
                     </IconButton>
                   </Tooltip>
-                  
+
                   <Tooltip title="Reclassificar">
                     <IconButton
                       size="small"
@@ -316,7 +316,7 @@ const ProdutosPage: React.FC = () => {
                       <Edit />
                     </IconButton>
                   </Tooltip>
-                  
+
                   <Tooltip title="Excluir">
                     <IconButton
                       size="small"
@@ -332,7 +332,7 @@ const ProdutosPage: React.FC = () => {
             ))}
           </TableBody>
         </Table>
-        
+
         <TablePagination
           component="div"
           count={produtos?.total || 0}

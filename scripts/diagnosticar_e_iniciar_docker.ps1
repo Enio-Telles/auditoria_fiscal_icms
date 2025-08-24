@@ -13,12 +13,12 @@ function Test-ProcessRunning($processName) {
 # Função para aguardar Docker ficar pronto
 function Wait-DockerReady {
     param([int]$MaxWaitSeconds = 120)
-    
+
     $elapsed = 0
     $interval = 5
-    
+
     Write-Host "⏳ Aguardando Docker ficar pronto..." -ForegroundColor Yellow
-    
+
     while ($elapsed -lt $MaxWaitSeconds) {
         try {
             docker info | Out-Null
@@ -30,7 +30,7 @@ function Wait-DockerReady {
             $elapsed += $interval
         }
     }
-    
+
     Write-Host "❌ Docker não ficou pronto em $MaxWaitSeconds segundos" -ForegroundColor Red
     return $false
 }
@@ -87,11 +87,11 @@ Write-Host "----------------------------------------"
 if (-not $dockerReady) {
     if (-not $dockerDesktopRunning) {
         Write-Host "🔄 Iniciando Docker Desktop..." -ForegroundColor Yellow
-        
+
         try {
             Start-Process -FilePath $dockerPath -WindowStyle Minimized
             Write-Host "✅ Docker Desktop iniciado" -ForegroundColor Green
-            
+
             # Aguardar Docker ficar pronto
             if (Wait-DockerReady -MaxWaitSeconds 120) {
                 $dockerReady = $true
@@ -102,7 +102,7 @@ if (-not $dockerReady) {
     } else {
         Write-Host "⚠️  Docker Desktop está rodando mas não responde" -ForegroundColor Yellow
         Write-Host "   Pode estar inicializando ainda..." -ForegroundColor Yellow
-        
+
         if (Wait-DockerReady -MaxWaitSeconds 60) {
             $dockerReady = $true
         }
@@ -155,7 +155,7 @@ $containers = @(
         Port = "5432:5432"
         Env = @(
             "POSTGRES_DB=auditoria_fiscal_local",
-            "POSTGRES_USER=auditoria_user", 
+            "POSTGRES_USER=auditoria_user",
             "POSTGRES_PASSWORD=auditoria123"
         )
         Volume = "${PWD}\data\postgres:/var/lib/postgresql/data"
@@ -179,14 +179,14 @@ $containers = @(
 foreach ($container in $containers) {
     Write-Host ""
     Write-Host "🐳 Configurando $($container.Name)..." -ForegroundColor Yellow
-    
+
     # Verificar se container existe
     $existingContainer = docker ps -a --format "{{.Names}}" | Where-Object { $_ -eq $container.Name }
-    
+
     if ($existingContainer) {
         # Container existe, verificar status
         $status = docker inspect --format='{{.State.Status}}' $container.Name
-        
+
         if ($status -eq "running") {
             Write-Host "✅ $($container.Name) já está rodando" -ForegroundColor Green
         } elseif ($status -eq "exited") {
@@ -203,26 +203,26 @@ foreach ($container in $containers) {
     } else {
         # Container não existe, criar
         Write-Host "🔄 Criando $($container.Name)..." -ForegroundColor Yellow
-        
+
         # Construir comando docker run
         $cmd = @("docker", "run", "-d", "--name", $container.Name, "--network", "auditoria-local-network", "-p", $container.Port)
-        
+
         # Adicionar variáveis de ambiente
         foreach ($env in $container.Env) {
             $cmd += @("-e", $env)
         }
-        
+
         # Adicionar volume se especificado
         if ($container.Volume) {
             $cmd += @("-v", $container.Volume)
         }
-        
+
         # Adicionar imagem
         $cmd += $container.Image
-        
+
         # Executar comando
         & $cmd[0] $cmd[1..($cmd.Length-1)] | Out-Null
-        
+
         if ($LASTEXITCODE -eq 0) {
             Write-Host "✅ $($container.Name) criado e iniciado" -ForegroundColor Green
         } else {

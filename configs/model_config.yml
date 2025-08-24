@@ -9,7 +9,7 @@ llm:
     primary: "llama3.1:8b"
     fallback: "llama3.1:70b"
     embedding: "nomic-embed-text"
-  
+
   # Parâmetros de inferência
   inference_params:
     temperature: 0.1
@@ -33,13 +33,13 @@ rag:
     index_type: "IndexFlatIP"
     dimension: 1024
     similarity_threshold: 0.7
-    
+
   graph_store:
     provider: "neo4j"
     uri: "bolt://localhost:7687"
     username: "neo4j"
     password: "auditoria123"
-    
+
   relational_store:
     provider: "sqlite"
     database_path: "data/processed/knowledge_base.sqlite"
@@ -50,7 +50,7 @@ rag:
     top_k_graph: 5
     chunk_size: 512
     chunk_overlap: 50
-    
+
   # Golden Set para aprimoramento contínuo
   golden_set:
     enabled: true
@@ -63,21 +63,21 @@ agents:
     model: "llama3.1:8b"
     max_iterations: 10
     decision_threshold: 0.8
-    
+
   enrichment:
     model: "llama3.1:8b"
     enhancement_strategies: ["semantic", "regulatory", "contextual"]
-    
+
   ncm_classifier:
     model: "llama3.1:8b"
     confidence_threshold: 0.85
     hierarchy_levels: ["capitulo", "posicao", "subposicao", "item"]
-    
+
   cest_classifier:
     model: "llama3.1:8b"
     confidence_threshold: 0.80
     pattern_matching: true
-    
+
   reconciliation:
     model: "llama3.1:70b"
     cross_validation: true

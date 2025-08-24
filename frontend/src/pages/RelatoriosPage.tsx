@@ -81,7 +81,7 @@ import ComplianceReport, { ComplianceData } from '../components/reports/Complian
 
 const RelatoriosPage: React.FC = () => {
   const { enqueueSnackbar } = useSnackbar();
-  
+
   // Estados para filtros
   const [dataInicio, setDataInicio] = useState<Date | null>(null);
   const [dataFim, setDataFim] = useState<Date | null>(null);
@@ -270,8 +270,8 @@ const RelatoriosPage: React.FC = () => {
                   {statsData?.totalClassificados?.toLocaleString() || 0}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  {statsData?.totalProdutos ? 
-                    `${Math.round((statsData.totalClassificados / statsData.totalProdutos) * 100)}%` : 
+                  {statsData?.totalProdutos ?
+                    `${Math.round((statsData.totalClassificados / statsData.totalProdutos) * 100)}%` :
                     '0%'
                   } do total
                 </Typography>
@@ -365,17 +365,17 @@ const RelatoriosPage: React.FC = () => {
                     <XAxis dataKey="periodo" />
                     <YAxis />
                     <Tooltip />
-                    <Line 
-                      type="monotone" 
-                      dataKey="classificados" 
-                      stroke="#4CAF50" 
+                    <Line
+                      type="monotone"
+                      dataKey="classificados"
+                      stroke="#4CAF50"
                       strokeWidth={2}
                       name="Classificados"
                     />
-                    <Line 
-                      type="monotone" 
-                      dataKey="pendentes" 
-                      stroke="#FF9800" 
+                    <Line
+                      type="monotone"
+                      dataKey="pendentes"
+                      stroke="#FF9800"
                       strokeWidth={2}
                       name="Pendentes"
                     />
@@ -424,7 +424,7 @@ const RelatoriosPage: React.FC = () => {
               {statsData.totalErros > 0 && (
                 <Grid item xs={12}>
                   <Alert severity="warning">
-                    <strong>{statsData.totalErros} produtos com erro</strong> - 
+                    <strong>{statsData.totalErros} produtos com erro</strong> -
                     Revise as classificações para garantir conformidade.
                   </Alert>
                 </Grid>
@@ -432,7 +432,7 @@ const RelatoriosPage: React.FC = () => {
               {statsData.totalPendentes > statsData.totalClassificados * 0.2 && (
                 <Grid item xs={12}>
                   <Alert severity="info">
-                    <strong>Alto número de produtos pendentes</strong> - 
+                    <strong>Alto número de produtos pendentes</strong> -
                     Execute uma nova classificação em lote para processar os itens pendentes.
                   </Alert>
                 </Grid>
@@ -440,7 +440,7 @@ const RelatoriosPage: React.FC = () => {
               {statsData.acuraciaMedia && statsData.acuraciaMedia > 0.9 && (
                 <Grid item xs={12}>
                   <Alert severity="success">
-                    <strong>Excelente precisão de classificação</strong> - 
+                    <strong>Excelente precisão de classificação</strong> -
                     Acurácia média de {Math.round(statsData.acuraciaMedia * 100)}%.
                   </Alert>
                 </Grid>

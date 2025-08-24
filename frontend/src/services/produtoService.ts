@@ -5,7 +5,7 @@ export const produtoService = {
   // Listar produtos com filtros
   async listar(filter: ProductFilter = {}): Promise<PaginatedResponse<Produto>> {
     const params = new URLSearchParams();
-    
+
     if (filter.search) params.append('search', filter.search);
     if (filter.status) params.append('status', filter.status);
     if (filter.ncm) params.append('ncm', filter.ncm);
@@ -83,7 +83,7 @@ export const produtoService = {
   // Exportar para Excel
   async exportToExcel(filter: ProductFilter = {}): Promise<Blob> {
     const params = new URLSearchParams();
-    
+
     if (filter.search) params.append('search', filter.search);
     if (filter.status) params.append('status', filter.status);
     if (filter.ncm) params.append('ncm', filter.ncm);

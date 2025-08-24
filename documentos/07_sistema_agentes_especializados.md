@@ -1,7 +1,7 @@
 # Sistema de Agentes Especializados - v3.1
 
-**Data:** 22/08/2025  
-**Status:** ✅ IMPLEMENTADO COMPLETAMENTE  
+**Data:** 22/08/2025
+**Status:** ✅ IMPLEMENTADO COMPLETAMENTE
 **Versão:** 3.1.0
 
 ## 🤖 Visão Geral
@@ -16,7 +16,7 @@ Funcionalidades fundamentais compartilhadas:
 ```python
 class BaseAgent:
     - Processamento assíncrono (asyncio)
-    - Sistema de cache inteligente  
+    - Sistema de cache inteligente
     - Métricas de performance
     - Logging estruturado
     - Health checks automáticos
@@ -233,19 +233,19 @@ Interface React completa para monitoramento:
 async def complete_classification_workflow(product):
     # 1. Expansão de dados
     expanded = await expansion_agent.expand(product)
-    
+
     # 2. Classificação NCM
     ncm_result = await ncm_agent.classify(expanded)
-    
+
     # 3. Análise CEST
     cest_result = await cest_agent.analyze(ncm_result)
-    
+
     # 4. Agregação de resultados
     stats = await aggregation_agent.update_stats(cest_result)
-    
+
     # 5. Reconciliação final
     final = await reconciler_agent.validate(stats)
-    
+
     return final
 ```
 
@@ -257,7 +257,7 @@ async def import_pipeline(data_source):
     classified = await classification_workflow(cleaned)
     validated = await validation_workflow(classified)
     stored = await storage_workflow(validated)
-    
+
     return ImportResult(
         processed=len(stored),
         success_rate=calculate_success_rate(stored),
@@ -294,12 +294,12 @@ agents:
     enabled: true
     max_workers: 4
     cache_ttl: 3600
-    
+
   ncm_agent:
     enabled: true
     confidence_threshold: 0.8
     model: "llama3:latest"
-    
+
   cest_agent:
     enabled: true
     states: ["SP", "RJ", "MG"]

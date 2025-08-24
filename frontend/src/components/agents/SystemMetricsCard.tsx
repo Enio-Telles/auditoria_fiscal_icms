@@ -59,11 +59,11 @@ const SystemMetricsCard: React.FC<SystemMetricsCardProps> = ({ metrics, isLoadin
               <AgentsIcon color="primary" sx={{ mr: 1 }} />
               <Typography variant="h6">Agentes</Typography>
             </Box>
-            
+
             <Typography variant="h3" color="primary" gutterBottom>
               {metrics.agent_metrics.total_agents}
             </Typography>
-            
+
             <Box mb={2}>
               <Box display="flex" justifyContent="space-between" mb={1}>
                 <Chip
@@ -79,7 +79,7 @@ const SystemMetricsCard: React.FC<SystemMetricsCardProps> = ({ metrics, isLoadin
                   variant="outlined"
                 />
               </Box>
-              
+
               {metrics.agent_metrics.error_agents > 0 && (
                 <Chip
                   label={`${metrics.agent_metrics.error_agents} Com Erro`}
@@ -125,11 +125,11 @@ const SystemMetricsCard: React.FC<SystemMetricsCardProps> = ({ metrics, isLoadin
               <TasksIcon color="secondary" sx={{ mr: 1 }} />
               <Typography variant="h6">Tarefas</Typography>
             </Box>
-            
+
             <Typography variant="h3" color="secondary" gutterBottom>
               {metrics.agent_metrics.total_tasks_processed.toLocaleString()}
             </Typography>
-            
+
             <Typography variant="body2" color="text.secondary">
               Total Processadas
             </Typography>
@@ -145,11 +145,11 @@ const SystemMetricsCard: React.FC<SystemMetricsCardProps> = ({ metrics, isLoadin
               <WorkflowsIcon sx={{ color: '#9c27b0', mr: 1 }} />
               <Typography variant="h6">Workflows</Typography>
             </Box>
-            
+
             <Typography variant="h3" sx={{ color: '#9c27b0' }} gutterBottom>
               {metrics.workflow_metrics.total_workflows}
             </Typography>
-            
+
             <Box mb={2}>
               <Box display="flex" justifyContent="space-between" mb={1}>
                 <Chip
@@ -158,7 +158,7 @@ const SystemMetricsCard: React.FC<SystemMetricsCardProps> = ({ metrics, isLoadin
                   sx={{ backgroundColor: '#e1bee7', color: '#9c27b0' }}
                 />
               </Box>
-              
+
               <Typography variant="body2" color="text.secondary" gutterBottom>
                 Tempo Médio de Conclusão
               </Typography>
@@ -178,7 +178,7 @@ const SystemMetricsCard: React.FC<SystemMetricsCardProps> = ({ metrics, isLoadin
               <PerformanceIcon sx={{ color: '#ff5722', mr: 1 }} />
               <Typography variant="h6">Performance</Typography>
             </Box>
-            
+
             <Grid container spacing={2}>
               <Grid item xs={6}>
                 <Box textAlign="center">
@@ -191,7 +191,7 @@ const SystemMetricsCard: React.FC<SystemMetricsCardProps> = ({ metrics, isLoadin
                   </Typography>
                 </Box>
               </Grid>
-              
+
               <Grid item xs={6}>
                 <Box textAlign="center">
                   <MemoryIcon sx={{ color: '#ff5722', fontSize: 20 }} />
@@ -203,7 +203,7 @@ const SystemMetricsCard: React.FC<SystemMetricsCardProps> = ({ metrics, isLoadin
                   </Typography>
                 </Box>
               </Grid>
-              
+
               <Grid item xs={6}>
                 <Box textAlign="center">
                   <CacheIcon sx={{ color: '#ff5722', fontSize: 20 }} />
@@ -215,7 +215,7 @@ const SystemMetricsCard: React.FC<SystemMetricsCardProps> = ({ metrics, isLoadin
                   </Typography>
                 </Box>
               </Grid>
-              
+
               <Grid item xs={6}>
                 <Box textAlign="center">
                   <ResponseTimeIcon sx={{ color: '#ff5722', fontSize: 20 }} />
@@ -240,7 +240,7 @@ const SystemMetricsCard: React.FC<SystemMetricsCardProps> = ({ metrics, isLoadin
               <TrendingUpIcon color="primary" sx={{ mr: 1 }} />
               <Typography variant="h6">Status Geral do Sistema</Typography>
             </Box>
-            
+
             <Grid container spacing={3}>
               <Grid item xs={12} md={4}>
                 <Typography variant="body2" color="text.secondary" gutterBottom>
@@ -267,7 +267,7 @@ const SystemMetricsCard: React.FC<SystemMetricsCardProps> = ({ metrics, isLoadin
                   </Typography>
                 </Box>
               </Grid>
-              
+
               <Grid item xs={12} md={4}>
                 <Typography variant="body2" color="text.secondary" gutterBottom>
                   Workflows Completados
@@ -293,7 +293,7 @@ const SystemMetricsCard: React.FC<SystemMetricsCardProps> = ({ metrics, isLoadin
                   </Typography>
                 </Box>
               </Grid>
-              
+
               <Grid item xs={12} md={4}>
                 <Typography variant="body2" color="text.secondary" gutterBottom>
                   Eficiência do Cache
@@ -320,7 +320,7 @@ const SystemMetricsCard: React.FC<SystemMetricsCardProps> = ({ metrics, isLoadin
                 </Box>
               </Grid>
             </Grid>
-            
+
             <Typography variant="caption" color="text.secondary" sx={{ mt: 2, display: 'block' }}>
               Última atualização: {new Date(metrics.timestamp).toLocaleString('pt-BR')}
             </Typography>

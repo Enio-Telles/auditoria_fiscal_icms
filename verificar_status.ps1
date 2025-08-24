@@ -25,17 +25,17 @@ if (Get-Command docker -ErrorAction SilentlyContinue) {
     try {
         docker version | Out-Null
         Write-Host "  ✅ Docker funcionando" -ForegroundColor Green
-        
+
         # Verificar containers específicos
         $pgContainer = docker ps --filter "name=auditoria_postgres" --format "{{.Status}}"
         $redisContainer = docker ps --filter "name=auditoria_redis" --format "{{.Status}}"
-        
+
         if ($pgContainer) {
             Write-Host "  ✅ PostgreSQL: $pgContainer" -ForegroundColor Green
         } else {
             Write-Host "  ❌ PostgreSQL: Container não encontrado" -ForegroundColor Red
         }
-        
+
         if ($redisContainer) {
             Write-Host "  ✅ Redis: $redisContainer" -ForegroundColor Green
         } else {
@@ -75,7 +75,7 @@ Write-Host "🟢 NODE.JS:" -ForegroundColor Cyan
 if (Get-Command node -ErrorAction SilentlyContinue) {
     $nodeVersion = node --version
     Write-Host "  ✅ Node.js $nodeVersion" -ForegroundColor Green
-    
+
     if (Test-Path "frontend\package.json") {
         Write-Host "  ✅ Frontend configurado" -ForegroundColor Green
     } else {
@@ -91,7 +91,7 @@ Write-Host ""
 Write-Host "🤖 OLLAMA IA:" -ForegroundColor Cyan
 if (Get-Command ollama -ErrorAction SilentlyContinue) {
     Write-Host "  ✅ Ollama instalado" -ForegroundColor Green
-    
+
     # Verificar se está rodando
     if (Test-Port 11434) {
         Write-Host "  ✅ Ollama rodando (porta 11434)" -ForegroundColor Green

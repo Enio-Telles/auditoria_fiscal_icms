@@ -414,24 +414,24 @@ const RelatoriosPage: React.FC = () => {
             variant="fullWidth"
             sx={{ borderBottom: 1, borderColor: 'divider' }}
           >
-            <Tab 
-              label="Dashboard Executivo" 
-              icon={<Dashboard />} 
+            <Tab
+              label="Dashboard Executivo"
+              icon={<Dashboard />}
               sx={{ textTransform: 'none', fontWeight: 'medium' }}
             />
-            <Tab 
-              label="Performance & Analytics" 
-              icon={<Speed />} 
+            <Tab
+              label="Performance & Analytics"
+              icon={<Speed />}
               sx={{ textTransform: 'none', fontWeight: 'medium' }}
             />
-            <Tab 
-              label="Conformidade Fiscal" 
-              icon={<Security />} 
+            <Tab
+              label="Conformidade Fiscal"
+              icon={<Security />}
               sx={{ textTransform: 'none', fontWeight: 'medium' }}
             />
-            <Tab 
-              label="Relatórios Clássicos" 
-              icon={<Assessment />} 
+            <Tab
+              label="Relatórios Clássicos"
+              icon={<Assessment />}
               sx={{ textTransform: 'none', fontWeight: 'medium' }}
             />
           </Tabs>
@@ -439,7 +439,7 @@ const RelatoriosPage: React.FC = () => {
           {/* Tab 1: Dashboard Executivo */}
           <TabPanel value={activeTab} index={0}>
             <Box sx={{ p: 3 }}>
-              <ExecutiveDashboard 
+              <ExecutiveDashboard
                 metrics={executiveMetrics}
                 isLoading={statsLoading}
                 onRefresh={handleRefreshAll}
@@ -450,7 +450,7 @@ const RelatoriosPage: React.FC = () => {
           {/* Tab 2: Performance Analytics */}
           <TabPanel value={activeTab} index={1}>
             <Box sx={{ p: 3 }}>
-              <PerformanceAnalytics 
+              <PerformanceAnalytics
                 data={performanceData}
                 isLoading={statsLoading}
               />
@@ -460,7 +460,7 @@ const RelatoriosPage: React.FC = () => {
           {/* Tab 3: Conformidade Fiscal */}
           <TabPanel value={activeTab} index={2}>
             <Box sx={{ p: 3 }}>
-              <ComplianceReport 
+              <ComplianceReport
                 data={complianceData}
                 isLoading={statsLoading}
                 onExportReport={exportarRelatorio}
@@ -474,7 +474,7 @@ const RelatoriosPage: React.FC = () => {
               <Typography variant="h5" gutterBottom>
                 Relatórios Clássicos
               </Typography>
-              
+
               {/* KPIs Básicos */}
               <Grid container spacing={3} sx={{ mb: 4 }}>
                 <Grid item xs={12} sm={6} md={3}>
@@ -586,17 +586,17 @@ const RelatoriosPage: React.FC = () => {
                           <XAxis dataKey="periodo" />
                           <YAxis />
                           <RechartsTooltip />
-                          <Line 
-                            type="monotone" 
-                            dataKey="classificados" 
-                            stroke="#4CAF50" 
+                          <Line
+                            type="monotone"
+                            dataKey="classificados"
+                            stroke="#4CAF50"
                             strokeWidth={2}
                             name="Classificados"
                           />
-                          <Line 
-                            type="monotone" 
-                            dataKey="pendentes" 
-                            stroke="#FF9800" 
+                          <Line
+                            type="monotone"
+                            dataKey="pendentes"
+                            stroke="#FF9800"
                             strokeWidth={2}
                             name="Pendentes"
                           />
@@ -645,7 +645,7 @@ const RelatoriosPage: React.FC = () => {
                     {statsData.totalErros > 0 && (
                       <Grid item xs={12}>
                         <Alert severity="warning">
-                          <strong>{statsData.totalErros} produtos com erro</strong> - 
+                          <strong>{statsData.totalErros} produtos com erro</strong> -
                           Revise as classificações para garantir conformidade.
                         </Alert>
                       </Grid>
@@ -653,7 +653,7 @@ const RelatoriosPage: React.FC = () => {
                     {statsData.totalPendentes > statsData.totalClassificados * 0.2 && (
                       <Grid item xs={12}>
                         <Alert severity="info">
-                          <strong>Alto número de produtos pendentes</strong> - 
+                          <strong>Alto número de produtos pendentes</strong> -
                           Execute uma nova classificação em lote para processar os itens pendentes.
                         </Alert>
                       </Grid>
@@ -661,7 +661,7 @@ const RelatoriosPage: React.FC = () => {
                     {statsData.acuraciaMedia && statsData.acuraciaMedia > 0.9 && (
                       <Grid item xs={12}>
                         <Alert severity="success">
-                          <strong>Excelente precisão de classificação</strong> - 
+                          <strong>Excelente precisão de classificação</strong> -
                           Acurácia média de {Math.round(statsData.acuraciaMedia * 100)}%.
                         </Alert>
                       </Grid>
@@ -690,7 +690,7 @@ const RelatoriosPage: React.FC = () => {
                 <ListItemIcon>
                   <Refresh />
                 </ListItemIcon>
-                <ListItemText 
+                <ListItemText
                   primary="Auto-atualização"
                   secondary="Atualizar dados automaticamente a cada 30 segundos"
                 />
@@ -703,7 +703,7 @@ const RelatoriosPage: React.FC = () => {
                 <ListItemIcon>
                   <Notifications />
                 </ListItemIcon>
-                <ListItemText 
+                <ListItemText
                   primary="Alertas por email"
                   secondary="Receber notificações sobre mudanças críticas"
                 />
@@ -713,7 +713,7 @@ const RelatoriosPage: React.FC = () => {
                 <ListItemIcon>
                   <Schedule />
                 </ListItemIcon>
-                <ListItemText 
+                <ListItemText
                   primary="Relatórios agendados"
                   secondary="Envio automático de relatórios semanais"
                 />

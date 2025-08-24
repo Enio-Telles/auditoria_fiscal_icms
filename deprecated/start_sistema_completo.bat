@@ -18,14 +18,14 @@ if %errorlevel% neq 0 (
     echo [2/4] Iniciando API estavel...
     echo Comando: start /B python api_estavel.py
     start /B python api_estavel.py > logs\api.log 2>&1
-    
+
     REM Aguardar API inicializar
     echo Aguardando API inicializar...
     timeout /t 5 >nul
-    
+
     REM Verificar se API iniciou
     powershell -Command "for ($i=1; $i -le 10; $i++) { try { $response = Invoke-RestMethod -Uri 'http://127.0.0.1:8003/health' -TimeoutSec 2; Write-Host \"✅ API iniciada com sucesso! Status: $($response.status)\"; break } catch { Write-Host \"⏳ Tentativa $i/10...\"; Start-Sleep 2 } }"
-    
+
 ) else (
     echo ✅ API ja esta funcionando!
 )

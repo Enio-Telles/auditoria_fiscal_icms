@@ -263,6 +263,6 @@ O sistema está **pronto para uso em produção** na classificação de produtos
 
 ---
 
-**Data:** 19 de agosto de 2025  
-**Versão:** Sistema de Auditoria Fiscal ICMS v15.0  
+**Data:** 19 de agosto de 2025
+**Versão:** Sistema de Auditoria Fiscal ICMS v15.0
 **Status:** ✅ **INTEGRAÇÃO CONCLUÍDA COM SUCESSO**

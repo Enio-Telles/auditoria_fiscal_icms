@@ -9,9 +9,9 @@
 [![Docker](https://img.shields.io/badge/docker-ready-blue.svg)](https://www.docker.com/)
 [![Status](https://img.shields.io/badge/status-Fase%207%20Concluída-brightgreen.svg)]()
 
-**Data de Atualização:** 20 de Agosto de 2025  
-**Versão Atual:** 23.0 (Sistema Full-Stack Completo)  
-**Linguagem Principal:** Python 3.11+ | TypeScript 5+ | React 18  
+**Data de Atualização:** 20 de Agosto de 2025
+**Versão Atual:** 23.0 (Sistema Full-Stack Completo)
+**Linguagem Principal:** Python 3.11+ | TypeScript 5+ | React 18
 **Arquitetura:** Sistema Multiagente + API REST + Frontend React + PostgreSQL
 
 ---
@@ -96,24 +96,24 @@ graph TB
         A[React Dashboard]
         B[API Client]
     end
-    
+
     subgraph "API Layer"
         C[FastAPI Server]
         D[Auth & Security]
     end
-    
+
     subgraph "AI Processing Layer"
         E[Multi-Agent System]
         F[LangGraph Workflow]
         G[LLM Manager]
     end
-    
+
     subgraph "Data Layer"
         H[(PostgreSQL)]
         I[(Vector DB)]
         J[(Knowledge Graph)]
     end
-    
+
     A --> B
     B --> C
     C --> D
@@ -130,7 +130,7 @@ graph TB
 #### **1. Sistema Multi-Agente (Core AI)**
 - **🎯 Manager Agent:** Orquestra todo o fluxo de classificação
 - **📋 NCM Agent:** Especialista em códigos NCM
-- **🏷️ CEST Agent:** Especialista em códigos CEST  
+- **🏷️ CEST Agent:** Especialista em códigos CEST
 - **🔄 Reconciliation Agent:** Valida e corrige inconsistências
 - **📈 Enrichment Agent:** Enriquece dados com informações adicionais
 
@@ -572,7 +572,7 @@ NCM("30049099") -> pertence_a -> Categoria("Medicamentos")
 **3. Conhecimento Estruturado:**
 ```sql
 -- Busca exata
-SELECT ncm, descricao FROM tabela_ncm 
+SELECT ncm, descricao FROM tabela_ncm
 WHERE descricao LIKE '%medicamento%'
 ```
 
@@ -658,21 +658,21 @@ WHERE descricao LIKE '%medicamento%'
 
 ## 📄 **LICENÇA E TERMOS**
 
-**Licença:** MIT License  
-**Uso Comercial:** Permitido  
-**Modificações:** Permitidas  
-**Distribuição:** Permitida  
+**Licença:** MIT License
+**Uso Comercial:** Permitido
+**Modificações:** Permitidas
+**Distribuição:** Permitida
 
 **⚠️ Disclaimers:**
 - Este sistema é uma ferramenta auxiliar
-- Classificações devem ser validadas por profissionais qualificados  
+- Classificações devem ser validadas por profissionais qualificados
 - Não substitui consultoria fiscal especializada
 - Usuário responsável pelo uso adequado das informações
 
 ---
 
-*📅 Última atualização: Dezembro 2024*  
-*🔄 Versão do documento: 2.1*  
+*📅 Última atualização: Dezembro 2024*
+*🔄 Versão do documento: 2.1*
 *✨ Feito com ❤️ para a comunidade fiscal brasileira*
 
 ### **📋 Índice da Documentação**
@@ -786,7 +786,7 @@ WHERE descricao LIKE '%medicamento%'
 │  🔐 Auth │ 👥 Users │ 🏢 Companies │ � Data Import │ 🏷️ Classification │
 │  🤖 Agents │ 📈 Results │ 🎯 Golden Set                      │
 └─────────────────────┬───────────────────────────────────────┘
-                      │ 
+                      │
 ┌─────────────────────▼───────────────────────────────────────┐
 │            LANGGRAPH WORKFLOWS [Base Implementada]         │
 │  🔄 ConfirmationFlow │ 🎯 DeterminationFlow │ ⚙️ BaseWorkflow   │
@@ -821,7 +821,7 @@ WHERE descricao LIKE '%medicamento%'
 #### **🔄 LangGraph Workflows**
 
 - **Status:** ✅ **100% Funcional - Workflows Implementados e Testados**
-- **Arquivos Base:** 
+- **Arquivos Base:**
   - `src/auditoria_icms/workflows/base_workflow.py` - Classe base abstrata
   - `src/auditoria_icms/workflows/confirmation_flow.py` - Workflow de confirmação
   - `src/auditoria_icms/workflows/determination_flow.py` - Workflow de determinação
@@ -838,7 +838,7 @@ WHERE descricao LIKE '%medicamento%'
 🎯 **DeterminationFlow (Determinação de Novas Classificações)**
 - **Propósito:** Determinar NCM/CEST para produtos sem classificação
 - **Fluxo:** enrichment → ncm_determination → ncm_refinement → cest_determination → reconciliation → completion
-- **Status:** 11 etapas executadas com sucesso  
+- **Status:** 11 etapas executadas com sucesso
 - **Resultado:** Status "DETERMINADO" com classificações completas
 
 🎛️ **WorkflowManager (Orquestração Inteligente)**
@@ -873,7 +873,7 @@ python run_simple_server.py
 # ❌ NÃO execute diretamente: python main.py (causa erro de imports)
 ```
 
-**🌐 API disponível em:** `http://localhost:8000`  
+**🌐 API disponível em:** `http://localhost:8000`
 **📚 Documentação automática:** `http://localhost:8000/docs`
 
 ### **🔧 Configuração Completa**
@@ -1160,10 +1160,10 @@ llm:
   models:
     primary: "llama3.1:8b"
     fallback: "llama3.1:70b"
-  
+
 embeddings:
   model_name: "BAAI/bge-m3"
-  
+
 rag:
   similarity_threshold: 0.7
   top_k_vector: 10
@@ -1174,13 +1174,13 @@ rag:
 api:
   host: "0.0.0.0"
   port: 8000
-  
+
 database:
   postgresql:
     host: "localhost"
     port: 5432
     database: "auditoria_fiscal"
-    
+
 integrations:
   stock_analysis:
     enabled: false  # Habilitar na v2.0
@@ -1468,8 +1468,8 @@ O próximo passo crítico é implementar os workflows específicos de confirmaç
 ## 👥 **EQUIPE E CONTRIBUIÇÕES**
 
 ### **🏆 Desenvolvedor Principal**
-**Enio Telles**  
-📧 eniotelles@gmail.com  
+**Enio Telles**
+📧 eniotelles@gmail.com
 🔗 [GitHub](https://github.com/Enio-Telles)
 
 ### **🤝 Como Contribuir**
@@ -1560,9 +1560,9 @@ npm start
 
 ---
 
-**🎯 Sistema LangGraph Workflows 100% funcional e pronto para próximos passos!**  
-**📊 Capacidade comprovada: 388.666 registros + Workflows funcionais**  
-**⚖️ Conformidade: API REST + LangGraph + Sistema Multiagente + Workflows implementados**  
+**🎯 Sistema LangGraph Workflows 100% funcional e pronto para próximos passos!**
+**📊 Capacidade comprovada: 388.666 registros + Workflows funcionais**
+**⚖️ Conformidade: API REST + LangGraph + Sistema Multiagente + Workflows implementados**
 **🌐 Acesse: http://localhost:8000/docs para testar API + test_workflow.py para workflows**
 
 Configurar o frontend React

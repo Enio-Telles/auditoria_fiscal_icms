@@ -25,24 +25,24 @@ try {
 try {
     docker info | Out-Null
     Write-Host "Docker esta FUNCIONANDO!" -ForegroundColor Green
-    
+
     # Testar comandos basicos
     Write-Host ""
     Write-Host "Testando comandos basicos..." -ForegroundColor Yellow
-    
+
     # Listar containers
     Write-Host "Containers existentes:"
     docker ps -a
-    
+
     # Listar networks
     Write-Host ""
     Write-Host "Networks existentes:"
     docker network ls
-    
+
     Write-Host ""
     Write-Host "Docker esta pronto para uso!" -ForegroundColor Green
     Write-Host "Execute: .\start_sistema_local.ps1" -ForegroundColor Cyan
-    
+
 } catch {
     Write-Host "Docker NAO esta respondendo!" -ForegroundColor Red
     Write-Host ""

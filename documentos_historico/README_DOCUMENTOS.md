@@ -1,6 +1,6 @@
 # 📚 Índice da Documentação Técnica
 
-> **Sistema de Auditoria Fiscal ICMS Multi-Tenant v2.0**  
+> **Sistema de Auditoria Fiscal ICMS Multi-Tenant v2.0**
 > **Documentação Completa e Organizada**
 
 ## 📋 **Sumário dos Documentos**
@@ -101,8 +101,8 @@ python api_multi_tenant.py
 
 ---
 
-**Organizado por:** Enio Telles  
-**Data:** 20 de Agosto de 2025  
+**Organizado por:** Enio Telles
+**Data:** 20 de Agosto de 2025
 **Versão da Documentação:** 2.0.0
 
 ---
@@ -156,7 +156,7 @@ graph TD
     D --> E[Fase 5: Workflows IA]
     E --> F[Fase 6: PostgreSQL + Agentes]
     F --> G[Fase 7: Frontend React]
-    
+
     A --> H[Python + LangChain]
     B --> I[Integração Externa]
     C --> J[FastAPI + OpenAPI]

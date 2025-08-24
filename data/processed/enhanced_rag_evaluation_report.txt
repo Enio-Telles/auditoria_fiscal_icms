@@ -86,6 +86,6 @@
    2. Monitorar performance com dados reais
    3. Ajustar parâmetros baseado no feedback
    4. Expandir base de conhecimento
-   
+
 💡 Sistema pronto para deployment!
 ============================================================

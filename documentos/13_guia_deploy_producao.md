@@ -1,8 +1,8 @@
 # 🚀 GUIA DE DEPLOY EM PRODUÇÃO
 ## Sistema de Auditoria Fiscal ICMS v4.0
 
-**Data:** 23 de Agosto de 2025  
-**Status:** Pronto para Deploy  
+**Data:** 23 de Agosto de 2025
+**Status:** Pronto para Deploy
 **Versão:** 1.0.0 Produção
 
 ---

@@ -30,7 +30,7 @@ try {
     # Parar containers
     docker-compose down
     Write-Host "Containers parados" -ForegroundColor Gray
-    
+
     # Iniciar containers
     docker-compose up -d
     Write-Host "Containers reiniciados" -ForegroundColor Green
